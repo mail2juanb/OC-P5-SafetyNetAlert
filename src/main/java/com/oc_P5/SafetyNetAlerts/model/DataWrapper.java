@@ -1,16 +1,24 @@
 package com.oc_P5.SafetyNetAlerts.model;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class DataWrapper {
 
-    @Getter
     private List<Person> persons;
-    @Getter
-    private List<Firestation> firestations;
-    @Getter
-    private List<Medicalrecord> medicalrecords;
+
+    @JsonProperty("firestations")
+    private List<Firestation> fireStations;
+
+    @JsonProperty("medicalrecords")
+    private List<Medicalrecord> medicalRecords;
 
 }

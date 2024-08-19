@@ -3,53 +3,54 @@ package com.oc_P5.SafetyNetAlerts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.model.DataWrapper;
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
-import com.oc_P5.SafetyNetAlerts.model.Medicalrecord;
-import com.oc_P5.SafetyNetAlerts.model.Person;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
-import java.io.IOException;
 
+@Slf4j
+@SpringBootApplication
 public class SafetyNetAlertsApplication {
 
-	public static void main(String[] args) {
-		ObjectMapper objectMapper = new ObjectMapper();
+    public static void main(String[] args) throws Exception {
 
-		try {
+        SpringApplication.run(SafetyNetAlertsApplication.class, args);
 
-			// Lire le fichier JSON et le convertir en objet DataWrapper
-			DataWrapper dataWrapper = objectMapper.readValue(new File("src/main/resources/data.json"), DataWrapper.class);
 
-			// Afficher les details de l'objet désérialisé du node persons
-			for (Person person : dataWrapper.getPersons()) {
-				System.out.println("Name: " + person.getFirstName() + " " + person.getLastName());
-				System.out.println("Address: " + person.getAddress());
-				System.out.println("City: " + person.getCity());
-				System.out.println("Zip: " + person.getZip());
-				System.out.println("Phone: " + person.getPhone());
-				System.out.println("Email: " + person.getEmail());
-				System.out.println();
-			}
+        log.info("Loading datas ... ");
 
-			// Afficher les details de l'objet désérialisé du node firestations
-			for (Firestation firestations : dataWrapper.getFirestations()) {
-				System.out.println("Address: " + firestations.getAddress());
-				System.out.println("Station: " + firestations.getStation());
-				System.out.println();
-			}
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Lire le fichier JSON et le convertir en objet DataWrapper
+        DataWrapper dataWrapper = objectMapper.readValue(new File("src/main/resources/data.json"), DataWrapper.class);
+        log.info("data loaded : {} persons, {} stations and  {} medical records", dataWrapper.getPersons().size() , dataWrapper.getFireStations().size(), dataWrapper.getMedicalRecords().size());
+//
+//
+//        // Afficher les details de l'objet désérialisé du node persons
+//        for (Person person : dataWrapper.getPersons()) {
+//            log.debug("Name: " + person.getFirstName() + " " + person.getLastName());
+//            log.debug("Address: " + person.getAddress());
+//            log.debug("City: " + person.getCity());
+//            log.debug("Zip: " + person.getZip());
+//            log.debug("Phone: " + person.getPhone());
+//            log.debug("Email: " + person.getEmail());
+//        }
+//
+//        // Afficher les details de l'objet désérialisé du node firestations
+//        for (Firestation firestations : dataWrapper.getFirestations()) {
+//            log.debug("Address: " + firestations.getAddress());
+//            log.debug("Station: " + firestations.getStation());
+//        }
+//
+//        // Afficher les details de l'objet désérialisé du node medicalrecords
+//        for (Medicalrecord medicalrecord : dataWrapper.getMedicalrecords()) {
+//            log.debug("Name: " + medicalrecord.getFirstName() + " " + medicalrecord.getLastName());
+//            log.debug("Birthdate: " + medicalrecord.getBirthdate());
+//            log.debug("Medications: " + String.join(", ", medicalrecord.getMedications()));
+//            log.debug("Allergies: " + String.join(", ", medicalrecord.getAllergies()));
+//        }
 
-			// Afficher les details de l'objet désérialisé du node medicalrecords
-			for (Medicalrecord medicalrecord : dataWrapper.getMedicalrecords()) {
-				System.out.println("Name: " + medicalrecord.getFirstName() + " " + medicalrecord.getLastName());
-				System.out.println("Birthdate: " + medicalrecord.getBirthdate());
-				System.out.println("Medications: " + String.join(", ", medicalrecord.getMedications()));
-				System.out.println("Allergies: " + String.join(", ", medicalrecord.getAllergies()));
-				System.out.println();
-			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    }
 
 }
