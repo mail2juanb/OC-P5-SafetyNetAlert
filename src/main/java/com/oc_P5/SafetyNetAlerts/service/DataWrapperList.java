@@ -1,6 +1,9 @@
-package com.oc_P5.SafetyNetAlerts.model;
+package com.oc_P5.SafetyNetAlerts.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oc_P5.SafetyNetAlerts.model.Firestation;
+import com.oc_P5.SafetyNetAlerts.model.Medicalrecord;
+import com.oc_P5.SafetyNetAlerts.model.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class DataWrapper {
+public class DataWrapperList {
 
     private List<Person> persons;
 
