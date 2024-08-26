@@ -1,13 +1,11 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.List;
 
 @Slf4j
