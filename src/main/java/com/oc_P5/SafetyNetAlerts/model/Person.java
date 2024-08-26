@@ -3,10 +3,8 @@ package com.oc_P5.SafetyNetAlerts.model;
 import lombok.Getter;
 
 @Getter
-public class Person {
+public class Person extends NamedModel{
 
-    private String firstName;
-    private String lastName;
     private String address;
     private String city;
     private int zip;

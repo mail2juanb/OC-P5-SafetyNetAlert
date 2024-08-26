@@ -1,21 +1,26 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.service.FirestationService;
-import com.oc_P5.SafetyNetAlerts.service.PersonAgeService;
+import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
+import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RestController
 //@RequestMapping("/firestation")
 public class FirestationController {
+
+    private final FirestationServiceImpl firestationService;
+
+
+    public FirestationController(FirestationServiceImpl firestationService) {
+        this.firestationService = firestationService;
+    }
+
 
     /*
     http://localhost:8080/firestation?stationNumber=<station_number>
@@ -30,17 +35,20 @@ public class FirestationController {
     De plus, elle doit fournir un décompte du nombre d'adultes et du nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone desservie.
 */
     @GetMapping("/firestation")
-    public List<Object> getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
-    //public void getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
+    public PersonsByStation getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
+        //public void getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
 
         log.info("CONTROLLER - getPersonsByStation" + " - stationNumber = " + stationNumber);
 
+        return firestationService.getPersonsByStationService(stationNumber);
+
+        /*
         // Map de réponse à la requête
         List<Object> response = new ArrayList<>();
 
         // Appel aux méthodes spécifiques à cette requête vers la couche service
         //    On récupère la Map des personnes couvertes par la caserne demandée
-        FirestationService firestationService = new FirestationService();
+        FirestationServiceImpl firestationService = new FirestationServiceImpl();
         Map<String, Object> mapPersonsByStationService = firestationService.getPersonsByStationService(stationNumber);
 
 
@@ -57,5 +65,7 @@ public class FirestationController {
 
 
         return response;
+
+         */
     }
 }

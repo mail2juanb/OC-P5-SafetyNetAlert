@@ -1,4 +1,4 @@
-package com.oc_P5.SafetyNetAlerts.service;
+package com.oc_P5.SafetyNetAlerts.service.data_reader;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;

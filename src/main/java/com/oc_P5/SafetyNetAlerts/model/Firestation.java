@@ -6,6 +6,6 @@ import lombok.Getter;
 public class Firestation {
 
     private String address;
-    private  String station;
+    private Integer station;
 
 }
