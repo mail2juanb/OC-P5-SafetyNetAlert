@@ -1,11 +1,14 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
+import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -16,6 +19,19 @@ public class FirestationController {
 
     public FirestationController(FirestationServiceImpl firestationService) {
         this.firestationService = firestationService;
+    }
+
+
+    /**
+     * http://localhost:8080/firestations
+     * @return Liste des Firestation ainsi que leurs attributs
+     */
+    @GetMapping("/firestations")
+    public List<Firestation> getFirestationsController() {
+
+        log.info("CONTROLLER - getFirestationsController");
+
+        return firestationService.getFirestationsService();
     }
 
 

@@ -2,7 +2,6 @@ package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
-import com.oc_P5.SafetyNetAlerts.model.Medicalrecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.MedicalrecordRepository;
@@ -24,6 +23,11 @@ public class FirestationServiceImpl implements FirestationService{
     private final PersonRepository personRepository;
     private final MedicalrecordRepository medicalrecordRepository;
 
+
+    public List<Firestation> getFirestationsService() {
+
+        return firestationRepository.getFirestations();
+    }
 
 
     public PersonsByStation getPersonsByStationService(Integer stationNumber) {
