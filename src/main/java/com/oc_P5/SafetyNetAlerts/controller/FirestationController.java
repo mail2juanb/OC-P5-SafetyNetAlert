@@ -4,9 +4,9 @@ import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class FirestationController {
 
 
     /**
-     * http://localhost:8080/firestations
+     * GET http://localhost:8080/firestations
      * @return Liste des Firestation ainsi que leurs attributs
      */
     @GetMapping("/firestations")
@@ -32,6 +32,27 @@ public class FirestationController {
         log.info("CONTROLLER - getFirestationsController");
 
         return firestationService.getFirestationsService();
+    }
+
+    /**
+     * PUT http://localhost:8080/firestation
+     * //@param  stationNumber Numéro de la caserne de pompiers - String
+     * //@param firestationAdress Adresse de la caserne de pompiers - String
+     * @param firestation un object Firestation contenant : stationNumber, firestationAdress
+     * @return Mettre à jour le numéro de la caserne de pompiers d'une adresse - ResponseEntity
+     */
+    @PutMapping("/firestation")
+    public ResponseEntity<String> updateFirestationMappingController(@RequestBody Firestation firestation) {
+
+        log.info("CONTROLLER - updateFirestationMappingController - firestationAdress : " + firestation.getAddress() + " - stationNumber : " + firestation.getStation());
+
+        String message = "Numéro de caserne mis à jour pour l'adresse : " + firestation.getAddress() + " -- Numéro : " + firestation.getStation();
+
+        if (firestationService.updateFirestationMappingService(firestation)) {
+            return new ResponseEntity<>("SUCCESS --- " + message, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("FAIL --- " + message, HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -43,7 +64,7 @@ public class FirestationController {
      * La liste doit inclure les informations spécifiques suivantes : prénom, nom, adresse, numéro de téléphone.
      * De plus, elle doit fournir un décompte du nombre d'adultes et du
      * nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone desservie.
-     * @param stationNumber Firestation Number
+     * @param stationNumber Numéro de la caserne de pompiers
      * @return Liste de personnes et le décompte des adultes et des enfants.
     */
     @GetMapping("/firestation")

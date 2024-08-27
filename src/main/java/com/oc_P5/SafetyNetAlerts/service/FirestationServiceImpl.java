@@ -29,6 +29,11 @@ public class FirestationServiceImpl implements FirestationService{
         return firestationRepository.getFirestations();
     }
 
+    public boolean updateFirestationMappingService(Firestation firestation) {
+
+        return firestationRepository.updateFirestationMapping(firestation);
+    }
+
 
     public PersonsByStation getPersonsByStationService(Integer stationNumber) {
 

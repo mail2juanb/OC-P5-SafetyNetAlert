@@ -5,8 +5,11 @@ import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import java.util.List;
 
 public interface FirestationRepository {
+
     List<Firestation> getFirestations();
 
     List<Firestation> getFirestationsByStation(Integer station);
+
+    boolean updateFirestationMapping(Firestation firestation);
     
 }
