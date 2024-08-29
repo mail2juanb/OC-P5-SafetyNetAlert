@@ -13,6 +13,10 @@ public interface FirestationService {
 
     boolean addFirestationMappingService(Firestation firestation);
 
+    boolean deleteFirestationMappingByAddressService(String address);
+
+    boolean deleteFirestationMappingByStationService(Integer stationNumber);
+
     PersonsByStation getPersonsByStationService(Integer stationNumber);
 
 }

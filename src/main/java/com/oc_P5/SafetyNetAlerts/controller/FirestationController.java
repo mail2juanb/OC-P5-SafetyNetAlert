@@ -62,7 +62,7 @@ public class FirestationController {
      * @param firestation un object Firestation contenant : stationNumber, firestationAdress
      * @return Ajout d'un mapping caserne/adresse - ResponseEntity
      */
-    //todo Si l'adresse existe déjà alors on met à jour ?
+    //todo Si l'adresse existe déjà on fait quoi ?
     @PostMapping("/firestation")
     public ResponseEntity<String> addFirestationMappingController(@RequestBody Firestation firestation) {
 
@@ -74,6 +74,41 @@ public class FirestationController {
             return new ResponseEntity<>("SUCCESS --- " + messAdd, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("FAIL --- " + messAdd, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    /**
+     * DELETE http://localhost:8080/firestation?address=<adresse>
+     * DELETE http://localhost:8080/firestation?stationNumber=<station_number>
+     * @param address (optionnel) Adresse de la caserne de pompiers à supprimer
+     * @param stationNumber (optionnel) Numéro de la station de pompiers à supprimer
+     * @return Confirmation de la suppression du mapping - ResponseEntity
+     */
+    @DeleteMapping("/firestation")
+    public ResponseEntity<String> deleteFirestationMappingController (
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "stationNumber", required = false) Integer stationNumber) {
+
+        log.info("CONTROLLER - deleteFirestationMappingController - firestationAdress : " + address + " - stationNumber = " + stationNumber);
+
+        String messDel = "Message bateau adresse ou station";
+
+        if (address == null && stationNumber != null) {
+            if (firestationService.deleteFirestationMappingByStationService(stationNumber)) {
+                return new ResponseEntity<>("SUCCESS --- " + messDel, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
+            }
+        } else if (address != null && stationNumber == null) {
+            if (firestationService.deleteFirestationMappingByAddressService(address)) {
+                return new ResponseEntity<>("SUCCESS --- " + messDel, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
+            }
+        } else {
+            //log.info("CONTROLLER - Cas non géré - contactez l'administrateur réseau :-)))");
+            return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
         }
 
     }

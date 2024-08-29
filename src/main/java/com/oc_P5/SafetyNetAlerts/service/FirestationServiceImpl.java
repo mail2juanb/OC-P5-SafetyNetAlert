@@ -36,6 +36,14 @@ public class FirestationServiceImpl implements FirestationService{
         return firestationRepository.addFirestationMapping(firestation);
     }
 
+    public boolean deleteFirestationMappingByAddressService(String address) {
+        return firestationRepository.deleteFirestationMappingByAddress(address);
+    }
+
+    public boolean deleteFirestationMappingByStationService(Integer stationNumber) {
+        return firestationRepository.deleteFirestationMappingByStation(stationNumber);
+    }
+
 
     public PersonsByStation getPersonsByStationService(Integer stationNumber) {
 

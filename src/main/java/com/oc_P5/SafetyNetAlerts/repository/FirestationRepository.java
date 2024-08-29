@@ -12,6 +12,10 @@ public interface FirestationRepository {
 
     boolean addFirestationMapping(Firestation firestation);
 
-    List<Firestation> getFirestationsByStation(Integer station);
+    boolean deleteFirestationMappingByAddress(String address);
+
+    boolean deleteFirestationMappingByStation(Integer stationNumber);
+
+    List<Firestation> getFirestationsByStation(Integer stationNumber);
 
 }

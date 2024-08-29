@@ -50,10 +50,49 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
-    public List<Firestation> getFirestationsByStation(Integer station) {
+    public boolean deleteFirestationMappingByAddress(String address) {
+
+        List<Firestation> firestations = getFirestations();
+
+        if (firestations.removeIf(firestation -> firestation.getAddress().equals(address))) {
+            log.info("La caserne : {}, a été supprimée", address);
+            return true;
+        } else {
+            log.info("La caserne : {}, n'a pas été supprimée", address);
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean deleteFirestationMappingByStation(Integer stationNumber) {
+
+        List<Firestation> firestations = getFirestations();
+        int firestationRemovedNumber = 0;
+        boolean isRemoved = false;
+
+        for (Firestation firestation : firestations) {
+            if (firestation.getStation().equals(stationNumber)) {
+                firestationRemovedNumber ++;
+            }
+        }
+        if (firestationRemovedNumber > 0) {
+            log.info("Les casernes ayant pour stationNumber : {}, au nombre de : {}, ont été supprimées", stationNumber, firestationRemovedNumber);
+            isRemoved = firestations.removeIf(firestation -> firestation.getStation().equals(stationNumber));
+        } else {
+            log.info("Aucune caserne ayant pour stationNumber : {}, n'a été supprimée", stationNumber);
+        }
+
+        return isRemoved;
+
+    }
+
+
+    @Override
+    public List<Firestation> getFirestationsByStation(Integer stationNumber) {
         return getFirestations()
                 .stream()
-                .filter(Firestation -> Firestation.getStation().equals(station))
+                .filter(Firestation -> Firestation.getStation().equals(stationNumber))
                 .toList();
     }
 }
