@@ -25,13 +25,15 @@ public class FirestationServiceImpl implements FirestationService{
 
 
     public List<Firestation> getFirestationsService() {
-
         return firestationRepository.getFirestations();
     }
 
     public boolean updateFirestationMappingService(Firestation firestation) {
-
         return firestationRepository.updateFirestationMapping(firestation);
+    }
+
+    public boolean addFirestationMappingService(Firestation firestation) {
+        return firestationRepository.addFirestationMapping(firestation);
     }
 
 

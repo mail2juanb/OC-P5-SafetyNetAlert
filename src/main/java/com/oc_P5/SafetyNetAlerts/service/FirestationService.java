@@ -11,6 +11,8 @@ public interface FirestationService {
 
     boolean updateFirestationMappingService(Firestation firestation);
 
+    boolean addFirestationMappingService(Firestation firestation);
+
     PersonsByStation getPersonsByStationService(Integer stationNumber);
 
 }

@@ -46,21 +46,43 @@ public class FirestationController {
 
         log.info("CONTROLLER - updateFirestationMappingController - firestationAdress : " + firestation.getAddress() + " - stationNumber : " + firestation.getStation());
 
-        String message = "Numéro de caserne mis à jour pour l'adresse : " + firestation.getAddress() + " -- Numéro : " + firestation.getStation();
+        String messUpdate = "Numéro de caserne mis à jour pour l'adresse : " + firestation.getAddress() + " -- Numéro : " + firestation.getStation();
 
         if (firestationService.updateFirestationMappingService(firestation)) {
-            return new ResponseEntity<>("SUCCESS --- " + message, HttpStatus.OK);
+            return new ResponseEntity<>("SUCCESS --- " + messUpdate, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("FAIL --- " + message, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("FAIL --- " + messUpdate, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * POST http://localhost:8080/firestation
+     * //@param  stationNumber Numéro de la caserne de pompiers - String
+     * //@param firestationAdress Adresse de la caserne de pompiers - String
+     * @param firestation un object Firestation contenant : stationNumber, firestationAdress
+     * @return Ajout d'un mapping caserne/adresse - ResponseEntity
+     */
+    //todo Si l'adresse existe déjà alors on met à jour ?
+    @PostMapping("/firestation")
+    public ResponseEntity<String> addFirestationMappingController(@RequestBody Firestation firestation) {
+
+        log.info("CONTROLLER - addFirestationMappingController - firestationAdress : " + firestation.getAddress() + " - stationNumber : " + firestation.getStation());
+
+        String messAdd = "Mapping caserne/adress ajouté pour l'adresse : " + firestation.getAddress() + " -- Numéro : " + firestation.getStation();
+
+        if (firestationService.addFirestationMappingService(firestation)) {
+            return new ResponseEntity<>("SUCCESS --- " + messAdd, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("FAIL --- " + messAdd, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 
     /**
      * http://localhost:8080/firestation?stationNumber=<station_number>
      * Cette url doit retourner une liste des personnes couvertes par la caserne de pompiers
-     * correspondante. Donc, si le numéro de station = 1, elle doit renvoyer les habitants
-     * couverts par la station numéro 1.
+     * correspondante. Donc, si le numéro de station = 1, elle doit renvoyer les habitants couverts par la station numéro 1.
      * La liste doit inclure les informations spécifiques suivantes : prénom, nom, adresse, numéro de téléphone.
      * De plus, elle doit fournir un décompte du nombre d'adultes et du
      * nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone desservie.

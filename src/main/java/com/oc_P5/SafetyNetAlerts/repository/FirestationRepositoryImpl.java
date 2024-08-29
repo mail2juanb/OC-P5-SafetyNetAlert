@@ -41,6 +41,15 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
+    public boolean addFirestationMapping(Firestation newFirestation) {
+
+        List<Firestation> firestations = getFirestations();
+        firestations.add(newFirestation);
+        log.info("Nouvelle caserne ajoutée : Adresse = {}, Station = {}", newFirestation.getAddress(), newFirestation.getStation());
+        return true;
+    }
+
+    @Override
     public List<Firestation> getFirestationsByStation(Integer station) {
         return getFirestations()
                 .stream()

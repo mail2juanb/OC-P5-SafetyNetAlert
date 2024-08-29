@@ -8,8 +8,10 @@ public interface FirestationRepository {
 
     List<Firestation> getFirestations();
 
+    boolean updateFirestationMapping(Firestation firestation);
+
+    boolean addFirestationMapping(Firestation firestation);
+
     List<Firestation> getFirestationsByStation(Integer station);
 
-    boolean updateFirestationMapping(Firestation firestation);
-    
 }
