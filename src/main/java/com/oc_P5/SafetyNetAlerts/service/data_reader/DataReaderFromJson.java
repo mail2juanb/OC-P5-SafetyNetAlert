@@ -3,9 +3,10 @@ package com.oc_P5.SafetyNetAlerts.service.data_reader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 
 @Getter
@@ -14,16 +15,16 @@ import java.io.IOException;
 public class DataReaderFromJson implements DataReader {
 
     private DataWrapperList data = new DataWrapperList();
+    private ResourceLoader resourceLoader;
 
-    public DataReaderFromJson(ObjectMapper objectMapper) {
+    public DataReaderFromJson(ObjectMapper objectMapper, ResourceLoader resourceLoader) {
+
         log.info("SERVICE - DataReaderServiceImpl - Loading datas ... ");
 
-        // Lire le fichier JSON et le convertir en objet DataWrapper
-        // objectMapper.readValue lève une exception de type IOException
+        Resource resource = resourceLoader.getResource("classpath:data.json");
+
         try {
-            // Todo : use Resource path instead of direct path
-            // google : spring boot load file from resources dir
-            data = objectMapper.readValue(new File("src/main/resources/data.json"), DataWrapperList.class);
+            data = objectMapper.readValue(resource.getInputStream(), DataWrapperList.class);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
