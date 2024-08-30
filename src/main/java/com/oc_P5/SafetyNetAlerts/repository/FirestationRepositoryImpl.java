@@ -22,6 +22,11 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
+    public boolean getFirestationByAddress(String address) {
+        return getFirestations().stream().anyMatch(f -> f.getAddress().equals(address));
+    }
+
+    @Override
     public boolean updateFirestationMapping(Firestation targetFirestation) {
 
         List<Firestation> firestations = getFirestations();
@@ -36,7 +41,7 @@ public class FirestationRepositoryImpl implements FirestationRepository {
             }
         }
 
-        log.warn("Aucune caserne de pompiers trouvée pour l'adresse : {}", targetFirestation.getAddress());
+        log.info("Aucune caserne de pompiers trouvée pour l'adresse : {}", targetFirestation.getAddress());
         return false;
     }
 

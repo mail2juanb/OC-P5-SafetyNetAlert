@@ -62,7 +62,6 @@ public class FirestationController {
      * @param firestation un object Firestation contenant : stationNumber, firestationAdress
      * @return Ajout d'un mapping caserne/adresse - ResponseEntity
      */
-    //todo Si l'adresse existe déjà on fait quoi ?
     @PostMapping("/firestation")
     public ResponseEntity<String> addFirestationMappingController(@RequestBody Firestation firestation) {
 
@@ -70,13 +69,17 @@ public class FirestationController {
 
         String messAdd = "Mapping caserne/adress ajouté pour l'adresse : " + firestation.getAddress() + " -- Numéro : " + firestation.getStation();
 
-        if (firestationService.addFirestationMappingService(firestation)) {
-            return new ResponseEntity<>("SUCCESS --- " + messAdd, HttpStatus.CREATED);
+        if (firestationService.getFirestationByAddressService(firestation.getAddress())) {
+            return new ResponseEntity<>("FAIL --- " + messAdd + ". \nL'adresse de la caserne existe déjà", HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>("FAIL --- " + messAdd, HttpStatus.BAD_REQUEST);
+            if (firestationService.addFirestationMappingService(firestation)) {
+                return new ResponseEntity<>("SUCCESS --- " + messAdd, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("FAIL --- " + messAdd, HttpStatus.BAD_REQUEST);
+            }
         }
-
     }
+
 
     /**
      * DELETE http://localhost:8080/firestation?address=<adresse>
@@ -92,22 +95,23 @@ public class FirestationController {
 
         log.info("CONTROLLER - deleteFirestationMappingController - firestationAdress : " + address + " - stationNumber = " + stationNumber);
 
-        String messDel = "Message bateau adresse ou station";
+        String messDelAddress = "Suppression de la caserne ayant pour adresse : " + address;
+        String messDelStation = "Suppression de ou des casernes ayant pour numéro de Station : " + stationNumber;
+        String messDel = "Cas non géré -- adresse = " + address + " // stationNumber = " + stationNumber;
 
         if (address == null && stationNumber != null) {
             if (firestationService.deleteFirestationMappingByStationService(stationNumber)) {
-                return new ResponseEntity<>("SUCCESS --- " + messDel, HttpStatus.OK);
+                return new ResponseEntity<>("SUCCESS --- " + messDelStation, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("FAIL --- " + messDelStation, HttpStatus.NOT_FOUND);
             }
         } else if (address != null && stationNumber == null) {
             if (firestationService.deleteFirestationMappingByAddressService(address)) {
-                return new ResponseEntity<>("SUCCESS --- " + messDel, HttpStatus.OK);
+                return new ResponseEntity<>("SUCCESS --- " + messDelAddress, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("FAIL --- " + messDelAddress, HttpStatus.NOT_FOUND);
             }
         } else {
-            //log.info("CONTROLLER - Cas non géré - contactez l'administrateur réseau :-)))");
             return new ResponseEntity<>("FAIL --- " + messDel, HttpStatus.NOT_FOUND);
         }
 

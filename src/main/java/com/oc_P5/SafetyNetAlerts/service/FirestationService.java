@@ -9,6 +9,8 @@ public interface FirestationService {
 
     List<Firestation> getFirestationsService();
 
+    boolean getFirestationByAddressService(String address);
+
     boolean updateFirestationMappingService(Firestation firestation);
 
     boolean addFirestationMappingService(Firestation firestation);
