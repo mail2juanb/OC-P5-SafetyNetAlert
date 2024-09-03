@@ -2,7 +2,6 @@ package com.oc_P5.SafetyNetAlerts.repository;
 
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,19 +9,27 @@ public interface FirestationRepository {
 
     List<Firestation> getFirestations();
 
-    Firestation getFirestationByAddress(String address);
+    Optional<Firestation> findFirestationByAddressByStation(Firestation firestation);
+
+    boolean firestationByAddressByStationExists(Firestation firestation);
 
     Optional<Firestation> findFirestationByAddress(String address);
 
     boolean firestationByAddressExists(String address);
 
-    boolean updateFirestationMapping(Firestation firestation);
+    Optional<Firestation> findFirestationByStation(Integer stationNumber);
 
-    boolean addFirestationMapping(Firestation firestation);
+    boolean firestationByStationExists(Integer stationNumber);
 
-    boolean deleteFirestationMappingByAddress(String address);
+    Optional<Firestation> updateFirestationMapping(Firestation firestation);
 
-    boolean deleteFirestationMappingByStation(Integer stationNumber);
+    void addFirestationMapping(Firestation firestation);
+
+    void deleteFirestationMapping(Firestation firestation);
+
+    void deleteFirestationMappingByAddress(String address);
+
+    void deleteFirestationMappingByStation(Integer stationNumber);
 
     List<Firestation> getFirestationsByStation(Integer stationNumber);
 

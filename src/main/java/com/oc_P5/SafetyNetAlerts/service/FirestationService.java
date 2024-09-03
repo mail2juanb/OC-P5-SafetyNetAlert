@@ -9,15 +9,11 @@ public interface FirestationService {
 
     List<Firestation> getFirestationsService();
 
-    Firestation getFirestationByAddressService(String address);
-
     void updateFirestationMappingService(Firestation firestation);
 
     void addFirestationMappingService(Firestation firestation);
 
-    void deleteFirestationMappingByAddressService(String address);
-
-    void deleteFirestationMappingByStationService(Integer stationNumber);
+    void deleteFirestationMappingService(String address, Integer stationNumber);
 
     PersonsByStation getPersonsByStationService(Integer stationNumber);
 

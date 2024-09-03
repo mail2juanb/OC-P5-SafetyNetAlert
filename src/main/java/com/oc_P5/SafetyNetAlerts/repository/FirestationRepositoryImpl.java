@@ -1,6 +1,5 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
-import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +22,19 @@ public class FirestationRepositoryImpl implements FirestationRepository {
         return dataReaderService.getData().getFireStations();
     }
 
-
     @Override
-    public Firestation getFirestationByAddress(String address) {
-        return findFirestationByAddress(address)
-                .orElseThrow(()-> new NotFoundException("Firestation not found at the address " + address));
+    public Optional<Firestation> findFirestationByAddressByStation(Firestation firestation) {
+        return getFirestations()
+                .stream()
+                .filter(f -> f.getAddress().equals(firestation.getAddress()) &&
+                        f.getStation().equals(firestation.getStation()))
+                .findFirst();
     }
 
+    public boolean firestationByAddressByStationExists(Firestation firestation) {
+        return findFirestationByAddressByStation(firestation)
+                .isPresent();
+    }
 
     @Override
     public Optional<Firestation> findFirestationByAddress(String address) {
@@ -39,7 +44,6 @@ public class FirestationRepositoryImpl implements FirestationRepository {
                 .findFirst();
     }
 
-
     @Override
     public boolean firestationByAddressExists(String address){
         return findFirestationByAddress(address)
@@ -47,71 +51,52 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
-    public boolean updateFirestationMapping(Firestation targetFirestation) {
-
-        List<Firestation> firestations = getFirestations();
-
-        for (Firestation firestation : firestations) {
-            if (firestation.getAddress().equals(targetFirestation.getAddress())) {
-                Integer oldfirestationStation = firestation.getStation();
-                firestation.setStation(targetFirestation.getStation());
-                log.info("Mise à jour du numéro de la caserne de pompiers réussie pour l'adresse : {} -- " +
-                        "Ancien numéro : {}  //  Nouveau numéro : {}", targetFirestation.getAddress(), oldfirestationStation, targetFirestation.getStation());
-                return true;
-            }
-        }
-
-        log.info("Aucune caserne de pompiers trouvée pour l'adresse : {}", targetFirestation.getAddress());
-        return false;
+    public Optional<Firestation> findFirestationByStation(Integer stationNumber) {
+        return getFirestations()
+                .stream()
+                .filter(f -> f.getStation().equals(stationNumber))
+                .findFirst();
     }
 
     @Override
-    public boolean addFirestationMapping(Firestation newFirestation) {
+    public boolean firestationByStationExists(Integer stationNumber) {
+        return findFirestationByStation(stationNumber)
+                .isPresent();
+    }
 
+    @Override
+    public Optional<Firestation> updateFirestationMapping(Firestation targetFirestation) {
+        return findFirestationByAddress(targetFirestation.getAddress())
+                .map(firestation -> {
+                    firestation.setStation(targetFirestation.getStation());
+                    return firestation;
+                });
+    }
+
+    @Override
+    public void addFirestationMapping(Firestation newFirestation) {
         List<Firestation> firestations = getFirestations();
         firestations.add(newFirestation);
-        log.info("Nouvelle caserne ajoutée : Adresse = {}, Station = {}", newFirestation.getAddress(), newFirestation.getStation());
-        return true;
     }
 
     @Override
-    public boolean deleteFirestationMappingByAddress(String address) {
-
+    public void deleteFirestationMapping(Firestation deleteFirestation) {
         List<Firestation> firestations = getFirestations();
-
-        if (firestations.removeIf(firestation -> firestation.getAddress().equals(address))) {
-            log.info("La caserne : {}, a été supprimée", address);
-            return true;
-        } else {
-            log.info("La caserne : {}, n'a pas été supprimée", address);
-            return false;
-        }
-
+        firestations.removeIf(firestation -> firestation.getAddress().equals(deleteFirestation.getAddress()) &&
+                firestation.getStation().equals(deleteFirestation.getStation()));
     }
 
     @Override
-    public boolean deleteFirestationMappingByStation(Integer stationNumber) {
-
+    public void deleteFirestationMappingByAddress(String address) {
         List<Firestation> firestations = getFirestations();
-        int firestationRemovedNumber = 0;
-        boolean isRemoved = false;
-
-        for (Firestation firestation : firestations) {
-            if (firestation.getStation().equals(stationNumber)) {
-                firestationRemovedNumber ++;
-            }
-        }
-        if (firestationRemovedNumber > 0) {
-            log.info("Les casernes ayant pour stationNumber : {}, au nombre de : {}, ont été supprimées", stationNumber, firestationRemovedNumber);
-            isRemoved = firestations.removeIf(firestation -> firestation.getStation().equals(stationNumber));
-        } else {
-            log.info("Aucune caserne ayant pour stationNumber : {}, n'a été supprimée", stationNumber);
-        }
-
-        return isRemoved;
-
+        firestations.removeIf(firestation -> firestation.getAddress().equals(address));
     }
 
+    @Override
+    public void deleteFirestationMappingByStation(Integer stationNumber) {
+        List<Firestation> firestations = getFirestations();
+        firestations.removeIf(firestation -> firestation.getStation().equals(stationNumber));
+    }
 
     @Override
     public List<Firestation> getFirestationsByStation(Integer stationNumber) {
@@ -120,4 +105,5 @@ public class FirestationRepositoryImpl implements FirestationRepository {
                 .filter(Firestation -> Firestation.getStation().equals(stationNumber))
                 .toList();
     }
+
 }

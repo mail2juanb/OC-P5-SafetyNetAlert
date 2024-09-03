@@ -2,6 +2,7 @@ package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
+import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
@@ -29,11 +30,10 @@ public class FirestationServiceImpl implements FirestationService{
             return firestationRepository.getFirestations();
         }
 
-        public Firestation getFirestationByAddressService(String address) {
-            return firestationRepository.getFirestationByAddress(address);
-        }
-
         public void updateFirestationMappingService(Firestation firestation) {
+            if(!firestationRepository.firestationByAddressExists(firestation.getAddress())){
+                throw new NotFoundException("Firestation doesn't exist");
+            }
             firestationRepository.updateFirestationMapping(firestation);
         }
 
@@ -41,18 +41,40 @@ public class FirestationServiceImpl implements FirestationService{
             if(firestationRepository.firestationByAddressExists(firestation.getAddress())){
                 throw new ConflictException("Firestation already exists");
             }
-
             firestationRepository.addFirestationMapping(firestation);
         }
 
-        public void deleteFirestationMappingByAddressService(String address) {
-            firestationRepository.deleteFirestationMappingByAddress(address);
-        }
 
-        public void deleteFirestationMappingByStationService(Integer stationNumber) {
-            firestationRepository.deleteFirestationMappingByStation(stationNumber);
-        }
+        public void deleteFirestationMappingService(String address, Integer stationNumber) {
+            if (address == null && stationNumber == null) {
+                throw new ConflictException("Both address and station number can't be null");
+            }
 
+            if (address != null && stationNumber != null) {
+                Firestation deleteFirestation = new Firestation(address, stationNumber);
+                if (firestationRepository.firestationByAddressByStationExists(deleteFirestation)) {
+                    firestationRepository.deleteFirestationMapping(deleteFirestation);
+                } else {
+                    throw new NotFoundException("Firestation doesn't exist");
+                }
+            }
+
+            if (address != null) {
+                if (firestationRepository.firestationByAddressExists(address)) {
+                    firestationRepository.deleteFirestationMappingByAddress(address);
+                } else {
+                    throw new NotFoundException("Address doesn't exist");
+                }
+            }
+
+            if (stationNumber != null) {
+                if (firestationRepository.firestationByStationExists(stationNumber)) {
+                    firestationRepository.deleteFirestationMappingByStation(stationNumber);
+                } else {
+                    throw new NotFoundException("Station number doesn't exist");
+                }
+            }
+        }
 
         public PersonsByStation getPersonsByStationService(Integer stationNumber) {
 
@@ -73,7 +95,6 @@ public class FirestationServiceImpl implements FirestationService{
                     .size();
 
             return new  PersonsByStation(personsByAddress, nbrOfMinor );
-
         }
 
 }

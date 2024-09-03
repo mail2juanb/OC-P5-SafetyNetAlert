@@ -48,7 +48,6 @@ public class FirestationController {
     @GetMapping("/firestation")
     public PersonsByStation getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
         return firestationService.getPersonsByStationService(stationNumber);
-
     }
 
 
@@ -90,6 +89,8 @@ public class FirestationController {
     public ResponseEntity<String> deleteFirestationMappingController (
             @RequestParam(value = "address", required = false) String address,
             @RequestParam(value = "stationNumber", required = false) Integer stationNumber) {
+        firestationService.deleteFirestationMappingService(address, stationNumber);
+        // moi je dirais plutot ca, non ? return new ResponseEntity<>(HttpStatus.OK);
         return null;
 
     }

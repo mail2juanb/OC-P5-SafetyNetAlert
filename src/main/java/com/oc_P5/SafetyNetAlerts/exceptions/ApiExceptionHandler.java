@@ -11,7 +11,7 @@ import java.time.Instant;
 
 @Slf4j
 @RestControllerAdvice
-public class ApiExceptionHandler  extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(ConflictException.class)
