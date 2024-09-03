@@ -9,15 +9,15 @@ public interface FirestationService {
 
     List<Firestation> getFirestationsService();
 
-    boolean getFirestationByAddressService(String address);
+    Firestation getFirestationByAddressService(String address);
 
-    boolean updateFirestationMappingService(Firestation firestation);
+    void updateFirestationMappingService(Firestation firestation);
 
-    boolean addFirestationMappingService(Firestation firestation);
+    void addFirestationMappingService(Firestation firestation);
 
-    boolean deleteFirestationMappingByAddressService(String address);
+    void deleteFirestationMappingByAddressService(String address);
 
-    boolean deleteFirestationMappingByStationService(Integer stationNumber);
+    void deleteFirestationMappingByStationService(Integer stationNumber);
 
     PersonsByStation getPersonsByStationService(Integer stationNumber);
 

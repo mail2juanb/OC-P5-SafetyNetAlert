@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
+import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
@@ -24,50 +25,55 @@ public class FirestationServiceImpl implements FirestationService{
     private final MedicalrecordRepository medicalrecordRepository;
 
 
-    public List<Firestation> getFirestationsService() {
-        return firestationRepository.getFirestations();
-    }
+        public List<Firestation> getFirestationsService() {
+            return firestationRepository.getFirestations();
+        }
 
-    public boolean getFirestationByAddressService(String address) {
-        return firestationRepository.getFirestationByAddress(address);
-    }
+        public Firestation getFirestationByAddressService(String address) {
+            return firestationRepository.getFirestationByAddress(address);
+        }
 
-    public boolean updateFirestationMappingService(Firestation firestation) {
-        return firestationRepository.updateFirestationMapping(firestation);
-    }
+        public void updateFirestationMappingService(Firestation firestation) {
+            firestationRepository.updateFirestationMapping(firestation);
+        }
 
-    public boolean addFirestationMappingService(Firestation firestation) {
-        return firestationRepository.addFirestationMapping(firestation);
-    }
+        public void addFirestationMappingService(Firestation firestation) {
+            if(firestationRepository.firestationByAddressExists(firestation.getAddress())){
+                throw new ConflictException("Firestation already exists");
+            }
 
-    public boolean deleteFirestationMappingByAddressService(String address) {
-        return firestationRepository.deleteFirestationMappingByAddress(address);
-    }
+            firestationRepository.addFirestationMapping(firestation);
+        }
 
-    public boolean deleteFirestationMappingByStationService(Integer stationNumber) {
-        return firestationRepository.deleteFirestationMappingByStation(stationNumber);
-    }
+        public void deleteFirestationMappingByAddressService(String address) {
+            firestationRepository.deleteFirestationMappingByAddress(address);
+        }
+
+        public void deleteFirestationMappingByStationService(Integer stationNumber) {
+            firestationRepository.deleteFirestationMappingByStation(stationNumber);
+        }
 
 
-    public PersonsByStation getPersonsByStationService(Integer stationNumber) {
+        public PersonsByStation getPersonsByStationService(Integer stationNumber) {
 
-        Set<String> stationAddress = firestationRepository.getFirestationsByStation(stationNumber)
-                .stream()
-                .map(Firestation::getAddress)
-                .collect(Collectors.toSet());
+            Set<String> stationAddress = firestationRepository.getFirestationsByStation(stationNumber)
+                    .stream()
+                    .map(Firestation::getAddress)
+                    .collect(Collectors.toSet());
 
-        List<Person> personsByAddress = personRepository.getPersonsByAddress(stationAddress);
+            List<Person> personsByAddress = personRepository.getPersonsByAddress(stationAddress);
 
-        Integer nbrOfMinor = personsByAddress
-                .stream()
-                .map(p -> p.getId())
-                .map(id -> medicalrecordRepository.findMedicalrecordById(id))
-                .filter(optionalMedicalrecord -> optionalMedicalrecord.isPresent())
-                .filter(optionalMedicalrecord -> optionalMedicalrecord.get().isMinor())
-                .toList()
-                .size();
+            Integer nbrOfMinor = personsByAddress
+                    .stream()
+                    .map(p -> p.getId())
+                    .map(id -> medicalrecordRepository.findMedicalrecordById(id))
+                    .filter(optionalMedicalrecord -> optionalMedicalrecord.isPresent())
+                    .filter(optionalMedicalrecord -> optionalMedicalrecord.get().isMinor())
+                    .toList()
+                    .size();
 
-        return new  PersonsByStation(personsByAddress, nbrOfMinor );
+            return new  PersonsByStation(personsByAddress, nbrOfMinor );
 
-    }
+        }
+
 }

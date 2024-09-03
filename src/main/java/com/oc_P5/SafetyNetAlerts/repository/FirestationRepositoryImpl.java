@@ -1,5 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
+import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -21,9 +23,27 @@ public class FirestationRepositoryImpl implements FirestationRepository {
         return dataReaderService.getData().getFireStations();
     }
 
+
     @Override
-    public boolean getFirestationByAddress(String address) {
-        return getFirestations().stream().anyMatch(f -> f.getAddress().equals(address));
+    public Firestation getFirestationByAddress(String address) {
+        return findFirestationByAddress(address)
+                .orElseThrow(()-> new NotFoundException("Firestation not found at the address " + address));
+    }
+
+
+    @Override
+    public Optional<Firestation> findFirestationByAddress(String address) {
+        return getFirestations()
+                .stream()
+                .filter(f -> f.getAddress().equals(address))
+                .findFirst();
+    }
+
+
+    @Override
+    public boolean firestationByAddressExists(String address){
+        return findFirestationByAddress(address)
+                .isPresent();
     }
 
     @Override

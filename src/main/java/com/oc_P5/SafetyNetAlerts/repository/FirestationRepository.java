@@ -2,13 +2,19 @@ package com.oc_P5.SafetyNetAlerts.repository;
 
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 public interface FirestationRepository {
 
     List<Firestation> getFirestations();
 
-    boolean getFirestationByAddress(String address);
+    Firestation getFirestationByAddress(String address);
+
+    Optional<Firestation> findFirestationByAddress(String address);
+
+    boolean firestationByAddressExists(String address);
 
     boolean updateFirestationMapping(Firestation firestation);
 
