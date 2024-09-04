@@ -1,6 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
-import com.oc_P5.SafetyNetAlerts.model.Medicalrecord;
+import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,19 +12,19 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class MedicalrecordRepositoryImpl implements MedicalrecordRepository {
+public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
     private final DataReader dataReaderService;
 
     @Override
-    public List<Medicalrecord> getMedicalrecords() {
+    public List<MedicalRecord> getMedicalRecords() {
         return dataReaderService.getData().getMedicalRecords();
     }
 
     @Override
-    public Optional<Medicalrecord> findMedicalrecordById(String id) {
-        return getMedicalrecords()
+    public Optional<MedicalRecord> findMedicalRecordById(String id) {
+        return getMedicalRecords()
                 .stream()
-                .filter(Medicalrecord -> Medicalrecord.getId().equals(id))
+                .filter(MedicalRecord -> MedicalRecord.getId().equals(id))
                 .findFirst();
     }
 }

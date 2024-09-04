@@ -6,7 +6,7 @@ import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
-import com.oc_P5.SafetyNetAlerts.repository.MedicalrecordRepository;
+import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class FirestationServiceImpl implements FirestationService{
 
     private final FirestationRepository firestationRepository;
     private final PersonRepository personRepository;
-    private final MedicalrecordRepository medicalrecordRepository;
+    private final MedicalRecordRepository medicalrecordRepository;
 
 
         public List<Firestation> getFirestationsService() {
@@ -88,7 +88,7 @@ public class FirestationServiceImpl implements FirestationService{
             Integer nbrOfMinor = personsByAddress
                     .stream()
                     .map(p -> p.getId())
-                    .map(id -> medicalrecordRepository.findMedicalrecordById(id))
+                    .map(id -> medicalrecordRepository.findMedicalRecordById(id))
                     .filter(optionalMedicalrecord -> optionalMedicalrecord.isPresent())
                     .filter(optionalMedicalrecord -> optionalMedicalrecord.get().isMinor())
                     .toList()

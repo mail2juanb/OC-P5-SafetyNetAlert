@@ -8,7 +8,7 @@ import java.time.Period;
 import java.util.List;
 
 @Getter
-public class Medicalrecord extends NamedModel {
+public class MedicalRecord extends NamedModel {
 
     @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate birthdate;

@@ -2,7 +2,7 @@ package com.oc_P5.SafetyNetAlerts.service.data_reader;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
-import com.oc_P5.SafetyNetAlerts.model.Medicalrecord;
+import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +21,6 @@ public class DataWrapperList {
     private List<Firestation> fireStations;
 
     @JsonProperty("medicalrecords")
-    private List<Medicalrecord> medicalRecords;
+    private List<MedicalRecord> medicalRecords;
 
 }
