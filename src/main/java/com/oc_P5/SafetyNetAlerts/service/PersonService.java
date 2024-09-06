@@ -13,6 +13,6 @@ public interface PersonService {
 
     void updatePersonMappingService(Person updatePerson);
 
-    void deleteFirestationMappingService(Person deletePerson);
+    void deletePersonMappingService(Person deletePerson);
 
 }

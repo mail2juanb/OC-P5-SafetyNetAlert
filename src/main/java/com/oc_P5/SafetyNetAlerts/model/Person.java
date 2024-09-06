@@ -18,7 +18,7 @@ public class Person extends NamedModel {
     private String email;
 
     // FIXME Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
-    public Person(String firstName, String lastName, String address, String city, int zip, String phone, String email) {
+    public Person(String firstName, String lastName, String address, String city, Integer zip, String phone, String email) {
         super(firstName, lastName);
         this.address = address;
         this.city = city;

@@ -14,7 +14,7 @@ public interface PersonRepository {
 
     List<Person> getPersonsByAddress(Collection<String> address);
 
-    Optional<Person> findPersonByName(String firstName, String lastName);
+    //Optional<Person> findPersonByName(String firstName, String lastName);
 
     Optional<Person> findPersonById(String id);
 
@@ -24,6 +24,6 @@ public interface PersonRepository {
 
     Optional<Person> updatePersonMapping(Person updatePerson);
 
-    void deleteFirestationMapping(Person deletePerson);
+    void deletePersonMapping(Person deletePerson);
 
 }

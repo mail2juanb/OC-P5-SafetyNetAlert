@@ -35,14 +35,14 @@ public class PersonRepositoryImpl implements PersonRepository{
         return personsByAddress;
     }
 
-    @Override
-    public Optional<Person> findPersonByName(String firstName, String lastName) {
-        return  getPersons()
-                .stream()
-                .filter(person -> person.getFirstName().equals(firstName))
-                .filter(person -> person.getLastName().equals(lastName))
-                .findFirst();
-    }
+//    @Override
+//    public Optional<Person> findPersonByName(String firstName, String lastName) {
+//        return  getPersons()
+//                .stream()
+//                .filter(person -> person.getFirstName().equals(firstName))
+//                .filter(person -> person.getLastName().equals(lastName))
+//                .findFirst();
+//    }
 
     @Override
     public boolean personByIdExists(String id) {
@@ -88,7 +88,7 @@ public class PersonRepositoryImpl implements PersonRepository{
     }
 
     @Override
-    public void deleteFirestationMapping(Person deletePerson) {
+    public void deletePersonMapping(Person deletePerson) {
         List<Person> persons = getPersons();
         persons.removeIf(person -> person.getId().equals(deletePerson.getId()));
     }

@@ -64,7 +64,7 @@ public class PersonController {
      */
     @DeleteMapping("/person")
     public ResponseEntity<String> deleteFirestationMappingController(@RequestBody Person person) {
-        personService.deleteFirestationMappingService(person);
+        personService.deletePersonMappingService(person);
         // FIXME moi je dirais plutot ca, non ? return new ResponseEntity<>(HttpStatus.OK);
         return null;
     }

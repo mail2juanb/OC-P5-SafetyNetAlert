@@ -37,10 +37,10 @@ public class PersonServiceImpl implements PersonService {
     }
 
     // TODO Que ce passe t il si les attributs firstName et lastName sont null. Cela empècherai le fonctionnement ?
-    public void deleteFirestationMappingService(Person deletePerson) {
+    public void deletePersonMappingService(Person deletePerson) {
         if(deletePerson == null || !personRepository.personByIdExists(deletePerson.getId())) {
             throw new ConflictException("deletePerson doesn't exists");
         }
-        personRepository.deleteFirestationMapping(deletePerson);
+        personRepository.deletePersonMapping(deletePerson);
     }
 }
