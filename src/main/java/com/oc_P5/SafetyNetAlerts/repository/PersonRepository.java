@@ -18,4 +18,12 @@ public interface PersonRepository {
 
     Optional<Person> findPersonById(String id);
 
+    boolean personByIdExists(String id);
+
+    void addPersonMapping(Person addPerson);
+
+    Optional<Person> updatePersonMapping(Person updatePerson);
+
+    void deleteFirestationMapping(Person deletePerson);
+
 }

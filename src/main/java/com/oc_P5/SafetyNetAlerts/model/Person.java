@@ -13,7 +13,7 @@ public class Person extends NamedModel {
 
     private String address;
     private String city;
-    private int zip;
+    private Integer zip;
     private String phone;
     private String email;
 

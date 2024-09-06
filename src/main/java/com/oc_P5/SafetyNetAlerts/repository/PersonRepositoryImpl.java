@@ -45,10 +45,53 @@ public class PersonRepositoryImpl implements PersonRepository{
     }
 
     @Override
+    public boolean personByIdExists(String id) {
+        return findPersonById(id).isPresent();
+    }
+
+    @Override
     public Optional<Person> findPersonById(String id) {
         return getPersons()
                 .stream()
                 .filter(person -> person.getId().equals(id))
                 .findFirst();
     }
+
+    @Override
+    public void addPersonMapping(Person addPerson) {
+        List<Person> persons = getPersons();
+        persons.add(addPerson);
+    }
+
+    @Override
+    public Optional<Person> updatePersonMapping(Person updatePerson) {
+        return findPersonById(updatePerson.getId())
+                .map(person -> {
+                    if(updatePerson.getAddress() != null) {
+                        person.setAddress(updatePerson.getAddress());
+                    }
+                    if(updatePerson.getCity() != null) {
+                        person.setCity(updatePerson.getCity());
+                    }
+                    if(updatePerson.getZip() != null) {
+                        person.setZip(updatePerson.getZip());
+                    }
+                    if(updatePerson.getPhone() != null) {
+                        person.setPhone(updatePerson.getPhone());
+                    }
+                    if(updatePerson.getEmail() != null) {
+                        person.setEmail(updatePerson.getEmail());
+                    }
+
+                    return person;
+                });
+    }
+
+    @Override
+    public void deleteFirestationMapping(Person deletePerson) {
+        List<Person> persons = getPersons();
+        persons.removeIf(person -> person.getId().equals(deletePerson.getId()));
+    }
+
+
 }
