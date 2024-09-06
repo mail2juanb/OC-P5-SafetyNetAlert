@@ -30,7 +30,7 @@ public class FirestationRepositoryImpTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
+        // NOTE Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
 
         // Création des données de test
         firestationList = new ArrayList<>();

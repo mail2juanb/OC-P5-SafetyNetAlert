@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 
 @Repository
 @Slf4j
@@ -27,7 +24,7 @@ public class PersonRepositoryImpl implements PersonRepository{
     public List<Person> getPersonsByAddress(String address) {
         return getPersons()
                 .stream()
-                .filter(person -> person.getAddress().equals(address))
+                .filter(person -> Objects.equals(person.getAddress(), address))
                 .toList();
     }
 

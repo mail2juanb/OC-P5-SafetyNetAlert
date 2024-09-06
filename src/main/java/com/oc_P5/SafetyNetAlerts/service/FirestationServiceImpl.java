@@ -54,6 +54,7 @@ public class FirestationServiceImpl implements FirestationService{
                 Firestation deleteFirestation = new Firestation(address, stationNumber);
                 if (firestationRepository.firestationByAddressByStationExists(deleteFirestation)) {
                     firestationRepository.deleteFirestationMapping(deleteFirestation);
+                    return;
                 } else {
                     throw new NotFoundException("Firestation doesn't exist");
                 }
@@ -62,11 +63,13 @@ public class FirestationServiceImpl implements FirestationService{
             if (address != null) {
                 if (firestationRepository.firestationByAddressExists(address)) {
                     firestationRepository.deleteFirestationMappingByAddress(address);
+                    return;
                 } else {
                     throw new NotFoundException("Address doesn't exist");
                 }
             }
 
+            // FIXME Comment faire pour mieux tester cette méthode et passer à 100% de couverture ?
             if (stationNumber != null) {
                 if (firestationRepository.firestationByStationExists(stationNumber)) {
                     firestationRepository.deleteFirestationMappingByStation(stationNumber);
@@ -77,7 +80,6 @@ public class FirestationServiceImpl implements FirestationService{
         }
 
         public PersonsByStation getPersonsByStationService(Integer stationNumber) {
-
             Set<String> stationAddress = firestationRepository.getFirestationsByStation(stationNumber)
                     .stream()
                     .map(Firestation::getAddress)
