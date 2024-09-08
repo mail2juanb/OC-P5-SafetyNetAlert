@@ -27,4 +27,41 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
                 .filter(MedicalRecord -> MedicalRecord.getId().equals(id))
                 .findFirst();
     }
+
+    @Override
+    public boolean medicalRecordByIdExists(MedicalRecord medicalRecord) {
+        return findMedicalRecordById(medicalRecord.getId()).isPresent();
+    }
+
+    @Override
+    public void addMedicalRecordMapping(MedicalRecord addMedicalRecord) {
+        List<MedicalRecord> medicalRecordList = getMedicalRecords();
+        medicalRecordList.add(addMedicalRecord);
+    }
+
+    @Override
+    //String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
+    public Optional<MedicalRecord> updateMedicalRecordMapping(MedicalRecord updateMedicalRecord) {
+        return findMedicalRecordById(updateMedicalRecord.getId())
+                .map(medicalRecord -> {
+                    if(updateMedicalRecord.getBirthdate() != null) {
+                        medicalRecord.setBirthdate(updateMedicalRecord.getBirthdate());
+                    }
+                    if(updateMedicalRecord.getMedications() != null) {
+                        medicalRecord.setMedications(updateMedicalRecord.getMedications());
+                    }
+                    if(updateMedicalRecord.getAllergies() != null) {
+                        medicalRecord.setAllergies(updateMedicalRecord.getAllergies());
+                    }
+
+                    return medicalRecord;
+                });
+    }
+
+    @Override
+    public void deleteMedicalRecordMapping(MedicalRecord deleteMedicalRecord) {
+        List<MedicalRecord> medicalRecordList = getMedicalRecords();
+        medicalRecordList.removeIf(medicalRecord -> medicalRecord.getId().equals(deleteMedicalRecord.getId()));
+    }
+
 }

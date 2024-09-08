@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,7 @@ public class PersonRepositoryImplTest {
         personTest2.setPhone("phoneTest2");
         personTest2.setEmail("emailTest2");
 
-        personListMock = new ArrayList<Person>(Arrays.asList(personTest1, personTest2));
+        personListMock = new ArrayList<>(Arrays.asList(personTest1, personTest2));
 
         // Création et configuration du mock pour DataWrapperList
         dataWrapperListMock = mock(DataWrapperList.class);
