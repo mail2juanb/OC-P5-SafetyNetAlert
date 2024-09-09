@@ -12,7 +12,7 @@ public interface PersonRepository {
 
     List<Person> getPersonsByAddress(String address);
 
-    List<Person> getPersonsByAddress(Collection<String> address);
+    List<Person> getPersonsByAddresses(Collection<String> address);
 
     //Optional<Person> findPersonByName(String firstName, String lastName);
 

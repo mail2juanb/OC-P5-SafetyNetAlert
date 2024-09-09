@@ -83,7 +83,7 @@ public class PersonRepositoryImplTest {
         String personAdress1 = "addressTest1";
 
         // When
-        List<Person> persons = personRepository.getPersonsByAddress(personAdress1);
+        List<Person> persons = personRepository.getPersonsByAddresses(personAdress1);
 
         // Then
         assertEquals(1, persons.size());
@@ -103,7 +103,7 @@ public class PersonRepositoryImplTest {
         Set<String> expectedFirstNames = Set.of("firstNameTest1", "firstNameTest2");
 
         // When
-        List<Person> personsByAddress = personRepository.getPersonsByAddress(personAddresses);
+        List<Person> personsByAddress = personRepository.getPersonsByAddresses(personAddresses);
 
         // Then
         String firstName0 = personsByAddress.get(0).getFirstName();

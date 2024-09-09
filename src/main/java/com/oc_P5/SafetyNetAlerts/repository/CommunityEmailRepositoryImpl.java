@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -17,9 +20,10 @@ public class CommunityEmailRepositoryImpl implements CommunityEmailRepository {
 
     public List<String> getCommunityEmailByCity(String city) {
         List<Person> personsByCity = personRepository.getPersonsByCity(city);
-        return personsByCity
+        Set<String> uniquesCommunityEmailByCity = personsByCity
                 .stream()
                 .map(Person::getEmail)
-                .toList();
+                .collect(Collectors.toSet());
+        return new ArrayList<>(uniquesCommunityEmailByCity);
     }
 }

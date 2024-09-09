@@ -29,7 +29,7 @@ public class PersonRepositoryImpl implements PersonRepository{
     }
 
     @Override
-    public List<Person> getPersonsByAddress(Collection<String> addresses) {
+    public List<Person> getPersonsByAddresses(Collection<String> addresses) {
         List<Person> personsByAddress = new ArrayList<>();
         addresses.forEach(address -> personsByAddress.addAll(getPersonsByAddress(address)));
         return personsByAddress;

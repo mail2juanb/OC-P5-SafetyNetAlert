@@ -85,7 +85,7 @@ public class FirestationServiceImpl implements FirestationService{
                     .map(Firestation::getAddress)
                     .collect(Collectors.toSet());
 
-            List<Person> personsByAddress = personRepository.getPersonsByAddress(stationAddress);
+            List<Person> personsByAddress = personRepository.getPersonsByAddresses(stationAddress);
 
             Integer nbrOfMinor = personsByAddress
                     .stream()
