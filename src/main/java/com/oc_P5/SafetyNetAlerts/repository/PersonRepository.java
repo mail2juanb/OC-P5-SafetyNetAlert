@@ -26,4 +26,10 @@ public interface PersonRepository {
 
     void deletePersonMapping(Person deletePerson);
 
+    Optional<Person> findPersonByCity(String city);
+
+    boolean personByCityExists(String city);
+
+    List<Person> getPersonsByCity(String city);
+
 }

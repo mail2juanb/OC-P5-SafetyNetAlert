@@ -35,6 +35,14 @@ public class PersonRepositoryImpl implements PersonRepository{
         return personsByAddress;
     }
 
+    @Override
+    public List<Person> getPersonsByCity(String city) {
+        return getPersons()
+                .stream()
+                .filter(person -> Objects.equals(person.getCity(), city))
+                .toList();
+    }
+
 //    @Override
 //    public Optional<Person> findPersonByName(String firstName, String lastName) {
 //        return  getPersons()
@@ -55,6 +63,19 @@ public class PersonRepositoryImpl implements PersonRepository{
                 .stream()
                 .filter(person -> person.getId().equals(id))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<Person> findPersonByCity(String city) {
+        return getPersons()
+                .stream()
+                .filter(person -> person.getCity().equals(city))
+                .findFirst();
+    }
+
+    @Override
+    public boolean personByCityExists(String city) {
+        return findPersonByCity(city).isPresent();
     }
 
     @Override
