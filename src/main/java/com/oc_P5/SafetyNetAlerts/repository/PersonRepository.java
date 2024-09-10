@@ -32,4 +32,8 @@ public interface PersonRepository {
 
     List<Person> getPersonsByCity(String city);
 
+    boolean personByAddressExists(String address);
+
+    Optional<Person> findPersonByAddress(String address);
+
 }

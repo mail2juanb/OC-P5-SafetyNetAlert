@@ -1,10 +1,8 @@
 package com.oc_P5.SafetyNetAlerts.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -12,8 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class MedicalRecord extends NamedModel {
 
     @JsonFormat(pattern = "MM/dd/yyyy")
@@ -40,5 +38,23 @@ public class MedicalRecord extends NamedModel {
 
     public boolean isMajor(){
         return !isMinor();
+    }
+
+
+    public MedicalRecord update(MedicalRecord update){
+
+        if(update.getBirthdate() != null) {
+            setBirthdate(update.getBirthdate());
+        }
+
+        if(update.getMedications() != null) {
+            setMedications(update.getMedications());
+        }
+
+        if(update.getAllergies() != null) {
+            setAllergies(update.getAllergies());
+        }
+
+        return this;
     }
 }

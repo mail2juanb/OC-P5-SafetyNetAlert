@@ -64,7 +64,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne bien les données mock
+        // On va vérifier ici que la méthode retourne bien les données mock
     void getPersons_shouldReturnListOfPersons() {
         // When
         List<Person> persons = personRepository.getPersons();
@@ -77,13 +77,13 @@ public class PersonRepositoryImplTest {
 
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien une liste de Person ayant l'adresse demandée (String)
+        // On va vérifier ici que la méthode renvoi bien une liste de Person ayant l'adresse demandée (String)
     void getPersonsByAddress_shouldReturnListOfPerson() {
         // Given
         String personAdress1 = "addressTest1";
 
         // When
-        List<Person> persons = personRepository.getPersonsByAddresses(personAdress1);
+        List<Person> persons = personRepository.getPersonsByAddress(personAdress1);
 
         // Then
         assertEquals(1, persons.size());
@@ -92,7 +92,7 @@ public class PersonRepositoryImplTest {
 
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien une liste de Person ayant les adresses demandées (Collection<String>)
+        // On va vérifier ici que la méthode renvoi bien une liste de Person ayant les adresses demandées (Collection<String>)
     void getPersonsByAddresses_shouldReturnListOfPerson() {
         // Given
         List<Person> persons = personRepository.getPersons();
@@ -113,7 +113,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> avec l'id demandé
+        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> avec l'id demandé
     void findPersonById_shouldReturnOptionalPerson() {
         // Given
         String id1 = "firstNameTest1-lastNameTest1";
@@ -127,7 +127,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien un boolean true si l'id de la Person existe
+        // On va vérifier ici que la méthode renvoi bien un boolean true si l'id de la Person existe
     void personByIdExists_shouldReturnBoolean() {
         // Given
         String idExist = "firstNameTest1-lastNameTest1";
@@ -142,7 +142,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode ajoute correctement une Person
+        // On va vérifier ici que la méthode ajoute correctement une Person
     void addPersonMapping_shouldAddNewPerson() {
         // Given
         Person addPerson = new Person("addPersonFirstName", "addPersonLastName", "addPersonAddress", "addPersonCity", 99, "addPersonPhone", "addPersonEmail");
@@ -157,7 +157,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> non mis à jour puisque les attributs sont null
+        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> non mis à jour puisque les attributs sont null
     void updatePersonMapping_shouldReturnOptionalPersonUpdatedWhenNullAttributes() {
         // Given
         Person updatePerson = new Person();
@@ -177,7 +177,7 @@ public class PersonRepositoryImplTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> mis à jour avec ces attributs
+        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> mis à jour avec ces attributs
     void updatePersonMapping_shouldReturnOptionalPersonUpdated() {
         // Given
         Person updatePerson = new Person();

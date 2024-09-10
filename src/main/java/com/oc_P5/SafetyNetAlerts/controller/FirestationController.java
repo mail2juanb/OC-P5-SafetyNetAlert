@@ -43,7 +43,7 @@ public class FirestationController {
      * De plus, elle doit fournir un décompte du nombre d'adultes et du
      * nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone desservie.
      * @param stationNumber Numéro de la caserne de pompiers
-     * @return Liste de personnes et le décompte des adultes et des enfants.
+     * @return Liste de PersonsByStation et le décompte des adultes et des enfants.
      */
     @GetMapping("/firestation")
     public PersonsByStation getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {

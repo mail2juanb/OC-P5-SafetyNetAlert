@@ -7,16 +7,16 @@ import java.util.Optional;
 
 public interface MedicalRecordRepository {
 
-    List<MedicalRecord> getMedicalRecords();
+    List<MedicalRecord> getAll();
 
-    Optional<MedicalRecord> findMedicalRecordById(String id);
+    Optional<MedicalRecord> findById(String id);
 
-    boolean medicalRecordByIdExists(MedicalRecord medicalRecord);
+    boolean existsById(String id);
 
-    void addMedicalRecordMapping(MedicalRecord addMedicalRecord);
+    void save(MedicalRecord addMedicalRecord);
 
-    Optional<MedicalRecord> updateMedicalRecordMapping(MedicalRecord updateMedicalRecord);
+    void update(MedicalRecord updateMedicalRecord);
 
-    void deleteMedicalRecordMapping (MedicalRecord deleteMedicalRecord);
+    void delete(MedicalRecord deleteMedicalRecord);
 
 }

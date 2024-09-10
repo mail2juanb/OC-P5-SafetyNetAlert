@@ -1,9 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
-import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,10 +21,10 @@ public class MedicalRecordController {
 
     /**
      * GET http://localhost:8080/medicalRecords
-     * @return Liste des medicalRecords ainsi que leurs attributs
+     * @return List<MedicalRecord> Liste des medicalRecords ainsi que leurs attributs
      */
     @GetMapping("/medicalRecords")
-    public List<MedicalRecord> getMedicalRecordsService() {
+    public List<MedicalRecord> getMedicalRecords() {
         return medicalRecordService.getMedicalRecordsService();
     }
 
@@ -38,8 +35,8 @@ public class MedicalRecordController {
      * @return ResponseEntity<>(HttpStatus.CREATED)
      */
     @PostMapping("/medicalRecord")
-    public ResponseEntity<String> addMedicalRecordMappingController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.addMedicalRecordMappingService(medicalRecord);
+    public ResponseEntity<String> addMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+        medicalRecordService.addMedicalRecordService(medicalRecord);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -50,8 +47,8 @@ public class MedicalRecordController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @PutMapping("/medicalRecord")
-    public ResponseEntity<String> updateMedicalRecordMappingController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.updateMedicalRecordMappingService(medicalRecord);
+    public ResponseEntity<Void> updateMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+        medicalRecordService.updateMedicalRecordService(medicalRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -59,13 +56,12 @@ public class MedicalRecordController {
     /**
      * DELETE http://localhost:8080/medicalRecord
      * @param medicalRecord un object MedicalRecord contenant : String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
-     * @return null
+     * @return ResponseEntity<>(HttpStatus.OK)
      */
     @DeleteMapping("/medicalRecord")
-    public ResponseEntity<String> deleteMedicalRecordMappingController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.deleteMedicalRecordMappingService(medicalRecord);
-        // FIXME moi je dirais plutot ca, non ? return new ResponseEntity<>(HttpStatus.OK);
-        return null;
+    public ResponseEntity<Void> deleteMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+        medicalRecordService.deleteMedicalRecordService(medicalRecord);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

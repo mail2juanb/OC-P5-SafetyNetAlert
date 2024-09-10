@@ -79,6 +79,19 @@ public class PersonRepositoryImpl implements PersonRepository{
     }
 
     @Override
+    public Optional<Person> findPersonByAddress(String address) {
+        return getPersons()
+                .stream()
+                .filter(person -> person.getAddress().equals(address))
+                .findFirst();
+    }
+
+    @Override
+    public boolean personByAddressExists(String address) {
+        return findPersonByAddress(address).isPresent();
+    }
+
+    @Override
     public void addPersonMapping(Person addPerson) {
         List<Person> persons = getPersons();
         persons.add(addPerson);

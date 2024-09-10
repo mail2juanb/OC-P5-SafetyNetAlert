@@ -18,28 +18,35 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     private final MedicalRecordRepository medicalrecordRepository;
 
     public List<MedicalRecord> getMedicalRecordsService() {
-        return medicalrecordRepository.getMedicalRecords();
+        return medicalrecordRepository.getAll();
     }
 
-    public void addMedicalRecordMappingService(MedicalRecord medicalRecord) {
-        if(medicalrecordRepository.medicalRecordByIdExists(medicalRecord)) {
+    public void addMedicalRecordService(MedicalRecord medicalRecord) {
+        if(medicalrecordRepository.existsById(medicalRecord.getId())) {
             throw new ConflictException("MedicalRecord already exists");
         }
-        medicalrecordRepository.addMedicalRecordMapping(medicalRecord);
+        medicalrecordRepository.save(medicalRecord);
     }
 
-    public void updateMedicalRecordMappingService(MedicalRecord medicalRecord) {
-        if(!medicalrecordRepository.medicalRecordByIdExists(medicalRecord)) {
-            throw new NotFoundException("MedicalRecord doesn't exist");
+    public void updateMedicalRecordService(MedicalRecord medicalRecord) {
+        if(medicalRecord == null ){
+            //todo : use custom exception
+            throw new IllegalArgumentException("MedicalRecord can not be null");
+
         }
-        medicalrecordRepository.updateMedicalRecordMapping(medicalRecord);
+
+        MedicalRecord updatedMedicalRecord = medicalrecordRepository.findById(medicalRecord.getId())
+                .orElseThrow(() -> new NotFoundException("MedicalRecord doesn't exist with id = " + medicalRecord.getId()))
+                .update(medicalRecord);
+
+        medicalrecordRepository.update(updatedMedicalRecord);
     }
 
-    public void deleteMedicalRecordMappingService(MedicalRecord medicalRecord) {
-        if(!medicalrecordRepository.medicalRecordByIdExists(medicalRecord)) {
+    public void deleteMedicalRecordService(MedicalRecord medicalRecord) {
+        if(!medicalrecordRepository.existsById(medicalRecord.getId())) {
             throw new NotFoundException("MedicalRecord doesn't exist");
         }
-        medicalrecordRepository.deleteMedicalRecordMapping(medicalRecord);
+        medicalrecordRepository.delete(medicalRecord);
 
     }
 

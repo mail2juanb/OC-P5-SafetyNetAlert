@@ -16,51 +16,40 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
     private final DataReader dataReaderService;
 
     @Override
-    public List<MedicalRecord> getMedicalRecords() {
+    public List<MedicalRecord> getAll() {
         return dataReaderService.getData().getMedicalRecords();
     }
 
     @Override
-    public Optional<MedicalRecord> findMedicalRecordById(String id) {
-        return getMedicalRecords()
+    public Optional<MedicalRecord> findById(String id) {
+        return getAll()
                 .stream()
                 .filter(MedicalRecord -> MedicalRecord.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public boolean medicalRecordByIdExists(MedicalRecord medicalRecord) {
-        return findMedicalRecordById(medicalRecord.getId()).isPresent();
+    public boolean existsById(String id) {
+        return findById(id).isPresent();
     }
 
     @Override
-    public void addMedicalRecordMapping(MedicalRecord addMedicalRecord) {
-        List<MedicalRecord> medicalRecordList = getMedicalRecords();
+    public void save(MedicalRecord addMedicalRecord) {
+        List<MedicalRecord> medicalRecordList = getAll();
         medicalRecordList.add(addMedicalRecord);
     }
 
     @Override
     //String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
-    public Optional<MedicalRecord> updateMedicalRecordMapping(MedicalRecord updateMedicalRecord) {
-        return findMedicalRecordById(updateMedicalRecord.getId())
-                .map(medicalRecord -> {
-                    if(updateMedicalRecord.getBirthdate() != null) {
-                        medicalRecord.setBirthdate(updateMedicalRecord.getBirthdate());
-                    }
-                    if(updateMedicalRecord.getMedications() != null) {
-                        medicalRecord.setMedications(updateMedicalRecord.getMedications());
-                    }
-                    if(updateMedicalRecord.getAllergies() != null) {
-                        medicalRecord.setAllergies(updateMedicalRecord.getAllergies());
-                    }
-
-                    return medicalRecord;
-                });
+    public void update(MedicalRecord updateMedicalRecord) {
+        MedicalRecord medicalRecordToUpdate = findById(updateMedicalRecord.getId()).orElseThrow();
+        int index = getAll().indexOf(medicalRecordToUpdate);
+        getAll().set(index, updateMedicalRecord );
     }
 
     @Override
-    public void deleteMedicalRecordMapping(MedicalRecord deleteMedicalRecord) {
-        List<MedicalRecord> medicalRecordList = getMedicalRecords();
+    public void delete(MedicalRecord deleteMedicalRecord) {
+        List<MedicalRecord> medicalRecordList = getAll();
         medicalRecordList.removeIf(medicalRecord -> medicalRecord.getId().equals(deleteMedicalRecord.getId()));
     }
 
