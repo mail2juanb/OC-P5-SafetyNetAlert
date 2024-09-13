@@ -22,7 +22,7 @@ public class PhoneAlertRepositoryImpl implements PhoneAlertRepository {
 
     @Override
     public List<String> getPhonesByStationNumber(Integer stationNumber) {
-        List<String> firestationsAddresses = firestationRepository.getFirestationsByStation(stationNumber)
+        List<String> firestationsAddresses = firestationRepository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .toList();

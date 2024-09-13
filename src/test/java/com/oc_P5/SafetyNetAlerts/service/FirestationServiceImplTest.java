@@ -1,6 +1,5 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
@@ -19,8 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -82,7 +79,7 @@ public class FirestationServiceImplTest {
         when(firestationRepository.getFirestations()).thenReturn(firestationList);
 
         // When
-        List<Firestation> result = firestationService.getFirestationsService();
+        List<Firestation> result = firestationService.getFirestations();
 
         // Then
         assertEquals(firestationList, result);
@@ -94,24 +91,24 @@ public class FirestationServiceImplTest {
     void updateFirestationMappingService_shouldUpdateFirestationWhenExists() {
         // Given
         Firestation updateFirestation = new Firestation(" == DataAddressTest 100 == ", 100);
-        when(firestationRepository.firestationByAddressExists(updateFirestation.getAddress())).thenReturn(true);
+        when(firestationRepository.existsByAddress(updateFirestation.getAddress())).thenReturn(true);
 
         // When
-        firestationService.updateFirestationMappingService(updateFirestation);
+        firestationService.updateFirestation(updateFirestation);
 
         // Then
-        verify(firestationRepository, times(1)).updateFirestationMapping(updateFirestation);
+        verify(firestationRepository, times(1)).update(updateFirestation);
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la mise à jour du mapping de firestation (inexistant)
-    void updateFirestationMappingService_shouldThrowNotFoundExceptionWhenNotExists() {
+    void updateFirestation_shouldThrowNotFoundExceptionWhenNotExists() {
         // Given
         Firestation updateFirestation = new Firestation(" == DataAddressTest 100 == ", 100);
-        when(firestationRepository.firestationByAddressExists(updateFirestation.getAddress())).thenReturn(false);
+        when(firestationRepository.existsByAddress(updateFirestation.getAddress())).thenReturn(false);
 
         // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () ->firestationService.updateFirestationMappingService(updateFirestation));
+        NotFoundException thrown = assertThrows(NotFoundException.class, () ->firestationService.updateFirestation(updateFirestation));
         assertEquals("Firestation doesn't exist", thrown.getMessage());
     }
 
@@ -120,24 +117,24 @@ public class FirestationServiceImplTest {
     void addFirestationMappingService_shouldAddNewFirestationWhenNotExists() {
         // Given
         Firestation addFirestation = new Firestation(" == DataAddressTest 3 == ", 3);
-        when(firestationRepository.firestationByAddressExists(addFirestation.getAddress())).thenReturn(false);
+        when(firestationRepository.existsByAddress(addFirestation.getAddress())).thenReturn(false);
 
         // When
-        firestationService.addFirestationMappingService(addFirestation);
+        firestationService.addFirestation(addFirestation);
 
         // Then
-        verify(firestationRepository, times(1)).addFirestationMapping(addFirestation);
+        verify(firestationRepository, times(1)).save(addFirestation);
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de l'ajout du mapping de firestation (existant)
-    void addFirestationMappingService_shouldThrowConflictExceptionWhenExists() {
+    void addFirestation_shouldThrowConflictExceptionWhenExists() {
         // Given
         Firestation addFirestation = new Firestation(" == DataAddressTest 1 == ", 1);
-        when(firestationRepository.firestationByAddressExists(addFirestation.getAddress())).thenReturn(true);
+        when(firestationRepository.existsByAddress(addFirestation.getAddress())).thenReturn(true);
 
         // When / Then
-        ConflictException thrown = assertThrows(ConflictException.class, () -> firestationService.addFirestationMappingService(addFirestation));
+        ConflictException thrown = assertThrows(ConflictException.class, () -> firestationService.addFirestation(addFirestation));
         assertEquals("Firestation already exists", thrown.getMessage());
     }
 
@@ -145,23 +142,23 @@ public class FirestationServiceImplTest {
     // On va vérifier ici le bon fonctionnement de la suppression du mapping (address, station) de firestation (existant)
     void deleteFirestationMappingService_shouldRemoveFirestationWhenAddressAndStationNumberExist() {
         // Given
-        when(firestationRepository.firestationByAddressByStationExists(any(Firestation.class))).thenReturn(true);
+        when(firestationRepository.existsByAddressByStation(any(Firestation.class))).thenReturn(true);
 
         // When
-        firestationService.deleteFirestationMappingService(" == DataAddressTest 1 == ", 1);
+        firestationService.deleteFirestation(" == DataAddressTest 1 == ", 1);
 
         // Then
-        verify(firestationRepository, times(1)).deleteFirestationMapping(any(Firestation.class));
+        verify(firestationRepository, times(1)).delete(any(Firestation.class));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression du mapping (address, station) de firestation (inexistant)
-    void deleteFirestationMappingService_shouldThrowNotFoundExceptionWhenAddressAndStationNumberNotExist() {
+    void deleteFirestation_shouldThrowNotFoundExceptionWhenAddressAndStationNumberNotExist() {
         // Given
-        when(firestationRepository.firestationByAddressByStationExists(any(Firestation.class))).thenReturn(false);
+        when(firestationRepository.existsByAddressByStation(any(Firestation.class))).thenReturn(false);
 
         // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationMappingService(" == DataAddressTest 3 == ", 3));
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(" == DataAddressTest 3 == ", 3));
         assertEquals("Firestation doesn't exist", thrown.getMessage());
     }
 
@@ -170,24 +167,24 @@ public class FirestationServiceImplTest {
     void deleteFirestationMappingService_shouldRemoveFirestationByAddressWhenExists() {
         // Given
         String deleteAddress = " == DataAddressTest 1 == ";
-        when(firestationRepository.firestationByAddressExists(anyString())).thenReturn(true);
+        when(firestationRepository.existsByAddress(anyString())).thenReturn(true);
 
         // When
-        firestationService.deleteFirestationMappingService(deleteAddress, null);
+        firestationService.deleteFirestation(deleteAddress, null);
 
         // Then
-        verify(firestationRepository, times(1)).deleteFirestationMappingByAddress(deleteAddress);
+        verify(firestationRepository, times(1)).deleteByAddress(deleteAddress);
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression du mapping de firestation par adresse (inexistant)
-    void deleteFirestationMappingService_shouldThrowNotFoundExceptionWhenAddressNotExist() {
+    void deleteFirestation_shouldThrowNotFoundExceptionWhenAddressNotExist() {
         // Given
         String deleteAddress = " == DataAddressTest Unknown == ";
-        when(firestationRepository.firestationByAddressExists(anyString())).thenReturn(false);
+        when(firestationRepository.existsByAddress(anyString())).thenReturn(false);
 
         // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationMappingService(deleteAddress, null));
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(deleteAddress, null));
         assertEquals("Address doesn't exist", thrown.getMessage());
     }
 
@@ -196,36 +193,36 @@ public class FirestationServiceImplTest {
     void deleteFirestationMappingService_shouldRemoveFirestationByStationWhenExists() {
         // Given
         Integer stationNumber = 1;
-        when(firestationRepository.firestationByStationExists(stationNumber)).thenReturn(true);
+        when(firestationRepository.existsByStation(stationNumber)).thenReturn(true);
 
         // When
-        firestationService.deleteFirestationMappingService(null, stationNumber);
+        firestationService.deleteFirestation(null, stationNumber);
 
         // Then
-        verify(firestationRepository, times(1)).deleteFirestationMappingByStation(stationNumber);
+        verify(firestationRepository, times(1)).deleteByStation(stationNumber);
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression du mapping de firestation par station (inexistant)
-    void deleteFirestationMappingService_shouldThrowNotFoundExceptionWhenStationNotExist() {
+    void deleteFirestation_shouldThrowNotFoundExceptionWhenStationNotExist() {
         // Given
         Integer stationNumber = 999;
-        when(firestationRepository.firestationByStationExists(stationNumber)).thenReturn(false);
+        when(firestationRepository.existsByStation(stationNumber)).thenReturn(false);
 
         // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationMappingService(null, stationNumber));
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(null, stationNumber));
         assertEquals("Station number doesn't exist", thrown.getMessage());
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression du mapping (address, station) de firestation (inexistant - null)
-    void deleteFirestationMappingService_shouldThrowConflictExceptionWhenAddressAndStationNumberNull() {
+    void deleteFirestation_shouldThrowConflictExceptionWhenAddressAndStationNumberNull() {
         // Given
         String nullAddress = null;
         Integer nullStationNumber = null;
 
         // When / Then
-        ConflictException thrown = assertThrows(ConflictException.class, () -> firestationService.deleteFirestationMappingService(nullAddress, nullStationNumber));
+        ConflictException thrown = assertThrows(ConflictException.class, () -> firestationService.deleteFirestation(nullAddress, nullStationNumber));
         assertEquals("Both address and station number can't be null", thrown.getMessage());
     }
 

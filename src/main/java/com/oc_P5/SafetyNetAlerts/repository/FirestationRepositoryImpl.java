@@ -18,89 +18,96 @@ public class FirestationRepositoryImpl implements FirestationRepository {
 
 
     @Override
-    public List<Firestation> getFirestations() {
+    public List<Firestation> getAll() {
         return dataReaderService.getData().getFireStations();
     }
 
     @Override
-    public Optional<Firestation> findFirestationByAddressByStation(Firestation firestation) {
-        return getFirestations()
+    public Optional<Firestation> findByAddressByStation(Firestation firestation) {
+        return getAll()
                 .stream()
                 .filter(f -> f.getAddress().equals(firestation.getAddress()) &&
                         f.getStation().equals(firestation.getStation()))
                 .findFirst();
     }
 
-    public boolean firestationByAddressByStationExists(Firestation firestation) {
-        return findFirestationByAddressByStation(firestation)
+    public boolean existsByAddressByStation(Firestation firestation) {
+        return findByAddressByStation(firestation)
                 .isPresent();
     }
 
     @Override
-    public Optional<Firestation> findFirestationByAddress(String address) {
-        return getFirestations()
+    public Optional<Firestation> findByAddress(String address) {
+        return getAll()
                 .stream()
                 .filter(f -> f.getAddress().equals(address))
                 .findFirst();
     }
 
     @Override
-    public boolean firestationByAddressExists(String address){
-        return findFirestationByAddress(address)
+    public boolean existsByAddress(String address){
+        return findByAddress(address)
                 .isPresent();
     }
 
     @Override
-    public Optional<Firestation> findFirestationByStation(Integer stationNumber) {
-        return getFirestations()
+    public Optional<Firestation> findByStation(Integer stationNumber) {
+        return getAll()
                 .stream()
                 .filter(f -> f.getStation().equals(stationNumber))
                 .findFirst();
     }
 
     @Override
-    public boolean firestationByStationExists(Integer stationNumber) {
-        return findFirestationByStation(stationNumber)
+    public boolean existsByStation(Integer stationNumber) {
+        return findByStation(stationNumber)
                 .isPresent();
     }
 
     @Override
-    public Optional<Firestation> updateFirestationMapping(Firestation targetFirestation) {
-        return findFirestationByAddress(targetFirestation.getAddress())
-                .map(firestation -> {
-                    firestation.setStation(targetFirestation.getStation());
-                    return firestation;
-                });
+// NOTE Ancienne méthode
+//    public Optional<Firestation> update(Firestation targetFirestation) {
+//        return findByAddress(targetFirestation.getAddress())
+//                .map(firestation -> {
+//                    firestation.setStation(targetFirestation.getStation());
+//                    return firestation;
+//                });
+//    }
+    public void update(Firestation updateFirestation) {
+        Firestation firestationToUpdate = findByAddress(updateFirestation.getAddress()).orElseThrow();
+        int index = getAll().indexOf(firestationToUpdate);
+        getAll().set(index, updateFirestation);
+    }
+
+
+    @Override
+    public void save(Firestation addFirestation) {
+        List<Firestation> firestationList = getAll();
+        firestationList.add(addFirestation);
     }
 
     @Override
-    public void addFirestationMapping(Firestation newFirestation) {
-        List<Firestation> firestations = getFirestations();
-        firestations.add(newFirestation);
-    }
-
-    @Override
-    public void deleteFirestationMapping(Firestation deleteFirestation) {
-        List<Firestation> firestations = getFirestations();
+    public void delete(Firestation deleteFirestation) {
+        List<Firestation> firestations = getAll();
         firestations.removeIf(firestation -> firestation.getAddress().equals(deleteFirestation.getAddress()) &&
                 firestation.getStation().equals(deleteFirestation.getStation()));
     }
 
     @Override
-    public void deleteFirestationMappingByAddress(String address) {
-        List<Firestation> firestations = getFirestations();
+    public void deleteByAddress(String address) {
+        List<Firestation> firestations = getAll();
         firestations.removeIf(firestation -> firestation.getAddress().equals(address));
     }
 
     @Override
-    public void deleteFirestationMappingByStation(Integer stationNumber) {
-        List<Firestation> firestations = getFirestations();
+    public void deleteByStation(Integer stationNumber) {
+        List<Firestation> firestations = getAll();
         firestations.removeIf(firestation -> firestation.getStation().equals(stationNumber));
     }
 
     @Override
-    public List<Firestation> getFirestationsByStation(Integer stationNumber) {
-        return getFirestations()
+    public List<Firestation> getByStation(Integer stationNumber) {
+        return getAll()
                 .stream()
                 .filter(Firestation -> Firestation.getStation().equals(stationNumber))
                 .toList();

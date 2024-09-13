@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface FirestationService {
 
-    List<Firestation> getFirestationsService();
+    List<Firestation> getFirestations();
 
-    void updateFirestationMappingService(Firestation firestation);
+    void updateFirestation(Firestation firestation);
 
-    void addFirestationMappingService(Firestation firestation);
+    void addFirestation(Firestation firestation);
 
-    void deleteFirestationMappingService(String address, Integer stationNumber);
+    void deleteFirestation(Firestation firestation);
 
     PersonsByStation getPersonsByStationService(Integer stationNumber);
 

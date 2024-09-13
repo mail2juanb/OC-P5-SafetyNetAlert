@@ -14,4 +14,11 @@ public class Firestation {
     private String address;
     private Integer station;
 
+    public Firestation update(Firestation update) {
+        if (update.getStation() != null) {
+            setStation(update.getStation());
+        }
+        return this;
+    }
+
 }

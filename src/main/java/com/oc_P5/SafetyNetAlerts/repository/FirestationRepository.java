@@ -7,30 +7,30 @@ import java.util.Optional;
 
 public interface FirestationRepository {
 
-    List<Firestation> getFirestations();
+    List<Firestation> getAll();
 
-    Optional<Firestation> findFirestationByAddressByStation(Firestation firestation);
+    Optional<Firestation> findByAddressByStation(Firestation firestation);
 
-    boolean firestationByAddressByStationExists(Firestation firestation);
+    boolean existsByAddressByStation(Firestation firestation);
 
-    Optional<Firestation> findFirestationByAddress(String address);
+    Optional<Firestation> findByAddress(String address);
 
-    boolean firestationByAddressExists(String address);
+    boolean existsByAddress(String address);
 
-    Optional<Firestation> findFirestationByStation(Integer stationNumber);
+    Optional<Firestation> findByStation(Integer stationNumber);
 
-    boolean firestationByStationExists(Integer stationNumber);
+    boolean existsByStation(Integer stationNumber);
 
-    Optional<Firestation> updateFirestationMapping(Firestation firestation);
+    void update(Firestation firestation);
 
-    void addFirestationMapping(Firestation firestation);
+    void save(Firestation firestation);
 
-    void deleteFirestationMapping(Firestation firestation);
+    void delete(Firestation firestation);
 
-    void deleteFirestationMappingByAddress(String address);
+    void deleteByAddress(String address);
 
-    void deleteFirestationMappingByStation(Integer stationNumber);
+    void deleteByStation(Integer stationNumber);
 
-    List<Firestation> getFirestationsByStation(Integer stationNumber);
+    List<Firestation> getByStation(Integer stationNumber);
 
 }

@@ -3,6 +3,7 @@ package com.oc_P5.SafetyNetAlerts.service;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
+import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
@@ -26,67 +27,76 @@ public class FirestationServiceImpl implements FirestationService{
     private final MedicalRecordRepository medicalrecordRepository;
 
 
-    public List<Firestation> getFirestationsService() {
-        return firestationRepository.getFirestations();
+    public boolean isFirestationEmpty(Firestation firestation) {
+        return (firestation.getAddress() == null && firestation.getAddress().isEmpty()) &&
+                (firestation.getStation() == null);
     }
 
-    public void updateFirestationMappingService(Firestation firestation) {
-        if(!firestationRepository.firestationByAddressExists(firestation.getAddress())){
-            throw new NotFoundException("Firestation doesn't exist");
-        }
-        firestationRepository.updateFirestationMapping(firestation);
+    public List<Firestation> getFirestations() {
+        return firestationRepository.getAll();
     }
 
-    public void addFirestationMappingService(Firestation firestation) {
-        if(firestationRepository.firestationByAddressExists(firestation.getAddress())){
-            throw new ConflictException("Firestation already exists");
+    public void updateFirestation(Firestation firestation) {
+        if(isFirestationEmpty(firestation)) {
+            throw new NullOrEmptyObjectException("Firestation can not be null or empty");
         }
-        firestationRepository.addFirestationMapping(firestation);
+        Firestation updatedFirestation = firestationRepository.findByAddress(firestation.getAddress())
+                        .orElseThrow(()-> new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress()))
+                                .update(firestation);
+
+        firestationRepository.update(updatedFirestation);
+    }
+
+    public void addFirestation(Firestation firestation) {
+        if(isFirestationEmpty(firestation)) {
+            throw new NullOrEmptyObjectException("Firestation can not be null or empty");
+        }
+        if(firestationRepository.existsByAddress(firestation.getAddress())){
+            throw new ConflictException("Firestation already exists with address = " + firestation.getAddress());
+        }
+        firestationRepository.save(firestation);
     }
 
 
-    public void deleteFirestationMappingService(String address, Integer stationNumber) {
-        if (address == null && stationNumber == null) {
-            throw new ConflictException("Both address and station number can't be null");
+    public void deleteFirestation(Firestation firestation) {
+        if(isFirestationEmpty(firestation)) {
+            throw new NullOrEmptyObjectException("Firestation can not be null or empty");
         }
-
-        if (address != null && stationNumber != null) {
-            Firestation deleteFirestation = new Firestation(address, stationNumber);
-            if (firestationRepository.firestationByAddressByStationExists(deleteFirestation)) {
-                firestationRepository.deleteFirestationMapping(deleteFirestation);
+        if (firestation.getAddress() != null && firestation.getStation() != null) {
+            if (firestationRepository.existsByAddressByStation(firestation)) {
+                firestationRepository.delete(firestation);
                 return;
             } else {
-                throw new NotFoundException("Firestation doesn't exist");
+                throw new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress());
             }
         }
-
-        if (address != null) {
-            if (firestationRepository.firestationByAddressExists(address)) {
-                firestationRepository.deleteFirestationMappingByAddress(address);
+        if (firestation.getAddress() != null && firestation.getStation() == null) {
+            if (firestationRepository.existsByAddress(firestation.getAddress())) {
+                firestationRepository.deleteByAddress(firestation.getAddress());
                 return;
             } else {
-                throw new NotFoundException("Address doesn't exist");
+                throw new NotFoundException("Address doesn't exist with address = " + firestation.getAddress());
             }
         }
-
-        // FIXME Comment faire pour mieux tester cette méthode et passer à 100% de couverture ?
-        if (stationNumber != null) {
-            if (firestationRepository.firestationByStationExists(stationNumber)) {
-                firestationRepository.deleteFirestationMappingByStation(stationNumber);
+        if (firestation.getStation() != null && firestation.getAddress() == null) {
+            if (firestationRepository.existsByStation(firestation.getStation())) {
+                firestationRepository.deleteByStation(firestation.getStation());
             } else {
-                throw new NotFoundException("Station number doesn't exist");
+                throw new NotFoundException("StationNumber doesn't exist with stationNumber = " + firestation.getStation());
             }
         }
     }
 
     public PersonsByStation getPersonsByStationService(Integer stationNumber) {
-        Set<String> stationAddress = firestationRepository.getFirestationsByStation(stationNumber)
+        if(!firestationRepository.existsByStation(stationNumber)) {
+            throw new NotFoundException("StationNumber doesn't exist with stationNumber = " + stationNumber);
+        }
+        Set<String> stationAddress = firestationRepository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
 
         List<Person> personsByAddress = personRepository.getPersonsByAddresses(stationAddress);
-
         Integer nbrOfMinor = personsByAddress
                 .stream()
                 .map(p -> p.getId())
@@ -95,7 +105,6 @@ public class FirestationServiceImpl implements FirestationService{
                 .filter(optionalMedicalrecord -> optionalMedicalrecord.get().isMinor())
                 .toList()
                 .size();
-
         return new  PersonsByStation(personsByAddress, nbrOfMinor );
     }
 

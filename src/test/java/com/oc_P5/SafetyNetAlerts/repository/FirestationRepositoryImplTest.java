@@ -60,12 +60,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la recherche de Firestation (address, stationNumber) connue
-    void findFirestationByAddressByStation_shouldReturnFirestationWhenExists() {
+    void findByAddressByStation_shouldReturnWhenExists() {
         // Given
         Firestation searchFirestation = new Firestation(" == DataTest 1 == ", 1);
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByAddressByStation(searchFirestation);
+        Optional<Firestation> result = firestationRepository.findByAddressByStation(searchFirestation);
 
         // Then
         assertTrue(result.isPresent());
@@ -75,12 +75,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la recherche de Firestation (address, stationNumber) inconnue
-    void findFirestationByAddressByStation_shouldReturnEmptyWhenNotExists() {
+    void findByAddressByStation_shouldReturnEmptyWhenNotExists() {
         // Given
         Firestation searchFirestation = new Firestation(" == DataTest Unknown == ", 20);
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByAddressByStation(searchFirestation);
+        Optional<Firestation> result = firestationRepository.findByAddressByStation(searchFirestation);
 
         // Then
         assertTrue(result.isEmpty());
@@ -88,12 +88,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address, stationNumber) connue
-    void firestationByAddressByStationExists_shouldReturnTrueWhenExists() {
+    void isExists_shouldReturnTrueWhenExistsByAddressByStation() {
         // Given
         Firestation searchFirestation = new Firestation(" == DataTest 1 == ", 1);
 
         // When
-        boolean exists = firestationRepository.firestationByAddressByStationExists(searchFirestation);
+        boolean exists = firestationRepository.existsByAddressByStation(searchFirestation);
 
         // Then
         assertTrue(exists);
@@ -101,12 +101,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address, stationNumber) inconnue
-    void firestationByAddressByStationExists_shouldReturnFalseWhenNotExists() {
+    void isExists_shouldReturnFalseWhenNotExistsByAddressByStation() {
         // Given
         Firestation searchFirestation = new Firestation(" == DataTest Unknown == ", 20);
 
         // When
-        boolean exists = firestationRepository.firestationByAddressByStationExists(searchFirestation);
+        boolean exists = firestationRepository.existsByAddressByStation(searchFirestation);
 
         // Then
         assertFalse(exists);
@@ -114,12 +114,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) connue
-    void findFirestationByAddress_shouldReturnFirestationWhenExists() {
+    void findFirestationByAddress_shouldReturnWhenExists() {
         // Given
         String searchFirestationAddress = " == DataTest 1 == ";
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByAddress(searchFirestationAddress);
+        Optional<Firestation> result = firestationRepository.findByAddress(searchFirestationAddress);
 
         // Then
         assertTrue(result.isPresent());
@@ -128,12 +128,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) inconnue
-    void findFirestationByAddress_shouldReturnEmptyWhenNotExists() {
+    void findByAddress_shouldReturnEmptyWhenNotExists() {
         // Given
         String searchFirestationAddress = " == DataTest Unknown == ";
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByAddress(searchFirestationAddress);
+        Optional<Firestation> result = firestationRepository.findByAddress(searchFirestationAddress);
 
         // Then
         assertTrue(result.isEmpty());
@@ -141,12 +141,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) connue
-    void firestationByAddressExists_shouldReturnTrueWhenExists() {
+    void isExists_shouldReturnTrueWhenExistsByAddress() {
         // Given
         String address = " == DataTest 1 == ";
 
         // When
-        boolean exists = firestationRepository.firestationByAddressExists(address);
+        boolean exists = firestationRepository.existsByAddress(address);
 
         // Then
         assertTrue(exists);
@@ -154,12 +154,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) inconnue
-    void firestationByAddressExists_shouldReturnFalseWhenNotExists() {
+    void isExists_shouldReturnFalseWhenNotExistsByAddress() {
         // Given
         String address = " == DataTest Unknown == ";
 
         // When
-        boolean exists = firestationRepository.firestationByAddressExists(address);
+        boolean exists = firestationRepository.existsByAddress(address);
 
         // Then
         assertFalse(exists);
@@ -167,12 +167,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) connue
-    void findFirestationByStation_shouldReturnFirestationWhenExists() {
+    void findFirestationByStation_shouldReturnWhenExists() {
         // Given
         Integer stationNumber = 1;
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByStation(stationNumber);
+        Optional<Firestation> result = firestationRepository.findByStation(stationNumber);
 
         // Then
         assertTrue(result.isPresent());
@@ -181,12 +181,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) inconnue
-    void findFirestationByStation_shouldReturnEmptyWhenNotExists() {
+    void findByStation_shouldReturnEmptyWhenNotExists() {
         // Given
         Integer stationNumber = 999;
 
         // When
-        Optional<Firestation> result = firestationRepository.findFirestationByStation(stationNumber);
+        Optional<Firestation> result = firestationRepository.findByStation(stationNumber);
 
         // Then
         assertTrue(result.isEmpty());
@@ -194,12 +194,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) connue
-    void firestationByStationExists_shouldReturnTrueWhenExists() {
+    void isExists_shouldReturnTrueWhenExistsByStation() {
         // Given
         Integer stationNumber = 1;
 
         // When
-        boolean exists = firestationRepository.firestationByStationExists(stationNumber);
+        boolean exists = firestationRepository.existsByStation(stationNumber);
 
         // Then
         assertTrue(exists);
@@ -207,12 +207,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) inconnue
-    void firestationByStationExists_shouldReturnFalseWhenNotExists() {
+    void isExists_shouldReturnFalseWhenNotExistsByStation() {
         // Given
         Integer stationNumber = 999;
 
         // When
-        boolean exists = firestationRepository.firestationByStationExists(stationNumber);
+        boolean exists = firestationRepository.existsByStation(stationNumber);
 
         // Then
         assertFalse(exists);
@@ -225,7 +225,7 @@ public class FirestationRepositoryImplTest {
         Firestation updateFirestation = new Firestation(" == DataTest 1 == ", 199);
 
         // When
-        Optional<Firestation> result = firestationRepository.updateFirestationMapping(updateFirestation);
+        Optional<Firestation> result = firestationRepository.update(updateFirestation);
 
         // Then
         assertTrue(result.isPresent());
@@ -234,12 +234,12 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici qu'avec un objet Firestation dont l'adresse est inconnue, on ne met pas à jour le numéro de station
-    void updateFirestationMapping_shouldReturnEmptyWhenNotExists() {
+    void update_shouldReturnEmptyWhenNotExists() {
         // Given
         Firestation updateFirestation = new Firestation(" == DataTest Unknown == ", 199);
 
         // When
-        Optional<Firestation> result = firestationRepository.updateFirestationMapping(updateFirestation);
+        Optional<Firestation> result = firestationRepository.update(updateFirestation);
 
         // Then
         assertTrue(result.isEmpty());
@@ -252,7 +252,7 @@ public class FirestationRepositoryImplTest {
         Firestation createFirestation = new Firestation(" == DataTest 10 == ", 10);
 
         // When
-        firestationRepository.addFirestationMapping(createFirestation);
+        firestationRepository.save(createFirestation);
         List<Firestation> resultList = firestationRepository.getFirestations();
 
         // Then
@@ -266,7 +266,7 @@ public class FirestationRepositoryImplTest {
         Firestation deleteFirestation = new Firestation(" == DataTest 1 == ", 1);
 
         // When
-        firestationRepository.deleteFirestationMapping(deleteFirestation);
+        firestationRepository.delete(deleteFirestation);
         List<Firestation> resultList = firestationRepository.getFirestations();
 
         // Then
@@ -281,7 +281,7 @@ public class FirestationRepositoryImplTest {
         List<Firestation> originFirestationList = firestationRepository.getFirestations();
 
         // When
-        firestationRepository.deleteFirestationMapping(deleteFirestation);
+        firestationRepository.delete(deleteFirestation);
         List<Firestation> resultFirestationList = firestationRepository.getFirestations();
 
         // Then
@@ -295,7 +295,7 @@ public class FirestationRepositoryImplTest {
         String deleteAddress = " == DataTest 200 == ";
 
         // When
-        firestationRepository.deleteFirestationMappingByAddress(deleteAddress);
+        firestationRepository.deleteByAddress(deleteAddress);
         List<Firestation> resultList = firestationRepository.getFirestations();
 
         // Then
@@ -304,13 +304,13 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression d'une Firestation avec une adresse inconnue
-    void deleteFirestationMappingByAddress_shouldNotRemoveWhenAddressNotExists() {
+    void deleteByAddress_shouldNotRemoveWhenAddressNotExists() {
         // Given
         String deleteAddress = " == DataTest Unknown == ";
         List<Firestation> originFirestationList = firestationRepository.getFirestations();
 
         // When
-        firestationRepository.deleteFirestationMappingByAddress(deleteAddress);
+        firestationRepository.deleteByAddress(deleteAddress);
         List<Firestation> resultFirestationList = firestationRepository.getFirestations();
 
         // Then
@@ -324,7 +324,7 @@ public class FirestationRepositoryImplTest {
         Integer deleteStationNumber = 1;
 
         // When
-        firestationRepository.deleteFirestationMappingByStation(deleteStationNumber);
+        firestationRepository.deleteByStation(deleteStationNumber);
         List<Firestation> resultFirestationList = firestationRepository.getFirestations();
 
         // Then
@@ -333,13 +333,13 @@ public class FirestationRepositoryImplTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la non suppression d'une ou plusieurs Firestations avec un numéro de station inconnu
-    void deleteFirestationMappingByStation_shouldNotRemoveWhenStationNotExists() {
+    void deleteByStation_shouldNotRemoveWhenStationNotExists() {
         // Given
         Integer deleteStationNumber = 999;
         List<Firestation> originalFirestationList = firestationRepository.getFirestations();
 
         // When
-        firestationRepository.deleteFirestationMappingByStation(deleteStationNumber);
+        firestationRepository.deleteByStation(deleteStationNumber);
         List<Firestation> resultFirestationList = firestationRepository.getFirestations();
 
         // Then
@@ -349,12 +349,12 @@ public class FirestationRepositoryImplTest {
     @Test
     // On va vérifier ici le bon fonctionnement de la récupération de la liste des Firestation par station
     // Ainsi que le nombre d'adultes et d'enfants ...
-    void getFirestationsByStation_shouldReturnListOfFirestationsByStation() {
+    void getFirestationsByStation_shouldReturnListOfByStation() {
         // Given
         Integer stationNumber = 1;
 
         // When
-        List<Firestation> resultFirestationList = firestationRepository.getFirestationsByStation(stationNumber);
+        List<Firestation> resultFirestationList = firestationRepository.getByStation(stationNumber);
 
         // Then
         assertEquals(2, resultFirestationList.size());

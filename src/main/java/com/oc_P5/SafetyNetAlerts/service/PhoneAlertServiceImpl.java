@@ -18,7 +18,7 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
     private final FirestationRepository firestationRepository;
 
     public List<String> getPhonesByStationNumberService(Integer stationNumber) {
-        if(!firestationRepository.firestationByStationExists(stationNumber)) {
+        if(!firestationRepository.existsByStation(stationNumber)) {
             throw new NotFoundException("stationNumber doesn't exists");
         }
         return phoneAlertRepository.getPhonesByStationNumber(stationNumber);

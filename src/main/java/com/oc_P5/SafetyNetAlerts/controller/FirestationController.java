@@ -30,7 +30,7 @@ public class FirestationController {
      */
     @GetMapping("/firestations")
     public List<Firestation> getFirestationsController() {
-        return firestationService.getFirestationsService();
+        return firestationService.getFirestations();
     }
 
 
@@ -59,7 +59,7 @@ public class FirestationController {
      */
     @PutMapping("/firestation")
     public ResponseEntity<String> updateFirestationMappingController(@RequestBody Firestation firestation) {
-        firestationService.updateFirestationMappingService(firestation);
+        firestationService.updateFirestation(firestation);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -72,7 +72,7 @@ public class FirestationController {
      */
     @PostMapping("/firestation")
     public ResponseEntity<String> addFirestationMappingController(@RequestBody Firestation firestation) {
-        firestationService.addFirestationMappingService(firestation);
+        firestationService.addFirestation(firestation);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -81,17 +81,13 @@ public class FirestationController {
     /**
      * DELETE http://localhost:8080/firestation?address=<adresse>
      * DELETE http://localhost:8080/firestation?stationNumber=<station_number>
-     * @param address (optionnel) Adresse de la caserne de pompiers à supprimer
-     * @param stationNumber (optionnel) Numéro de la station de pompiers à supprimer
-     * @return null
+     * @param firestation un object Firestation contenant : stationNumber, firestationAdress
+     * @return ResponseEntity<>(HttpStatus.OK)
      */
     @DeleteMapping("/firestation")
-    public ResponseEntity<String> deleteFirestationMappingController (
-            @RequestParam(value = "address", required = false) String address,
-            @RequestParam(value = "stationNumber", required = false) Integer stationNumber) {
-        firestationService.deleteFirestationMappingService(address, stationNumber);
-        // FIXME moi je dirais plutot ca, non ? return new ResponseEntity<>(HttpStatus.OK);
-        return null;
+    public ResponseEntity<String> deleteFirestationMappingController (@RequestBody Firestation firestation) {
+        firestationService.deleteFirestation(firestation);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
