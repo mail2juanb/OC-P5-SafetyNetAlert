@@ -2,7 +2,6 @@ package com.oc_P5.SafetyNetAlerts.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -19,7 +18,9 @@ public class MedicalRecord extends NamedModel {
     private List<String> medications;
     private List<String> allergies;
 
-    // FIXME Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
+
+    // NOTE Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
+    // NOTE C'est à cause du super.
     public MedicalRecord(String firstName, String lastName, LocalDate birthdate, List<String> medications, List<String> allergies) {
         super(firstName, lastName);
         this.birthdate = birthdate;
@@ -40,21 +41,16 @@ public class MedicalRecord extends NamedModel {
         return !isMinor();
     }
 
-
     public MedicalRecord update(MedicalRecord update){
-
         if(update.getBirthdate() != null) {
             setBirthdate(update.getBirthdate());
         }
-
         if(update.getMedications() != null) {
             setMedications(update.getMedications());
         }
-
         if(update.getAllergies() != null) {
             setAllergies(update.getAllergies());
         }
-
         return this;
     }
 }

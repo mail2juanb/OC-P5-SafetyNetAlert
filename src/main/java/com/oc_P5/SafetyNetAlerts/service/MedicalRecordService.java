@@ -6,12 +6,14 @@ import java.util.List;
 
 public interface MedicalRecordService {
 
-    List<MedicalRecord> getMedicalRecordsService();
+    boolean isMedicalRecordEmpty(MedicalRecord medicalRecord);
 
-    void addMedicalRecordService(MedicalRecord medicalRecord);
+    List<MedicalRecord> getMedicalRecords();
 
-    void updateMedicalRecordService(MedicalRecord medicalRecord);
+    void addMedicalRecord(MedicalRecord medicalRecord);
 
-    void deleteMedicalRecordService(MedicalRecord medicalRecord);
+    void updateMedicalRecord(MedicalRecord medicalRecord);
+
+    void deleteMedicalRecord(MedicalRecord medicalRecord);
 
 }

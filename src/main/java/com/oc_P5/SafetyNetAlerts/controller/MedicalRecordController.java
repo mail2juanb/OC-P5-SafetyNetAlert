@@ -25,7 +25,7 @@ public class MedicalRecordController {
      */
     @GetMapping("/medicalRecords")
     public List<MedicalRecord> getMedicalRecords() {
-        return medicalRecordService.getMedicalRecordsService();
+        return medicalRecordService.getMedicalRecords();
     }
 
 
@@ -36,7 +36,7 @@ public class MedicalRecordController {
      */
     @PostMapping("/medicalRecord")
     public ResponseEntity<String> addMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.addMedicalRecordService(medicalRecord);
+        medicalRecordService.addMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -48,7 +48,7 @@ public class MedicalRecordController {
      */
     @PutMapping("/medicalRecord")
     public ResponseEntity<Void> updateMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.updateMedicalRecordService(medicalRecord);
+        medicalRecordService.updateMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -60,7 +60,7 @@ public class MedicalRecordController {
      */
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<Void> deleteMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
-        medicalRecordService.deleteMedicalRecordService(medicalRecord);
+        medicalRecordService.deleteMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
