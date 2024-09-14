@@ -65,14 +65,6 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
-// NOTE Ancienne méthode
-//    public Optional<Firestation> update(Firestation targetFirestation) {
-//        return findByAddress(targetFirestation.getAddress())
-//                .map(firestation -> {
-//                    firestation.setStation(targetFirestation.getStation());
-//                    return firestation;
-//                });
-//    }
     public void update(Firestation updateFirestation) {
         Firestation firestationToUpdate = findByAddress(updateFirestation.getAddress()).orElseThrow();
         int index = getAll().indexOf(firestationToUpdate);
