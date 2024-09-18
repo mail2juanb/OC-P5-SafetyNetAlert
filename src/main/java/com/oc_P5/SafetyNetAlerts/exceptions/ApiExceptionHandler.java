@@ -26,6 +26,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(NullOrEmptyObjectException.class)
+    public ErrorResponse handleNullOrEmptyObjectException(NullOrEmptyObjectException exception){
+        return createErrorResponse(exception, HttpStatus.BAD_REQUEST);
+    }
+
     private static ErrorResponse createErrorResponse(RuntimeException exception, HttpStatus status) {
         return ErrorResponse.builder(exception, status, exception.getMessage())
                 .property("timestamp", Instant.now())
