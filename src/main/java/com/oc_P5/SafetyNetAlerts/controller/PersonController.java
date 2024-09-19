@@ -1,6 +1,5 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.service.PersonServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ public class PersonController {
      */
     @GetMapping("/persons")
     public List<Person> getPersonsController() {
-        return personService.getPersonsService();
+        return personService.getPersons();
     }
 
 
@@ -37,8 +36,8 @@ public class PersonController {
      * @return ResponseEntity<>(HttpStatus.CREATED)
      */
     @PostMapping("/person")
-    public ResponseEntity<String> addPersonMappingController(@RequestBody Person person) {
-        personService.addPersonMappingService(person);
+    public ResponseEntity<String> addPersonController(@RequestBody Person person) {
+        personService.addPerson(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -50,8 +49,8 @@ public class PersonController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @PutMapping("/person")
-    public ResponseEntity<String> updatePersonMappingController(@RequestBody Person person) {
-        personService.updatePersonMappingService(person);
+    public ResponseEntity<String> updatePersonController(@RequestBody Person person) {
+        personService.updatePerson(person);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -63,10 +62,9 @@ public class PersonController {
      * @return null
      */
     @DeleteMapping("/person")
-    public ResponseEntity<String> deleteFirestationMappingController(@RequestBody Person person) {
-        personService.deletePersonMappingService(person);
-        // FIXME moi je dirais plutot ca, non ? return new ResponseEntity<>(HttpStatus.OK);
-        return null;
+    public ResponseEntity<String> deleteFirestationController(@RequestBody Person person) {
+        personService.deletePerson(person);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

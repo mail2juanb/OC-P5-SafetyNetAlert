@@ -3,16 +3,15 @@ package com.oc_P5.SafetyNetAlerts.service;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PersonService {
 
-    List<Person> getPersonsService();
+    List<Person> getPersons();
 
-    void addPersonMappingService(Person addPerson);
+    void addPerson(Person addPerson);
 
-    void updatePersonMappingService(Person updatePerson);
+    void updatePerson(Person updatePerson);
 
-    void deletePersonMappingService(Person deletePerson);
+    void deletePerson(Person deletePerson);
 
 }

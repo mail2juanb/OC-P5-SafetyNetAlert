@@ -14,118 +14,86 @@ import java.util.*;
 public class PersonRepositoryImpl implements PersonRepository{
     private final DataReader dataReaderService;
 
-
     @Override
-    public List<Person> getPersons() {
+    public List<Person> getAll() {
         return dataReaderService.getData().getPersons();
     }
 
     @Override
-    public List<Person> getPersonsByAddress(String address) {
-        return getPersons()
+    public List<Person> getByAddress(String address) {
+        return getAll()
                 .stream()
                 .filter(person -> Objects.equals(person.getAddress(), address))
                 .toList();
     }
 
     @Override
-    public List<Person> getPersonsByAddresses(Collection<String> addresses) {
+    public List<Person> getByAddresses(Collection<String> addresses) {
         List<Person> personsByAddress = new ArrayList<>();
-        addresses.forEach(address -> personsByAddress.addAll(getPersonsByAddress(address)));
+        addresses.forEach(address -> personsByAddress.addAll(getByAddress(address)));
         return personsByAddress;
     }
 
     @Override
-    public List<Person> getPersonsByCity(String city) {
-        return getPersons()
+    public List<Person> getByCity(String city) {
+        return getAll()
                 .stream()
                 .filter(person -> Objects.equals(person.getCity(), city))
                 .toList();
     }
 
-//    @Override
-//    public Optional<Person> findPersonByName(String firstName, String lastName) {
-//        return  getPersons()
-//                .stream()
-//                .filter(person -> person.getFirstName().equals(firstName))
-//                .filter(person -> person.getLastName().equals(lastName))
-//                .findFirst();
-//    }
-
     @Override
-    public boolean personByIdExists(String id) {
-        return findPersonById(id).isPresent();
+    public boolean existsById(String id) {
+        return findById(id).isPresent();
     }
 
     @Override
-    public Optional<Person> findPersonById(String id) {
-        return getPersons()
+    public Optional<Person> findById(String id) {
+        return getAll()
                 .stream()
                 .filter(person -> person.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public Optional<Person> findPersonByCity(String city) {
-        return getPersons()
+    public Optional<Person> findByCity(String city) {
+        return getAll()
                 .stream()
                 .filter(person -> person.getCity().equals(city))
                 .findFirst();
     }
 
     @Override
-    public boolean personByCityExists(String city) {
-        return findPersonByCity(city).isPresent();
+    public boolean existsByCity(String city) {
+        return findByCity(city).isPresent();
     }
 
     @Override
-    public Optional<Person> findPersonByAddress(String address) {
-        return getPersons()
+    public Optional<Person> findByAddress(String address) {
+        return getAll()
                 .stream()
                 .filter(person -> person.getAddress().equals(address))
                 .findFirst();
     }
 
     @Override
-    public boolean personByAddressExists(String address) {
-        return findPersonByAddress(address).isPresent();
-    }
-
-    @Override
-    public void addPersonMapping(Person addPerson) {
-        List<Person> persons = getPersons();
+    public void save(Person addPerson) {
+        List<Person> persons = getAll();
         persons.add(addPerson);
     }
 
     @Override
-    public Optional<Person> updatePersonMapping(Person updatePerson) {
-        return findPersonById(updatePerson.getId())
-                .map(person -> {
-                    if(updatePerson.getAddress() != null) {
-                        person.setAddress(updatePerson.getAddress());
-                    }
-                    if(updatePerson.getCity() != null) {
-                        person.setCity(updatePerson.getCity());
-                    }
-                    if(updatePerson.getZip() != null) {
-                        person.setZip(updatePerson.getZip());
-                    }
-                    if(updatePerson.getPhone() != null) {
-                        person.setPhone(updatePerson.getPhone());
-                    }
-                    if(updatePerson.getEmail() != null) {
-                        person.setEmail(updatePerson.getEmail());
-                    }
+    public void update(Person updatePerson) {
+        Person personToUpdate = findById(updatePerson.getId()).orElseThrow();
+        int index = getAll().indexOf(personToUpdate);
+        getAll().set(index, updatePerson);
 
-                    return person;
-                });
     }
 
     @Override
-    public void deletePersonMapping(Person deletePerson) {
-        List<Person> persons = getPersons();
-        persons.removeIf(person -> person.getId().equals(deletePerson.getId()));
+    public void delete(Person deletePerson) {
+        List<Person> personList = getAll();
+        personList.removeIf(person -> person.getId().equals(deletePerson.getId()));
     }
-
 
 }

@@ -17,7 +17,8 @@ public class Person extends NamedModel {
     private String phone;
     private String email;
 
-    // FIXME Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
+    // NOTE Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
+    // NOTE C'est à cause du super.
     public Person(String firstName, String lastName, String address, String city, Integer zip, String phone, String email) {
         super(firstName, lastName);
         this.address = address;
@@ -25,6 +26,25 @@ public class Person extends NamedModel {
         this.zip = zip;
         this.phone = phone;
         this.email = email;
+    }
+
+    public Person update(Person update) {
+        if(update.getAddress() != null && !update.getAddress().isEmpty()) {
+            setAddress(update.getAddress());
+        }
+        if(update.getCity() != null && !update.getCity().isEmpty()) {
+            setCity(update.getCity());
+        }
+        if(update.getZip() != null) {
+            setZip(update.getZip());
+        }
+        if(update.getPhone() != null && !update.getPhone().isEmpty()) {
+            setPhone(update.getPhone());
+        }
+        if(update.getEmail() != null && update.getEmail().isEmpty()) {
+            setEmail(update.getEmail());
+        }
+        return this;
     }
 
 }

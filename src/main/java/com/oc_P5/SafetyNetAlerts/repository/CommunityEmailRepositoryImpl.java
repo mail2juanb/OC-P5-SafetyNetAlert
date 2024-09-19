@@ -17,13 +17,13 @@ public class CommunityEmailRepositoryImpl implements CommunityEmailRepository {
 
     private final PersonRepositoryImpl personRepository;
 
-
     public List<String> getCommunityEmailByCity(String city) {
-        List<Person> personsByCity = personRepository.getPersonsByCity(city);
+        List<Person> personsByCity = personRepository.getByCity(city);
         Set<String> uniquesCommunityEmailByCity = personsByCity
                 .stream()
                 .map(Person::getEmail)
                 .collect(Collectors.toSet());
         return new ArrayList<>(uniquesCommunityEmailByCity);
     }
+
 }

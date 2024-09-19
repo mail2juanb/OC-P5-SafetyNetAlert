@@ -28,7 +28,7 @@ public class FirestationServiceImpl implements FirestationService{
 
 
     public boolean isFirestationEmpty(Firestation firestation) {
-        return (firestation.getAddress() == null && firestation.getAddress().isEmpty()) &&
+        return (firestation.getAddress() == null && firestation.getAddress().trim().isEmpty()) &&
                 (firestation.getStation() == null);
     }
 
@@ -96,7 +96,7 @@ public class FirestationServiceImpl implements FirestationService{
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
 
-        List<Person> personsByAddress = personRepository.getPersonsByAddresses(stationAddress);
+        List<Person> personsByAddress = personRepository.getByAddresses(stationAddress);
         Integer nbrOfMinor = personsByAddress
                 .stream()
                 .map(p -> p.getId())

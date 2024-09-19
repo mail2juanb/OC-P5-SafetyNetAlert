@@ -1,6 +1,8 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
+import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
+import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -17,30 +18,49 @@ public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
 
-    public List<Person> getPersonsService() {
-        return personRepository.getPersons();
+
+    public boolean isPersonEmpty(Person person) {
+        return (person.getFirstName() == null || person.getFirstName().isEmpty()) &&
+                (person.getLastName() == null || person.getLastName().isEmpty()) &&
+                (person.getAddress() == null || person.getAddress().isEmpty()) &&
+                (person.getCity() == null || person.getCity().isEmpty()) &&
+                (person.getZip() == null) &&
+                (person.getPhone() == null || person.getPhone().isEmpty()) &&
+                (person.getEmail() == null || person.getEmail().isEmpty());
     }
 
-    public void addPersonMappingService(Person addPerson) {
-        if(personRepository.personByIdExists(addPerson.getId())){
-            throw new ConflictException("addPerson already exists");
-        }
-        personRepository.addPersonMapping(addPerson);
+    public List<Person> getPersons() {
+        return personRepository.getAll();
     }
 
-    // TODO Que ce passe t il si les attributs firstName et lastName sont null. Cela empècherai le fonctionnement ?
-    public void updatePersonMappingService(Person updatePerson) {
-        if(updatePerson == null || !personRepository.personByIdExists(updatePerson.getId())) {
-            throw new ConflictException("updatePerson doesn't exists");
+    public void addPerson(Person person) {
+        if(isPersonEmpty(person)) {
+            throw new NullOrEmptyObjectException("Person can not be null or empty");
         }
-        personRepository.updatePersonMapping(updatePerson);
+        if(personRepository.existsById(person.getId())){
+            throw new ConflictException("Person already exists for : " + person.getFirstName() + " " + person.getLastName());
+        }
+        personRepository.save(person);
     }
 
-    // TODO Que ce passe t il si les attributs firstName et lastName sont null. Cela empècherai le fonctionnement ?
-    public void deletePersonMappingService(Person deletePerson) {
-        if(deletePerson == null || !personRepository.personByIdExists(deletePerson.getId())) {
-            throw new ConflictException("deletePerson doesn't exists");
+    public void updatePerson(Person person) {
+        if(isPersonEmpty(person)) {
+            throw new NullOrEmptyObjectException("Person can not be null or empty");
         }
-        personRepository.deletePersonMapping(deletePerson);
+        Person updatedPerson = personRepository.findById(person.getId())
+                .orElseThrow(() -> new NotFoundException("Person doesn't exist with id : " + person.getId()))
+                .update(person);
+        personRepository.update(updatedPerson);
     }
+
+    public void deletePerson(Person person) {
+        if(isPersonEmpty(person)) {
+            throw new NullOrEmptyObjectException("Person can not be null or empty");
+        }
+        if(!personRepository.existsById(person.getId())) {
+            throw new NotFoundException("Person doesn't exists with id : " + person.getId());
+        }
+        personRepository.delete(person);
+    }
+
 }

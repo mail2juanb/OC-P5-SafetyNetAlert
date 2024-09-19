@@ -59,7 +59,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             throw new NullOrEmptyObjectException("MedicalRecord can not be null or empty");
         }
         if(!medicalrecordRepository.existsById(medicalRecord.getId())) {
-            throw new NotFoundException("MedicalRecord doesn't exist");
+            throw new NotFoundException("MedicalRecord doesn't exist with id : " + medicalRecord.getId());
         }
         medicalrecordRepository.delete(medicalRecord);
 

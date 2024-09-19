@@ -26,7 +26,7 @@ public class PhoneAlertRepositoryImpl implements PhoneAlertRepository {
                 .stream()
                 .map(Firestation::getAddress)
                 .toList();
-        List<Person> personsByAddress = personRepository.getPersonsByAddresses(firestationsAddresses);
+        List<Person> personsByAddress = personRepository.getByAddresses(firestationsAddresses);
         Set<String> uniquePhonesByStation = personsByAddress
                 .stream()
                 .map(Person::getPhone)

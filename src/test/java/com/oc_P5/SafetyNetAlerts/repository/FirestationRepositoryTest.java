@@ -60,7 +60,7 @@ public class FirestationRepositoryTest {
 
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
-    void getFirestations_shouldReturnListOfFirestations() {
+    void getAll_shouldReturnListOfFirestations() {
         // When
         List<Firestation> firestationList = firestationRepository.getAll();
 

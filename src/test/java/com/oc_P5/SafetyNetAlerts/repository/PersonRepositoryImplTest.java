@@ -11,11 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class PersonRepositoryImplTest {
@@ -27,205 +26,229 @@ public class PersonRepositoryImplTest {
     private PersonRepositoryImpl personRepository;
 
     private List<Person> personListMock;
-    private DataWrapperList dataWrapperListMock;
 
 
     @BeforeEach
     public void setUp() {
         // Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
-        // Creation des données de test - *firstName*, *lastName*, address, city, zip, phone, email
-        Person personTest1 = new Person();
-        personTest1.setFirstName("firstNameTest1");
-        personTest1.setLastName("lastNameTest1");
-        personTest1.setAddress("addressTest1");
-        personTest1.setCity("cityTest1");
-        personTest1.setZip(1);
-        personTest1.setPhone("phoneTest1");
-        personTest1.setEmail("emailTest1");
+        // Creation des données de test - String *firstName*, String *lastName*, String address, String city, Integer zip, String phone, String email
+        Person person1 = new Person();
+        person1.setFirstName("firstNameTest1");
+        person1.setLastName("lastNameTest1");
+        person1.setAddress("addressTest1");
+        person1.setCity("cityTest1");
+        person1.setZip(1);
+        person1.setPhone("phoneTest1");
+        person1.setEmail("emailTest1");
 
-        Person personTest2 = new Person();
-        personTest2.setFirstName("firstNameTest2");
-        personTest2.setLastName("lastNameTest2");
-        personTest2.setAddress("addressTest2");
-        personTest2.setCity("cityTest2");
-        personTest2.setZip(2);
-        personTest2.setPhone("phoneTest2");
-        personTest2.setEmail("emailTest2");
+        Person person2 = new Person();
+        person2.setFirstName("firstNameTest2");
+        person2.setLastName("lastNameTest2");
+        person2.setAddress("addressTest2");
+        person2.setCity("cityTest2");
+        person2.setZip(2);
+        person2.setPhone("phoneTest2");
+        person2.setEmail("emailTest2");
 
-        personListMock = new ArrayList<>(Arrays.asList(personTest1, personTest2));
+        personListMock = new ArrayList<>();
+        personListMock.add(person1);
+        personListMock.add(person2);
 
-        // Création et configuration du mock pour DataWrapperList
-        dataWrapperListMock = mock(DataWrapperList.class);
-        when(dataWrapperListMock.getPersons()).thenReturn(personListMock);
+        DataWrapperList dataWrapperList = new DataWrapperList();
+        dataWrapperList.setPersons(personListMock);
 
-        // Création et configuration du mock pour DataReader
-        when(dataReaderService.getData()).thenReturn(dataWrapperListMock);
-
+        // Configure le mock pour PersonRepository
+        when(dataReaderService.getData()).thenReturn(dataWrapperList);
     }
 
     @Test
-        // On va vérifier ici que la méthode retourne bien les données mock
-    void getPersons_shouldReturnListOfPersons() {
+    // On va vérifier ici que la méthode retourne bien les données mock
+    void getAll_shouldReturnListOfPersons() {
         // When
-        List<Person> persons = personRepository.getPersons();
+        List<Person> personList = personRepository.getAll();
 
         // Then
-        assertEquals(2, persons.size());
-        assertEquals("firstNameTest1", persons.get(0).getFirstName());
-        assertEquals("firstNameTest2", persons.get(1).getFirstName());
+        assertEquals(2, personList.size());
+        assertEquals("firstNameTest1", personList.get(0).getFirstName());
+        assertEquals("firstNameTest2", personList.get(1).getFirstName());
     }
 
-
     @Test
-        // On va vérifier ici que la méthode renvoi bien une liste de Person ayant l'adresse demandée (String)
-    void getPersonsByAddress_shouldReturnListOfPerson() {
+    // On va vérifier ici que la méthode ajoute correctement une Person
+    void savePerson_shouldSave() {
         // Given
-        String personAdress1 = "addressTest1";
+        Person person = new Person();
+        person.setFirstName("firstNameTest3");
+        person.setLastName("lastNameTest3");
+        person.setAddress("adressTest3");
+        person.setCity("cityTest3");
+        person.setZip(3);
+        person.setPhone("phoneTest3");
+        person.setEmail("emailTest3");
 
         // When
-        List<Person> persons = personRepository.getPersonsByAddress(personAdress1);
+        personRepository.save(person);
 
         // Then
-        assertEquals(1, persons.size());
-        assertEquals("firstNameTest1", persons.getFirst().getFirstName());
+        assertEquals(3, personListMock.size());
+        assertEquals("firstNameTest1", personListMock.get(0).getFirstName());
+        assertEquals("firstNameTest2", personListMock.get(1).getFirstName());
+        assertEquals("firstNameTest3", personListMock.get(2).getFirstName());
+        assertEquals("lastNameTest3", personListMock.get(2).getLastName());
+        assertEquals("adressTest3", personListMock.get(2).getAddress());
+        assertEquals("cityTest3", personListMock.get(2).getCity());
+        assertEquals(3, personListMock.get(2).getZip());
+        assertEquals("phoneTest3", personListMock.get(2).getPhone());
+        assertEquals("emailTest3", personListMock.get(2).getEmail());
+
     }
 
-
     @Test
-        // On va vérifier ici que la méthode renvoi bien une liste de Person ayant les adresses demandées (Collection<String>)
-    void getPersonsByAddresses_shouldReturnListOfPerson() {
+    // On va vérifier ici que la méthode met à jour correctement une Person
+    void updatePerson_shouldUpdate() {
         // Given
-        List<Person> persons = personRepository.getPersons();
-        Collection<String> personAddresses = persons
-                .stream()
-                .map(Person::getAddress)
-                .collect(Collectors.toSet());
-        Set<String> expectedFirstNames = Set.of("firstNameTest1", "firstNameTest2");
+        Person person = new Person();
+        person.setFirstName("firstNameTest1");
+        person.setLastName("lastNameTest1");
+        person.setAddress("addressTest1_Updated");
+        person.setCity("cityTest1_Updated");
+        person.setZip(10);
+        person.setPhone("phoneTest1_updated");
+        person.setEmail("emailTest1_updated");
 
         // When
-        List<Person> personsByAddress = personRepository.getPersonsByAddresses(personAddresses);
+        personRepository.update(person);
 
         // Then
-        String firstName0 = personsByAddress.get(0).getFirstName();
-        String firstName1 = personsByAddress.get(1).getFirstName();
-        assertTrue(expectedFirstNames.contains(firstName0) && expectedFirstNames.contains(firstName1));
-        assertEquals(2, personsByAddress.size());
+        assertEquals(2, personListMock.size());
+        assertEquals(person.getFirstName(), personListMock.getFirst().getFirstName());
+        assertEquals(person.getLastName(), personListMock.getFirst().getLastName());
+        assertEquals(person.getAddress(), personListMock.getFirst().getAddress());
+        assertEquals(person.getCity(), personListMock.getFirst().getCity());
+        assertEquals(person.getZip(), personListMock.getFirst().getZip());
+        assertEquals(person.getPhone(), personListMock.getFirst().getPhone());
+        assertEquals(person.getEmail(), personListMock.getFirst().getEmail());
     }
 
     @Test
-        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> avec l'id demandé
-    void findPersonById_shouldReturnOptionalPerson() {
+    // On va vérifier ici que la méthode supprime correctement une Person
+    void delete_shouldDelete() {
         // Given
-        String id1 = "firstNameTest1-lastNameTest1";
+        Person person = new Person();
+        person.setFirstName("firstNameTest1");
+        person.setLastName("lastNameTest1");
+        person.setAddress(null);
+        person.setCity(null);
+        person.setZip(null);
+        person.setPhone(null);
+        person.setEmail(null);
 
         // When
-        Optional<Person> person = personRepository.findPersonById(id1);
+        personRepository.delete(person);
+
+        // Then
+        assertEquals(1, personListMock.size());
+        assertEquals("firstNameTest2", personListMock.getFirst().getFirstName());
+        assertFalse(personListMock.contains(person));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par address
+    void getByAddress_shouldReturnListOfPersonByAddress() {
+        // Given
+        String address = "addressTest1";
+
+        // When
+        List<Person> personList = personRepository.getByAddress(address);
+
+        // Then
+        assertEquals(1, personList.size());
+        assertEquals("addressTest1", personList.getFirst().getAddress());
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par liste d'addresses
+    void getByAddresses_shouldReturnListOfPersonByCollectionAddresses() {
+        // Given
+        Collection<String> addresses = new ArrayList<>();
+        addresses.add("addressTest1");
+        addresses.add("addressTest2");
+
+        // When
+        List<Person> personList = personRepository.getByAddresses(addresses);
+
+        // Then
+        assertEquals(2, personList.size());
+        assertEquals("addressTest1", personList.get(0).getAddress());
+        assertEquals("addressTest2", personList.get(1).getAddress());
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par Ville
+    void getByCity_shouldReturnListOfPersonByCity() {
+        // Given
+        String city = "cityTest1";
+
+        // When
+        List<Person> personList = personRepository.getByCity(city);
+
+        // Then
+        assertEquals(1, personList.size());
+        assertEquals("cityTest1", personList.getFirst().getCity());
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par id connue
+    void existsById_shouldBeTrueIfIdExists() {
+        // Given
+        String id = "firstNameTest1-lastNameTest1";
+
+        // When / Then
+        assertTrue(personRepository.existsById(id));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par id inconnue
+    void existsById_shouldBeFalseIfIdExists() {
+        // Given
+        String id = "unknownId";
+
+        // When / Then
+        assertFalse(personRepository.existsById(id));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville connue
+    void existsByCity_shouldBeTrueIfCityExists(){
+        // Given
+        String city = "cityTest1";
+
+        // When / Then
+        assertTrue(personRepository.existsByCity(city));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville inconnue
+    void existsByCity_shouldBeFalseIfCityExists(){
+        // Given
+        String city = "unknownCityTest1";
+
+        // When / Then
+        assertFalse(personRepository.existsByCity(city));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de de la recherche de Person par adresse
+    void findByAddress_shouldReturnPersonByAddress() {
+        // Given
+        String address = "addressTest1";
+
+        // When
+        Optional<Person> person = personRepository.findByAddress(address);
 
         // Then
         assertTrue(person.isPresent());
-        assertEquals("firstNameTest1", person.get().getFirstName());
+        assertEquals("addressTest1", person.get().getAddress());
     }
-
-    @Test
-        // On va vérifier ici que la méthode renvoi bien un boolean true si l'id de la Person existe
-    void personByIdExists_shouldReturnBoolean() {
-        // Given
-        String idExist = "firstNameTest1-lastNameTest1";
-        String idNotExist = "idNotExist";
-
-        // When / Then
-        boolean exists = personRepository.personByIdExists(idExist);
-        assertTrue(exists);
-
-        boolean notExists = personRepository.personByIdExists(idNotExist);
-        assertFalse(notExists);
-    }
-
-    @Test
-        // On va vérifier ici que la méthode ajoute correctement une Person
-    void addPersonMapping_shouldAddNewPerson() {
-        // Given
-        Person addPerson = new Person("addPersonFirstName", "addPersonLastName", "addPersonAddress", "addPersonCity", 99, "addPersonPhone", "addPersonEmail");
-
-        // When
-        personRepository.addPersonMapping(addPerson);
-
-        // Then
-        List<Person> resultPersonList = personRepository.getPersons();
-        assertEquals(3, resultPersonList.size());
-        assertTrue(resultPersonList.contains(addPerson));
-    }
-
-    @Test
-        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> non mis à jour puisque les attributs sont null
-    void updatePersonMapping_shouldReturnOptionalPersonUpdatedWhenNullAttributes() {
-        // Given
-        Person updatePerson = new Person();
-        updatePerson.setFirstName("firstNameTest1");
-        updatePerson.setLastName("lastNameTest1");
-
-        // When
-        Optional<Person> updatePersonOpt = personRepository.updatePersonMapping(updatePerson);
-
-        // Then
-        assertTrue(updatePersonOpt.isPresent());
-        assertEquals("addressTest1", updatePersonOpt.get().getAddress());
-        assertEquals("cityTest1", updatePersonOpt.get().getCity());
-        assertEquals(1, updatePersonOpt.get().getZip());
-        assertEquals("phoneTest1", updatePersonOpt.get().getPhone());
-        assertEquals("emailTest1", updatePersonOpt.get().getEmail());
-    }
-
-    @Test
-        // On va vérifier ici que la méthode renvoi bien le bon Optional<Person> mis à jour avec ces attributs
-    void updatePersonMapping_shouldReturnOptionalPersonUpdated() {
-        // Given
-        Person updatePerson = new Person();
-        updatePerson.setFirstName("firstNameTest1");
-        updatePerson.setLastName("lastNameTest1");
-        updatePerson.setAddress("updatePersonAddress");
-        updatePerson.setCity("updatePersonCity");
-        updatePerson.setZip(0);
-        updatePerson.setPhone("updatePersonPhone");
-        updatePerson.setEmail("updatePersonEmail");
-
-        // When
-        Optional<Person> updatePersonOpt = personRepository.updatePersonMapping(updatePerson);
-
-        // Then
-        assertTrue(updatePersonOpt.isPresent());
-        assertEquals("updatePersonAddress", updatePersonOpt.get().getAddress());
-        assertEquals("updatePersonCity", updatePersonOpt.get().getCity());
-        assertEquals(0, updatePersonOpt.get().getZip());
-        assertEquals("updatePersonPhone", updatePersonOpt.get().getPhone());
-        assertEquals("updatePersonEmail", updatePersonOpt.get().getEmail());
-    }
-
-    //public void deleteFirestationMapping(Person deletePerson) {
-    @Test
-    // On va vérifier ici que la méthode supprime bien l'objet demandée (firstName et lastName minimum pour le getId)
-    void deleteFirestationMapping_shouldRemovePerson() {
-        // Given
-        Person deletePerson = new Person("firstNameTest1", "lastNameTest1", null, null, null, null, null);
-
-        // When
-        personRepository.deletePersonMapping(deletePerson);
-
-        // Then
-        List<Person> resultPersonList = personRepository.getPersons();
-        assertEquals(1, resultPersonList.size());
-        assertEquals("firstNameTest2", resultPersonList.getFirst().getFirstName());
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 }

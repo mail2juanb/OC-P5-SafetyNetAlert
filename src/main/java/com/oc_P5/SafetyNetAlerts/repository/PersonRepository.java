@@ -8,32 +8,28 @@ import java.util.List;
 
 public interface PersonRepository {
 
-    List<Person> getPersons();
+    List<Person> getAll();
 
-    List<Person> getPersonsByAddress(String address);
+    List<Person> getByAddress(String address);
 
-    List<Person> getPersonsByAddresses(Collection<String> address);
+    List<Person> getByAddresses(Collection<String> address);
 
-    //Optional<Person> findPersonByName(String firstName, String lastName);
+    Optional<Person> findById(String id);
 
-    Optional<Person> findPersonById(String id);
+    boolean existsById(String id);
 
-    boolean personByIdExists(String id);
+    void save(Person addPerson);
 
-    void addPersonMapping(Person addPerson);
+    void update(Person updatePerson);
 
-    Optional<Person> updatePersonMapping(Person updatePerson);
+    void delete(Person deletePerson);
 
-    void deletePersonMapping(Person deletePerson);
+    Optional<Person> findByCity(String city);
 
-    Optional<Person> findPersonByCity(String city);
+    boolean existsByCity(String city);
 
-    boolean personByCityExists(String city);
+    List<Person> getByCity(String city);
 
-    List<Person> getPersonsByCity(String city);
-
-    boolean personByAddressExists(String address);
-
-    Optional<Person> findPersonByAddress(String address);
+    Optional<Person> findByAddress(String address);
 
 }

@@ -40,11 +40,10 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
     }
 
     @Override
-    //String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
     public void update(MedicalRecord updateMedicalRecord) {
         MedicalRecord medicalRecordToUpdate = findById(updateMedicalRecord.getId()).orElseThrow();
         int index = getAll().indexOf(medicalRecordToUpdate);
-        getAll().set(index, updateMedicalRecord );
+        getAll().set(index, updateMedicalRecord);
     }
 
     @Override

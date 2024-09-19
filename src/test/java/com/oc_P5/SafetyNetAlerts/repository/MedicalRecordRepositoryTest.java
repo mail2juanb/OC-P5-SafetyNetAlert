@@ -71,7 +71,7 @@ public class MedicalRecordRepositoryTest {
 
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
-    void getMedicalRecord_shouldReturnListOfMedicalRecords() {
+    void getAll_shouldReturnListOfMedicalRecords() {
         // When
         List<MedicalRecord> medicalRecordList = medicalRecordRepository.getAll();
 
@@ -129,6 +129,7 @@ public class MedicalRecordRepositoryTest {
         medicalRecordRepository.update(medicalRecord);
 
         // Then
+        assertEquals(2, medicalRecordListMock.size());
         assertEquals(medicalRecord.getFirstName(), medicalRecordListMock.getFirst().getFirstName());
         assertEquals(medicalRecord.getLastName(), medicalRecordListMock.getFirst().getLastName());
         assertEquals(medicalRecord.getBirthdate(), medicalRecordListMock.getFirst().getBirthdate());

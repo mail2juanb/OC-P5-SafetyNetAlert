@@ -7,7 +7,8 @@ import com.oc_P5.SafetyNetAlerts.model.Person;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChildrenService {
+
+public class ChildrenService_A_Supprimer {
 
     // Méthode pour récupérer la liste des enfants par adresse
     public List<ChildrenByAddress> getChildrenByAddress(List<Person> persons, List<MedicalRecord> medicalRecords, String address) {
