@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @Disabled
 @ExtendWith(MockitoExtension.class)
-public class FirestationServiceImplTest {
+public class FirestationServiceTest {
 
     @Mock
     private FirestationRepository firestationRepository;

@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class PersonRepositoryImplTest {
+public class PersonRepositoryTest {
 
     @Mock
     private DataReader dataReaderService;
