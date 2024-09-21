@@ -3,6 +3,7 @@ package com.oc_P5.SafetyNetAlerts.service;
 import com.oc_P5.SafetyNetAlerts.dto.ChildrenByAddress;
 import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
+import com.oc_P5.SafetyNetAlerts.model.NamedModel;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
@@ -34,7 +35,7 @@ public class ChildAlertServiceImpl implements ChildAlertService {
         // Récupère la liste de l'id des personnes à l'adresse demandée
         List<String> personIds = personsByAddress
                 .stream()
-                .map(p -> p.getId())
+                .map(NamedModel::getId)
                 .toList();
 
         // Récupérer la liste des dossiers médicaux des mineurs à l'adresse demandée
@@ -52,16 +53,16 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
         return personWithMedicalRecord
                 .stream()
-                .filter(p -> p.isMinor())
+                .filter(PersonWithMedicalRecord::isMinor)
                 .map(p -> mapToChildrenByAddress(p, personWithMedicalRecord))
                 .toList();
     }
 
-    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person p, List<MedicalRecord> medicalRecordMinorsByAddress, List<String> personIds) {
+    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person person, List<MedicalRecord> medicalRecordMinorsByAddress, List<String> personIds) {
         return medicalRecordMinorsByAddress
                 .stream()
                 .filter(mr -> personIds.contains(mr.getId()))
-                .map(mr -> new PersonWithMedicalRecord(p, mr))
+                .map(medicalRecord -> new PersonWithMedicalRecord(person, medicalRecord))
                 .findFirst()
                 .orElseThrow();
     }
