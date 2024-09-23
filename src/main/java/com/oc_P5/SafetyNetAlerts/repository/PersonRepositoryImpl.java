@@ -76,6 +76,21 @@ public class PersonRepositoryImpl implements PersonRepository{
                 .findFirst();
     }
 
+    // TODO Ecrire le test correspondant
+    @Override
+    public boolean existsByLastName(String lastName) {
+        return findByLastName(lastName).isPresent();
+    }
+
+    // TODO Ecrire le test correspondant
+    @Override
+    public Optional<Person> findByLastName(String lastName) {
+        return getAll()
+                .stream()
+                .filter(person -> person.getLastName().equals(lastName))
+                .findFirst();
+    }
+
     @Override
     public void save(Person addPerson) {
         List<Person> persons = getAll();

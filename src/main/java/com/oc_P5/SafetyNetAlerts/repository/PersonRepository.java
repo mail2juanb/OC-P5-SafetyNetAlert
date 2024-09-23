@@ -18,6 +18,10 @@ public interface PersonRepository {
 
     boolean existsById(String id);
 
+    boolean existsByLastName(String lastName);
+
+    Optional<Person> findByLastName(String lastName);
+
     void save(Person addPerson);
 
     void update(Person updatePerson);
