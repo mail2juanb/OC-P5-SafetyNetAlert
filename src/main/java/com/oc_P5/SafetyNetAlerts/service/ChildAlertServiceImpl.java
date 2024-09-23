@@ -30,38 +30,53 @@ public class ChildAlertServiceImpl implements ChildAlertService {
         // Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
 
         // Récupérer la liste des personnes à l'adresse demandée
-        List<Person> personsByAddress = personRepository.getByAddress(address);
+        List<Person> personList = personRepository.getByAddress(address);
+
+        for (Person person : personList) {
+            System.out.println("person = " + person.getId());
+        }
 
         // Récupère la liste de l'id des personnes à l'adresse demandée
-        List<String> personIds = personsByAddress
+        List<String> idList = personList
                 .stream()
                 .map(NamedModel::getId)
                 .toList();
 
-        // Récupérer la liste des dossiers médicaux des mineurs à l'adresse demandée
-        List<MedicalRecord> medicalRecordMinorsByAddress = medicalRecordRepository.getAll()
+        for(String id : idList) {
+            System.out.println("id = " + id);
+        }
+
+        // Récupérer la liste des dossiers médicaux des Person à l'adresse demandée
+        List<MedicalRecord> medicalRecordList = medicalRecordRepository.getAll()
                 .stream()
-                .filter(medicalRecord -> personIds.contains(medicalRecord.getId()))
-                .filter(MedicalRecord::isMinor)
+                .filter(medicalRecord -> idList.contains(medicalRecord.getId()))
                 .toList();
 
+        for(MedicalRecord medicalRecord : medicalRecordList) {
+            System.out.println("medicalRecord = " + medicalRecord.getId());
+        }
+
         // Récupère la liste accumulée de Person + MedicalRecord à l'adresse demandée
-        List<PersonWithMedicalRecord> personWithMedicalRecord = personsByAddress
+        List<PersonWithMedicalRecord> personWithMedicalRecord = personList
                 .stream()
-                .map( p -> mapToPersonWithMedicalRecord(p, medicalRecordMinorsByAddress, personIds))
+                .map(person -> mapToPersonWithMedicalRecord(person, medicalRecordList))
                 .toList();
+
+        for(PersonWithMedicalRecord personMedic : personWithMedicalRecord) {
+            System.out.println("person = " + personMedic.person.getId() + " == medicalRecord = " + personMedic.medicalRecord.getId() + " == age = " + personMedic.medicalRecord.getAge());
+        }
 
         return personWithMedicalRecord
                 .stream()
                 .filter(PersonWithMedicalRecord::isMinor)
-                .map(p -> mapToChildrenByAddress(p, personWithMedicalRecord))
+                .map(personMedic -> mapToChildrenByAddress(personMedic, personWithMedicalRecord))
                 .toList();
     }
 
-    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person person, List<MedicalRecord> medicalRecordMinorsByAddress, List<String> personIds) {
-        return medicalRecordMinorsByAddress
+    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person person, List<MedicalRecord> medicalRecordList) {
+        return medicalRecordList
                 .stream()
-                .filter(mr -> personIds.contains(mr.getId()))
+                .filter(medicalRecord -> medicalRecord.getId().equals(person.getId()))
                 .map(medicalRecord -> new PersonWithMedicalRecord(person, medicalRecord))
                 .findFirst()
                 .orElseThrow();
