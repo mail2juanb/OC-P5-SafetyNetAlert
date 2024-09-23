@@ -209,7 +209,7 @@ public class PersonRepositoryTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par id inconnue
-    void existsById_shouldBeFalseIfIdExists() {
+    void existsById_shouldBeFalseIfIdNotExists() {
         // Given
         String id = "unknownId";
 
@@ -229,7 +229,7 @@ public class PersonRepositoryTest {
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville inconnue
-    void existsByCity_shouldBeFalseIfCityExists(){
+    void existsByCity_shouldBeFalseIfCityNotExists(){
         // Given
         String city = "unknownCityTest1";
 
@@ -249,6 +249,26 @@ public class PersonRepositoryTest {
         // Then
         assertTrue(person.isPresent());
         assertEquals("addressTest1", person.get().getAddress());
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville connue
+    void existsByLastName_shouldBeTrueIfLastNameExists(){
+        // Given
+        String lastName = "lastNameTest1";
+
+        // When / Then
+        assertTrue(personRepository.existsByLastName(lastName));
+    }
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville inconnue
+    void existsByLastName_shouldBeFalseIfLastNameNotExists(){
+        // Given
+        String lastName = "unknownLastNameTest1";
+
+        // When / Then
+        assertFalse(personRepository.existsByLastName(lastName));
     }
 
 }
