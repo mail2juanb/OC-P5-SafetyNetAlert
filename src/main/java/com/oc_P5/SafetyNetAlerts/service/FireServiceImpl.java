@@ -11,6 +11,7 @@ import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class FireServiceImpl implements FireService {
     public FirePersonsByAddress getFirePersonsByAddress(String address) {
 
         // Vérifier si l'adresse est null ou vide
-        if (address == null || address.trim().isEmpty()) {
+        if (StringUtils.isBlank(address)) {
             throw new NullOrEmptyObjectException("Address cannot be null or empty");
         }
 
