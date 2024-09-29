@@ -47,7 +47,7 @@ public class FirestationController {
      */
     @GetMapping("/firestation")
     public PersonsByStation getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
-        return firestationService.getPersonsByStationService(stationNumber);
+        return firestationService.getPersonsByStation(stationNumber);
     }
 
 

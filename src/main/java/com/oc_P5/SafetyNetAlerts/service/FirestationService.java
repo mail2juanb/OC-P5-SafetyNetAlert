@@ -15,6 +15,6 @@ public interface FirestationService {
 
     void deleteFirestation(Firestation firestation);
 
-    PersonsByStation getPersonsByStationService(Integer stationNumber);
+    PersonsByStation getPersonsByStation(Integer stationNumber);
 
 }

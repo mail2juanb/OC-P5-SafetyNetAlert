@@ -11,6 +11,7 @@ import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,26 +28,24 @@ public class FirestationServiceImpl implements FirestationService{
     private final MedicalRecordRepository medicalrecordRepository;
 
 
-    public boolean isFirestationEmpty(Firestation firestation) {
-        return (firestation.getAddress() == null && firestation.getAddress().trim().isEmpty()) &&
-                (firestation.getStation() == null);
-    }
-
+    @Override
     public List<Firestation> getFirestations() {
         return firestationRepository.getAll();
     }
 
+    @Override
     public void updateFirestation(Firestation firestation) {
         if(isFirestationEmpty(firestation)) {
             throw new NullOrEmptyObjectException("Firestation can not be null or empty");
         }
         Firestation updatedFirestation = firestationRepository.findByAddress(firestation.getAddress())
-                        .orElseThrow(()-> new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress()))
-                                .update(firestation);
+                .orElseThrow(()-> new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress()))
+                .update(firestation);
 
         firestationRepository.update(updatedFirestation);
     }
 
+    @Override
     public void addFirestation(Firestation firestation) {
         if(isFirestationEmpty(firestation)) {
             throw new NullOrEmptyObjectException("Firestation can not be null or empty");
@@ -57,10 +56,10 @@ public class FirestationServiceImpl implements FirestationService{
         firestationRepository.save(firestation);
     }
 
-
+    @Override
     public void deleteFirestation(Firestation firestation) {
-        if(isFirestationEmpty(firestation)) {
-            throw new NullOrEmptyObjectException("Firestation can not be null or empty");
+        if (firestation.getAddress() == null && firestation.getStation() == null) {
+            throw new NullOrEmptyObjectException("Firestation can not be null");
         }
         if (firestation.getAddress() != null && firestation.getStation() != null) {
             if (firestationRepository.existsByAddressByStation(firestation)) {
@@ -78,7 +77,7 @@ public class FirestationServiceImpl implements FirestationService{
                 throw new NotFoundException("Address doesn't exist with address = " + firestation.getAddress());
             }
         }
-        if (firestation.getStation() != null && firestation.getAddress() == null) {
+        if (firestation.getAddress() == null && firestation.getStation() != null) {
             if (firestationRepository.existsByStation(firestation.getStation())) {
                 firestationRepository.deleteByStation(firestation.getStation());
             } else {
@@ -87,16 +86,18 @@ public class FirestationServiceImpl implements FirestationService{
         }
     }
 
-    public PersonsByStation getPersonsByStationService(Integer stationNumber) {
+    @Override
+    public PersonsByStation getPersonsByStation(Integer stationNumber) {
         if(!firestationRepository.existsByStation(stationNumber)) {
             throw new NotFoundException("StationNumber doesn't exist with stationNumber = " + stationNumber);
         }
-        Set<String> stationAddress = firestationRepository.getByStation(stationNumber)
+        Set<String> stationAddresses = firestationRepository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
 
-        List<Person> personsByAddress = personRepository.getByAddresses(stationAddress);
+        List<Person> personsByAddress = personRepository.getByAddresses(stationAddresses);
+
         Integer nbrOfMinor = personsByAddress
                 .stream()
                 .map(p -> p.getId())
@@ -106,6 +107,10 @@ public class FirestationServiceImpl implements FirestationService{
                 .toList()
                 .size();
         return new  PersonsByStation(personsByAddress, nbrOfMinor );
+    }
+
+    private boolean isFirestationEmpty(Firestation firestation) {
+        return (StringUtils.isBlank(firestation.getAddress()) || firestation.getStation() == null);
     }
 
 }
