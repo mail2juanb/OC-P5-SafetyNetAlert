@@ -1,6 +1,9 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
+import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
+import com.oc_P5.SafetyNetAlerts.service.PersonsInfolastNameServiceImpl;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,4 +112,33 @@ public class PersonRepositoryImpl implements PersonRepository{
         personList.removeIf(person -> person.getId().equals(deletePerson.getId()));
     }
 
+    @Override
+    public List<PersonWithMedicalRecord> getPersonsWithMedicalRecord(List<String> ids ){
+
+        List<Person> personList = getAll()
+                .stream()
+                .filter(person -> ids.contains(person.getId()))
+                .toList();
+
+        List<MedicalRecord> medicalRecordList = dataReaderService.getData().getMedicalRecords()
+                .stream()
+                .filter(medicalRecord -> ids.contains(medicalRecord.getId()))
+                .toList();
+
+        // NOTE Mapper les 2 liste en une seule dans une liste d'objets PersonWithMedicalRecord
+        return personList
+                .stream()
+                .map(person -> mapToPersonWithMedicalRecord(person, medicalRecordList))
+                .toList();
+
+    }
+
+    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person person, List<MedicalRecord> medicalRecordList) {
+        return medicalRecordList
+                .stream()
+                .filter(medicalRecord -> medicalRecord.getId().equals(person.getId()))
+                .map(medicalRecord -> new PersonWithMedicalRecord(person, medicalRecord))
+                .findFirst()
+                .orElseThrow();
+    }
 }

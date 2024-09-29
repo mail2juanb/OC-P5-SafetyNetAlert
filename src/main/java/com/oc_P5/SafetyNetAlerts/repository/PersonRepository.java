@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
 import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -36,4 +37,5 @@ public interface PersonRepository {
 
     Optional<Person> findByAddress(String address);
 
+    List<PersonWithMedicalRecord> getPersonsWithMedicalRecord(List<String> ids );
 }
