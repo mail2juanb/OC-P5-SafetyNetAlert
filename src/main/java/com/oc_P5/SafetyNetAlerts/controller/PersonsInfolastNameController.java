@@ -1,11 +1,13 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.dto.PersonsInfolastName;
+import com.oc_P5.SafetyNetAlerts.dto.PersonInfoLastName;
 import com.oc_P5.SafetyNetAlerts.service.PersonsInfolastNameServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,8 +26,8 @@ public class PersonsInfolastNameController {
      * @return Liste des personnes portant le lastName demandé.
      * mise en forme : String lastName, String address, String phone, int age, List<String>medications, List<String>allergies
      */
-    @GetMapping("")
-    public PersonsInfolastName getPersonsInfolastName(@RequestParam("lastName") String lastName) {
+    @GetMapping
+    public List<PersonInfoLastName> getPersonsInfolastName(@RequestParam("lastName") String lastName) {
         return personsInfolastNameService.getPersonsInfolastName(lastName);
     }
 

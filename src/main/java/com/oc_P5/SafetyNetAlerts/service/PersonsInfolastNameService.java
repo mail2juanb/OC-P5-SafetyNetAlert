@@ -1,8 +1,10 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.PersonsInfolastName;
+import com.oc_P5.SafetyNetAlerts.dto.PersonInfoLastName;
+
+import java.util.List;
 
 public interface PersonsInfolastNameService {
 
-    PersonsInfolastName getPersonsInfolastName(String lastName);
+    List<PersonInfoLastName> getPersonsInfolastName(String lastName);
 }
