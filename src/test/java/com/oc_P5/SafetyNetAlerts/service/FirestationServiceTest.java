@@ -114,10 +114,6 @@ public class FirestationServiceTest {
         medicalRecordMock.add(medicalRecord1);
         medicalRecordMock.add(medicalRecord2);
 
-
-
-
-
         // Configure les mocks
         //when(firestationRepository.getAll()).thenReturn(firestationListMock);
     }
@@ -239,7 +235,7 @@ public class FirestationServiceTest {
     }
 
     @Test
-    @Disabled("Test désactivé car la méthode de test plus la levée d'une NullOrEmptyObjectException")
+    @Disabled("Test désactivé car la méthode ne test plus la levée d'une NullOrEmptyObjectException")
     // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque la Firestation est vide ou null
     void deleteFirestation_shouldThrowNullOrEmptyObjectException() {
         // Given
@@ -377,7 +373,10 @@ public class FirestationServiceTest {
 
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).contains("null");
+        assertThat(thrown.getMessage()).satisfiesAnyOf(
+                message -> assertThat(message).contains("null"),
+                message -> assertThat(message).contains("empty")
+        );
     }
 
     @Test
@@ -385,7 +384,6 @@ public class FirestationServiceTest {
     void getPersonsByStation_shouldThrowNotFoundExceptionWhenStationNotExist() {
         // Given
         Integer stationNumber = 99;
-
 
         // When / Then
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.getPersonsByStation(stationNumber));

@@ -1,8 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.CommunityEmailServiceImpl;
-import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +26,7 @@ public class CommunityEmailController {
      */
     @GetMapping("/communityEmail")
     public List<String> getCommunityEmailByCityController(@RequestParam("city") String city) {
-        return communityEmailService.getCommunityEmailByCityService(city);
+        return communityEmailService.getCommunityEmailByCity(city);
     }
 
 }

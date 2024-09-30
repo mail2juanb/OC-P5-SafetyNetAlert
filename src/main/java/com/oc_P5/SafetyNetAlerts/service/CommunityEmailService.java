@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CommunityEmailService {
 
-    List<String> getCommunityEmailByCityService(String city);
+    List<String> getCommunityEmailByCity(String city);
 }
