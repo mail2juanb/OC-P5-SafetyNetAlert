@@ -1,8 +1,11 @@
 package com.oc_P5.SafetyNetAlerts.repository;
 
+import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataWrapperList;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,12 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class PersonRepositoryTest {
 
@@ -31,7 +36,7 @@ public class PersonRepositoryTest {
     @BeforeEach
     public void setUp() {
         // Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
-        // Creation des données de test - String *firstName*, String *lastName*, String address, String city, Integer zip, String phone, String email
+
         Person person1 = new Person();
         person1.setFirstName("firstNameTest1");
         person1.setLastName("lastNameTest1");
@@ -63,7 +68,7 @@ public class PersonRepositoryTest {
 
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
-    void getAll_shouldReturnListOfPersons() {
+    void getAll_shouldReturnListOfPerson() {
         // When
         List<Person> personList = personRepository.getAll();
 
@@ -269,6 +274,84 @@ public class PersonRepositoryTest {
 
         // When / Then
         assertFalse(personRepository.existsByLastName(lastName));
+    }
+
+    @Test
+    // On va vérifier que la méthode renvoi bien une liste de PersonWithMedicalRecord ainsi que les bons attributs
+    void getPersonsWithMedicalRecord_shouldReturnListOfPersonWithMedicalRecord() {
+        // Given
+        List<String> ids = new ArrayList<>();
+        ids.add("firstNameTest1-lastNameTest1");
+        ids.add("firstNameTest2-lastNameTest2");
+
+        List<Person> personList = new ArrayList<>();
+        personList.add(personListMock.get(0));
+        personList.add(personListMock.get(1));
+
+        LocalDate birthdate1 = LocalDate.parse("09/01/2024", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        List<String> medicationList1 = Collections.emptyList();
+        List<String> allergiesList1 = Collections.emptyList();
+
+        MedicalRecord medicalRecord1 = new MedicalRecord();
+        medicalRecord1.setFirstName("firstNameTest1");
+        medicalRecord1.setLastName("lastNameTest1");
+        medicalRecord1.setBirthdate(birthdate1);
+        medicalRecord1.setMedications(medicationList1);
+        medicalRecord1.setAllergies(allergiesList1);
+
+        LocalDate birthdate2 = LocalDate.parse("09/01/1990", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        List<String> medicationList2 = List.of("medicationTest1:100mg", "medicationTest2:200mg");
+        List<String> allergiesList2 = List.of("allergieTest1", "allergieTest2");
+
+        MedicalRecord medicalRecord2 = new MedicalRecord();
+        medicalRecord2.setFirstName("firstNameTest2");
+        medicalRecord2.setLastName("lastNameTest2");
+        medicalRecord2.setBirthdate(birthdate2);
+        medicalRecord2.setMedications(medicationList2);
+        medicalRecord2.setAllergies(allergiesList2);
+
+        List<MedicalRecord> medicalRecordList = new ArrayList<>();
+        medicalRecordList.add(medicalRecord1);
+        medicalRecordList.add(medicalRecord2);
+
+        DataWrapperList dataWrapper = new DataWrapperList();
+        dataWrapper.setMedicalRecords(medicalRecordList);
+        dataWrapper.setPersons(personList);
+
+        when(dataReaderService.getData()).thenReturn(dataWrapper);
+
+        // When
+        List<PersonWithMedicalRecord> result = personRepository.getPersonsWithMedicalRecord(ids);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+            // Vérification des attributs pour la PersonWithMedicalRecord 1
+        assertEquals("firstNameTest1", result.get(0).person().getFirstName());
+        assertEquals("lastNameTest1", result.get(0).person().getLastName());
+        assertEquals("addressTest1", result.get(0).person().getAddress());
+        assertEquals("cityTest1", result.get(0).person().getCity());
+        assertEquals(1, result.get(0).person().getZip());
+        assertEquals("phoneTest1", result.get(0).person().getPhone());
+        assertEquals("emailTest1", result.get(0).person().getEmail());
+        assertEquals("firstNameTest1", result.get(0).medicalRecord().getFirstName());
+        assertEquals("lastNameTest1", result.get(0).medicalRecord().getLastName());
+        assertEquals(birthdate1, result.get(0).medicalRecord().getBirthdate());
+        assertEquals(medicationList1, result.get(0).medicalRecord().getMedications());
+        assertEquals(allergiesList1, result.get(0).medicalRecord().getAllergies());
+            // Vérification des attributs pour la PersonWithMedicalRecord 2
+        assertEquals("firstNameTest2", result.get(1).person().getFirstName());
+        assertEquals("lastNameTest2", result.get(1).person().getLastName());
+        assertEquals("addressTest2", result.get(1).person().getAddress());
+        assertEquals("cityTest2", result.get(1).person().getCity());
+        assertEquals(2, result.get(1).person().getZip());
+        assertEquals("phoneTest2", result.get(1).person().getPhone());
+        assertEquals("emailTest2", result.get(1).person().getEmail());
+        assertEquals("firstNameTest2", result.get(1).medicalRecord().getFirstName());
+        assertEquals("lastNameTest2", result.get(1).medicalRecord().getLastName());
+        assertEquals(birthdate2, result.get(1).medicalRecord().getBirthdate());
+        assertEquals(medicationList2, result.get(1).medicalRecord().getMedications());
+        assertEquals(allergiesList2, result.get(1).medicalRecord().getAllergies());
     }
 
 }
