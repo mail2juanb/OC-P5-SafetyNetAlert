@@ -3,7 +3,6 @@ package com.oc_P5.SafetyNetAlerts.repository;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
-import com.oc_P5.SafetyNetAlerts.service.PersonsInfolastNameServiceImpl;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

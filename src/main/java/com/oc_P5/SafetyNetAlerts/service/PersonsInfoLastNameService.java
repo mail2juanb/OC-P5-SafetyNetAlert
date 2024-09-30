@@ -4,7 +4,7 @@ import com.oc_P5.SafetyNetAlerts.dto.PersonInfoLastName;
 
 import java.util.List;
 
-public interface PersonsInfolastNameService {
+public interface PersonsInfoLastNameService {
 
-    List<PersonInfoLastName> getPersonsInfolastName(String lastName);
+    List<PersonInfoLastName> getPersonsInfoLastName(String lastName);
 }
