@@ -235,23 +235,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    @Disabled("Test désactivé car la méthode ne test plus la levée d'une NullOrEmptyObjectException")
-    // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque la Firestation est vide ou null
-    void deleteFirestation_shouldThrowNullOrEmptyObjectException() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress(" ");
-        firestation.setStation(null);
-
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
-    }
-
-    @Test
     // On va vérifier ici que la suppression d'une Firestation grace une Firestation est correctement supprimée
     void deleteFirestation_shouldRemoveFirestationWhenAddressAndStationNumberExist() {
         // Given

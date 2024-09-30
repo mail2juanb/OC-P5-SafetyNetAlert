@@ -22,12 +22,12 @@ public class PhoneAlertController {
     /**
      * GET http://localhost:8080/phoneAlert?firestation=<firestation_number>
      * Cet url doit retourner la liste de numéros de téléphone des personnes desservis par la caserne de pompier
-     * @param stationNumber numéro de la Station
+     * @param firestation_Number numéro de la Station
      * @return Liste de numéros de téléphone
      */
     @GetMapping("/phoneAlert")
-    public List<String> getPhonesByStationNumberController(@RequestParam("firestation_Number") Integer stationNumber) {
-        return phoneAlertService.getPhonesByStationNumberService(stationNumber);
+    public List<String> getPhonesByStationNumberController(@RequestParam("firestation_Number") Integer firestation_Number) {
+        return phoneAlertService.getPhonesByStation(firestation_Number);
     }
 
 }

@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface PhoneAlertService {
 
-    List<String> getPhonesByStationNumberService(Integer stationNumber);
+    List<String> getPhonesByStation(Integer stationNumber);
 
 }
