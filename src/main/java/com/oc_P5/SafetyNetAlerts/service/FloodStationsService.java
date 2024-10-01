@@ -1,11 +1,11 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.MembersByStation;
+import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
 
 import java.util.List;
 
 public interface FloodStationsService {
 
-    MembersByStation getMembersByStation(List<Integer> station_Numbers);
+    List<MemberByStation> getMembersByStation(List<Integer> station_Numbers);
 
 }

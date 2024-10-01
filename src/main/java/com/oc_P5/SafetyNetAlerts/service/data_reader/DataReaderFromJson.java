@@ -15,7 +15,6 @@ import java.io.IOException;
 public class DataReaderFromJson implements DataReader {
 
     private DataWrapperList data = new DataWrapperList();
-    private ResourceLoader resourceLoader;
 
     public DataReaderFromJson(ObjectMapper objectMapper, ResourceLoader resourceLoader) {
 

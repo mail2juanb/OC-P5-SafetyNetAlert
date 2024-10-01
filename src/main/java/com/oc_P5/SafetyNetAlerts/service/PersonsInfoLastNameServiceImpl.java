@@ -39,7 +39,7 @@ public class PersonsInfoLastNameServiceImpl implements PersonsInfoLastNameServic
                 .map(Person::getId)
                 .toList();
 
-        // NOTE Mapper les 2 liste en une seule dans une liste d'objets PersonWithMedicalRecord
+        // NOTE Recupère la liste des PersonWithMedicalRecord
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(idsList);
 
         // NOTE Mapper la liste de PersonWithMedicalRecord dans une liste de PersonInfoLastName

@@ -1,6 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.dto.MembersByStation;
+import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
 import com.oc_P5.SafetyNetAlerts.service.FloodStationsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class FloodStationsController {
      * mise en forme : String lastname, String phone, int age, List<String>medications, List<String>allergies
      */
     @GetMapping("/flood/stations")
-    public MembersByStation getMembersByStationController(@RequestParam("station_Numbers") List<Integer> station_Numbers) {
+    public List<MemberByStation> getMembersByStationController(@RequestParam("station_Numbers") List<Integer> station_Numbers) {
         return floodStationsService.getMembersByStation(station_Numbers);
     }
 

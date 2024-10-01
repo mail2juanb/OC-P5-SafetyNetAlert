@@ -1,7 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-
-import com.oc_P5.SafetyNetAlerts.dto.MembersByStation;
+import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
@@ -107,20 +106,17 @@ public class FloodStationsServiceTest {
         when(personRepository.getPersonsWithMedicalRecord(idList)).thenReturn(personWithMedicalRecordList);
 
         // When
-        MembersByStation result = floodStationsService.getMembersByStation(station_Numbers);
+        List<MemberByStation> result = floodStationsService.getMembersByStation(station_Numbers);
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.getMemberByStationList()).hasSize(1);
-
-        MembersByStation.MemberByStation member = result.getMemberByStationList().get(0);
-        assertThat(member.getLastName()).isEqualTo(person1.getLastName());
-        assertThat(member.getPhone()).isEqualTo(person1.getPhone());
-        assertThat(member.getMedications()).isEqualTo(medicationList1);
-        assertThat(member.getAllergies()).isEqualTo(allergiesList1);
-
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getLastName()).isEqualTo(person1.getLastName());
+        assertThat(result.getFirst().getPhone()).isEqualTo(person1.getPhone());
+        assertThat(result.getFirst().getMedications()).isEqualTo(medicalRecord1.getMedications());
+        assertThat(result.getFirst().getAllergies()).isEqualTo(medicalRecord1.getAllergies());
         // FIXME Pas certain de cet assertion. Le résultat peut changer dans le temps
-        assertThat(member.getAge()).isEqualTo(34);
+        assertThat(result.getFirst().getAge()).isEqualTo(34);
     }
 
 

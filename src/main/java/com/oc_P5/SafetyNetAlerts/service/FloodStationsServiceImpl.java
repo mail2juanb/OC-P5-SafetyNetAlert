@@ -1,6 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.MembersByStation;
+import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
@@ -23,7 +23,7 @@ public class FloodStationsServiceImpl implements FloodStationsService {
     private final PersonRepository personRepository;
     private final FirestationRepository firestationRepository;
 
-    public MembersByStation getMembersByStation(List<Integer> station_Numbers) {
+    public List<MemberByStation> getMembersByStation(List<Integer> station_Numbers) {
 
         // NOTE Vérifier si station_Numbers est vide ou que l'un des éléments est null
         if(isEmptyListOfInteger(station_Numbers)) {
@@ -54,18 +54,18 @@ public class FloodStationsServiceImpl implements FloodStationsService {
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(idList);
 
         // NOTE Mapper la liste dans l'objet MembersByStation
-        List<MembersByStation.MemberByStation> memberByStationList = personWithMedicalRecordList
+        List<MemberByStation> memberByStationList = personWithMedicalRecordList
                 .stream()
                 .map(FloodStationsServiceImpl::mapToMemberByStation)
                 .toList();
 
-        return new MembersByStation(memberByStationList);
+        return memberByStationList;
     }
 
 
 
-    private static MembersByStation.MemberByStation mapToMemberByStation(PersonWithMedicalRecord personMedic) {
-        return new MembersByStation.MemberByStation(personMedic.person(), personMedic.medicalRecord());
+    private static MemberByStation mapToMemberByStation(PersonWithMedicalRecord personMedic) {
+        return new MemberByStation(personMedic.person(), personMedic.medicalRecord());
     }
 
 
