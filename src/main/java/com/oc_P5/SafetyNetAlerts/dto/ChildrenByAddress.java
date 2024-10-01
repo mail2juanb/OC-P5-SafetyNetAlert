@@ -33,15 +33,5 @@ public class ChildrenByAddress {
             this.lastName = lastName;
         }
     }
+
 }
-
-
-//      La liste d'objets ChildDetails contenant :
-    //              firstName
-    //              lastName
-    //              age
-    //              liste d'objets PersonName contenant :
-    //                      firstName
-    //                      lastName
-
-
