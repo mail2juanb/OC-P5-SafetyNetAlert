@@ -7,8 +7,11 @@ import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -16,53 +19,59 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MedicalRecordServiceImpl implements MedicalRecordService {
 
-    private final MedicalRecordRepository medicalrecordRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
 
-    public boolean isMedicalRecordEmpty(MedicalRecord medicalRecord) {
-        return (medicalRecord.getFirstName() == null || medicalRecord.getFirstName().isEmpty()) &&
-                (medicalRecord.getLastName() == null || medicalRecord.getLastName().isEmpty()) &&
-                (medicalRecord.getBirthdate() == null) &&
-                (medicalRecord.getMedications() == null || medicalRecord.getMedications().isEmpty())  &&
-                (medicalRecord.getAllergies() == null || medicalRecord.getAllergies().isEmpty());
-    }
-
+    @Override
     public List<MedicalRecord> getMedicalRecords() {
-        return medicalrecordRepository.getAll();
+        return medicalRecordRepository.getAll();
     }
 
+    @Override
     public void addMedicalRecord(MedicalRecord medicalRecord) {
         if(isMedicalRecordEmpty(medicalRecord)) {
-            // NOTE Write Throw new Exception : NullOrEmptyObjectException
             throw new NullOrEmptyObjectException("MedicalRecord can not be null or empty");
         }
-        if(medicalrecordRepository.existsById(medicalRecord.getId())) {
+        if(medicalRecordRepository.existsById(medicalRecord.getId())) {
             throw new ConflictException("MedicalRecord already exists for : " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName());
         }
-        medicalrecordRepository.save(medicalRecord);
+        medicalRecordRepository.save(medicalRecord);
     }
 
+    @Override
     public void updateMedicalRecord(MedicalRecord medicalRecord) {
         if(isMedicalRecordEmpty(medicalRecord)) {
-            // NOTE Write Throw new Exception : NullOrEmptyObjectException
             throw new NullOrEmptyObjectException("MedicalRecord can not be null or empty");
         }
-        MedicalRecord updatedMedicalRecord = medicalrecordRepository.findById(medicalRecord.getId())
+        MedicalRecord updatedMedicalRecord = medicalRecordRepository.findById(medicalRecord.getId())
                 .orElseThrow(() -> new NotFoundException("MedicalRecord doesn't exist with id = " + medicalRecord.getId()))
                 .update(medicalRecord);
-        medicalrecordRepository.update(updatedMedicalRecord);
+        medicalRecordRepository.update(updatedMedicalRecord);
     }
 
+    @Override
     public void deleteMedicalRecord(MedicalRecord medicalRecord) {
         if(isMedicalRecordEmpty(medicalRecord)) {
-            // NOTE Write Throw new Exception : NullOrEmptyObjectException
             throw new NullOrEmptyObjectException("MedicalRecord can not be null or empty");
         }
-        if(!medicalrecordRepository.existsById(medicalRecord.getId())) {
+        if(!medicalRecordRepository.existsById(medicalRecord.getId())) {
             throw new NotFoundException("MedicalRecord doesn't exist with id : " + medicalRecord.getId());
         }
-        medicalrecordRepository.delete(medicalRecord);
+        medicalRecordRepository.delete(medicalRecord);
+    }
 
+    private boolean isMedicalRecordEmpty(MedicalRecord medicalRecord) {
+        // Vérifier si les champs sont vides ou null
+        boolean isFirstNameEmpty = StringUtils.isBlank(medicalRecord.getFirstName());
+        boolean isLastNameEmpty = StringUtils.isBlank(medicalRecord.getLastName());
+        boolean isBirthdateNull = (medicalRecord.getBirthdate() == null);
+        boolean areMedicationsEmpty = (medicalRecord.getMedications() == null ||
+                medicalRecord.getMedications().stream().allMatch(StringUtils::isBlank));
+        boolean areAllergiesEmpty = (medicalRecord.getAllergies() == null ||
+                medicalRecord.getAllergies().stream().allMatch(StringUtils::isBlank));
+
+        // Retourner vrai si tous les champs sont vides
+        return isFirstNameEmpty && isLastNameEmpty && isBirthdateNull && areMedicationsEmpty && areAllergiesEmpty;
     }
 
 }
