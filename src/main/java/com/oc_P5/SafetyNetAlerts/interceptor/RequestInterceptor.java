@@ -19,7 +19,9 @@ public class RequestInterceptor implements HandlerInterceptor {
      **/
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-        log.info("[preHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI() + getParameters(request));
+        //log.info("[preHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI() + getParameters(request));
+        log.info("[preHandle] Incoming request [{}] [{}]{}", request, request.getMethod(), request.getRequestURI());
+        log.debug("[preHandle] Request parameters: {}", getParameters(request));
         return true;
     }
 
@@ -28,7 +30,8 @@ public class RequestInterceptor implements HandlerInterceptor {
      **/
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView modelAndView) throws Exception {
-        log.info("[postHandle][" + request + "]");
+        //log.info("[postHandle][" + request + "]");
+        log.info("[postHandle] Request completed with status : {}", response.getStatus());
     }
 
     /**
@@ -36,9 +39,14 @@ public class RequestInterceptor implements HandlerInterceptor {
      **/
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) throws Exception {
-        if (ex != null)
-            ex.printStackTrace();
-        log.info("[afterCompletion][" + request + "][exception: " + ex + "]");
+//        if (ex != null)
+//            ex.printStackTrace();
+//        log.info("[afterCompletion][" + request + "][exception: " + ex + "]");
+        if (ex != null) {
+            log.error("[afterCompletion] Exception occurred: ", ex);
+        } else {
+            log.info("[afterCompletion] Request successfully handled [{}]", request.getRequestURI());
+        }
     }
 
     private String getParameters(final HttpServletRequest request) {
