@@ -12,7 +12,6 @@ import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -49,8 +48,6 @@ public class FirestationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // NOTE Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
-
         // Création des données de test pour firestation
         Firestation firestation1 = new Firestation();
         firestation1.setAddress("addressTest1");
@@ -113,9 +110,6 @@ public class FirestationServiceTest {
         medicalRecordMock = new ArrayList<>();
         medicalRecordMock.add(medicalRecord1);
         medicalRecordMock.add(medicalRecord2);
-
-        // Configure les mocks
-        //when(firestationRepository.getAll()).thenReturn(firestationListMock);
     }
 
     @Test
@@ -132,15 +126,16 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la mise à jour du mapping de firestation existant
-    void updateFirestationMappingService_shouldUpdateFirestationWhenExists() {
+    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation existante
+    void updateFirestation_shouldUpdateFirestationWhenExists() {
         // Given
         Firestation firestation = new Firestation();
         firestation.setAddress("addressTest1");
         firestation.setStation(10);
 
-        // When
         when(firestationRepository.findByAddress(firestation.getAddress())).thenReturn(Optional.of(firestationListMock.getFirst()));
+
+        // When
         firestationService.updateFirestation(firestation);
 
         // Then
@@ -170,10 +165,7 @@ public class FirestationServiceTest {
 
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.updateFirestation(firestation));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -194,7 +186,7 @@ public class FirestationServiceTest {
 
     @Test
     // On va vérifier ici que lorsqu'une nouvelle caserne est ajoutée, elle est correctement sauvegardée avec les bons attributs.
-    void addFirestationMappingService_shouldAddNewFirestationWhenNotExists() {
+    void addFirestation_shouldAddFirestationWhenNotExists() {
         // Given a firestation
         Firestation firestation = new Firestation();
         firestation.setAddress("addressTest13");
@@ -210,17 +202,18 @@ public class FirestationServiceTest {
         verify(firestationRepository).save(firestationArgumentCaptor.capture());
 
         Firestation savedFirestation = firestationArgumentCaptor.getValue();
-
-        assertThat(savedFirestation)
-                .isNotNull()
-                .satisfies(f -> {
-                    assertThat(f.getAddress()).isEqualTo(firestation.getAddress());
-                    assertThat(f.getStation()).isEqualTo(firestation.getStation());
-                });
+        assertThat(savedFirestation).isEqualTo(firestation);
+// NOTE je l'ai commenté car il me semble que tous les champs de l'objet doivent correspondre. Donc plutot isEqualTo. Pas besoin d'être aussi fin.
+//        assertThat(savedFirestation)
+//                .isNotNull()
+//                .satisfies(f -> {
+//                    assertThat(f.getAddress()).isEqualTo(firestation.getAddress());
+//                    assertThat(f.getStation()).isEqualTo(firestation.getStation());
+//                });
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de l'ajout d'une firestation (existant)
+    // On va vérifier ici que la méthode lève une ConflictException lorsque la Firestation existe déjà
     void addFirestation_shouldThrowConflictExceptionWhenExists() {
         // Given
         Firestation firestation = new Firestation();

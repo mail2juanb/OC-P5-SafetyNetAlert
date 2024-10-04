@@ -19,20 +19,12 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
 
 
-    public boolean isPersonEmpty(Person person) {
-        return (person.getFirstName() == null || person.getFirstName().isEmpty()) &&
-                (person.getLastName() == null || person.getLastName().isEmpty()) &&
-                (person.getAddress() == null || person.getAddress().isEmpty()) &&
-                (person.getCity() == null || person.getCity().isEmpty()) &&
-                (person.getZip() == null) &&
-                (person.getPhone() == null || person.getPhone().isEmpty()) &&
-                (person.getEmail() == null || person.getEmail().isEmpty());
-    }
-
+    @Override
     public List<Person> getPersons() {
         return personRepository.getAll();
     }
 
+    @Override
     public void addPerson(Person person) {
         if(isPersonEmpty(person)) {
             throw new NullOrEmptyObjectException("Person can not be null or empty");
@@ -43,6 +35,7 @@ public class PersonServiceImpl implements PersonService {
         personRepository.save(person);
     }
 
+    @Override
     public void updatePerson(Person person) {
         if(isPersonEmpty(person)) {
             throw new NullOrEmptyObjectException("Person can not be null or empty");
@@ -53,6 +46,7 @@ public class PersonServiceImpl implements PersonService {
         personRepository.update(updatedPerson);
     }
 
+    @Override
     public void deletePerson(Person person) {
         if(isPersonEmpty(person)) {
             throw new NullOrEmptyObjectException("Person can not be null or empty");
@@ -62,5 +56,17 @@ public class PersonServiceImpl implements PersonService {
         }
         personRepository.delete(person);
     }
+
+    // TODO ajouter le StringUtil quand nécessaire
+    public boolean isPersonEmpty(Person person) {
+        return (person.getFirstName() == null || person.getFirstName().isEmpty()) &&
+                (person.getLastName() == null || person.getLastName().isEmpty()) &&
+                (person.getAddress() == null || person.getAddress().isEmpty()) &&
+                (person.getCity() == null || person.getCity().isEmpty()) &&
+                (person.getZip() == null) &&
+                (person.getPhone() == null || person.getPhone().isEmpty()) &&
+                (person.getEmail() == null || person.getEmail().isEmpty());
+    }
+
 
 }

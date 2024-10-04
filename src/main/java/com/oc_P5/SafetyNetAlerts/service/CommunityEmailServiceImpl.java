@@ -18,6 +18,7 @@ public class CommunityEmailServiceImpl implements CommunityEmailService {
 
     private final PersonRepository personRepository;
 
+    @Override
     public List<String> getCommunityEmailByCity(String city) {
         if(StringUtils.isBlank(city)) {
             throw new NullOrEmptyObjectException("City can not be null or empty");

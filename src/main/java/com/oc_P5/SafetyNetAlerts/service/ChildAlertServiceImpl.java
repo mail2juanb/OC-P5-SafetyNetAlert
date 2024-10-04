@@ -20,10 +20,10 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
     private final PersonRepository personRepository;
 
-
+    @Override
     public List<ChildrenByAddress> getChildByAddress(String address) {
         // NOTE Vérifier si l'adresse est null ou vide
-        if (address == null || StringUtils.isBlank(address)) {
+        if (StringUtils.isBlank(address)) {
             throw new NullOrEmptyObjectException("Address cannot be null or empty");
         }
 

@@ -23,6 +23,7 @@ public class FloodStationsServiceImpl implements FloodStationsService {
     private final PersonRepository personRepository;
     private final FirestationRepository firestationRepository;
 
+    @Override
     public List<MemberByStation> getMembersByStation(List<Integer> station_Numbers) {
 
         // NOTE Vérifier si station_Numbers est vide ou que l'un des éléments est null
@@ -67,7 +68,6 @@ public class FloodStationsServiceImpl implements FloodStationsService {
     private static MemberByStation mapToMemberByStation(PersonWithMedicalRecord personMedic) {
         return new MemberByStation(personMedic.person(), personMedic.medicalRecord());
     }
-
 
 
     private boolean isEmptyListOfInteger(List<Integer> numberList) {

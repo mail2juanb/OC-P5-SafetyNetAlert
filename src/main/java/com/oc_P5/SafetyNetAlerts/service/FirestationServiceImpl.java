@@ -110,7 +110,7 @@ public class FirestationServiceImpl implements FirestationService{
     }
 
     private boolean isFirestationEmpty(Firestation firestation) {
-        return (StringUtils.isBlank(firestation.getAddress()) || firestation.getStation() == null);
+        return (StringUtils.isBlank(firestation.getAddress()));
     }
 
 }

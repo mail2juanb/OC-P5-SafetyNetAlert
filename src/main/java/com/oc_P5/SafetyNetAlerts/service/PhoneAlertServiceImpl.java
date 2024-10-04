@@ -20,6 +20,7 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
     private final FirestationRepository firestationRepository;
     private final PersonRepository personRepository;
 
+    @Override
     public List<String> getPhonesByStation(Integer stationNumber) {
         if(stationNumber == null)
             throw new NullOrEmptyObjectException("Station can not be null");
