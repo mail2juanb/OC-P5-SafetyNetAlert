@@ -29,7 +29,7 @@ public class FirestationController {
      * @return Liste des Firestation ainsi que leurs attributs
      */
     @GetMapping("/firestations")
-    public List<Firestation> getFirestationsController() {
+    public List<Firestation> getFirestations() {
         return firestationService.getFirestations();
     }
 
@@ -46,7 +46,7 @@ public class FirestationController {
      * @return Liste de PersonsByStation et le décompte des adultes et des enfants.
      */
     @GetMapping("/firestation")
-    public PersonsByStation getPersonsByStationController(@RequestParam("stationNumber") Integer stationNumber) {
+    public PersonsByStation getPersonsByStation(@RequestParam("stationNumber") Integer stationNumber) {
         return firestationService.getPersonsByStation(stationNumber);
     }
 
@@ -58,7 +58,7 @@ public class FirestationController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @PutMapping("/firestation")
-    public ResponseEntity<String> updateFirestationMappingController(@RequestBody Firestation firestation) {
+    public ResponseEntity<Void> updateFirestation(@RequestBody Firestation firestation) {
         firestationService.updateFirestation(firestation);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -71,7 +71,7 @@ public class FirestationController {
      * @return ResponseEntity<>(HttpStatus.CREATED)
      */
     @PostMapping("/firestation")
-    public ResponseEntity<String> addFirestationMappingController(@RequestBody Firestation firestation) {
+    public ResponseEntity<String> addFirestation(@RequestBody Firestation firestation) {
         firestationService.addFirestation(firestation);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -85,10 +85,9 @@ public class FirestationController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @DeleteMapping("/firestation")
-    public ResponseEntity<String> deleteFirestationMappingController (@RequestBody Firestation firestation) {
+    public ResponseEntity<Void> deleteFirestation(@RequestBody Firestation firestation) {
         firestationService.deleteFirestation(firestation);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
 

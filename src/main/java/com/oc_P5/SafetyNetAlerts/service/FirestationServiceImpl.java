@@ -25,7 +25,7 @@ public class FirestationServiceImpl implements FirestationService{
 
     private final FirestationRepository firestationRepository;
     private final PersonRepository personRepository;
-    private final MedicalRecordRepository medicalrecordRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
 
     @Override
@@ -58,7 +58,7 @@ public class FirestationServiceImpl implements FirestationService{
 
     @Override
     public void deleteFirestation(Firestation firestation) {
-        if (firestation.getAddress() == null && firestation.getStation() == null) {
+        if (isFirestationEmpty(firestation)) {
             throw new NullOrEmptyObjectException("Firestation can not be null");
         }
         if (firestation.getAddress() != null && firestation.getStation() != null) {
@@ -68,6 +68,7 @@ public class FirestationServiceImpl implements FirestationService{
             } else {
                 throw new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress());
             }
+
         }
         if (firestation.getAddress() != null && firestation.getStation() == null) {
             if (firestationRepository.existsByAddress(firestation.getAddress())) {
@@ -101,7 +102,7 @@ public class FirestationServiceImpl implements FirestationService{
         Integer nbrOfMinor = personsByAddress
                 .stream()
                 .map(p -> p.getId())
-                .map(id -> medicalrecordRepository.findById(id))
+                .map(id -> medicalRecordRepository.findById(id))
                 .filter(optionalMedicalrecord -> optionalMedicalrecord.isPresent())
                 .filter(optionalMedicalrecord -> optionalMedicalrecord.get().isMinor())
                 .toList()
@@ -110,7 +111,7 @@ public class FirestationServiceImpl implements FirestationService{
     }
 
     private boolean isFirestationEmpty(Firestation firestation) {
-        return (StringUtils.isBlank(firestation.getAddress()));
+        return (StringUtils.isBlank(firestation.getAddress()) && firestation.getStation() == null);
     }
 
 }
