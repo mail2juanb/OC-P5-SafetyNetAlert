@@ -2,14 +2,13 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
+
 @RestController
 public class MedicalRecordController {
 
