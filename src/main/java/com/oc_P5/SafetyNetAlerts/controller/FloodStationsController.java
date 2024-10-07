@@ -26,7 +26,7 @@ public class FloodStationsController {
      * mise en forme : String lastname, String phone, int age, List<String>medications, List<String>allergies
      */
     @GetMapping("/flood/stations")
-    public List<MemberByStation> getMembersByStationController(@RequestParam("station_Numbers") List<Integer> station_Numbers) {
+    public List<MemberByStation> getMembersByStation(@RequestParam("station_Numbers") List<Integer> station_Numbers) {
         return floodStationsService.getMembersByStation(station_Numbers);
     }
 

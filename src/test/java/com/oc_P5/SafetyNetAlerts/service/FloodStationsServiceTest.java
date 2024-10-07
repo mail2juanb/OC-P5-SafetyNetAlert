@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FloodStationsServiceTest {
@@ -47,10 +48,7 @@ public class FloodStationsServiceTest {
     void getMembersByStation_shouldReturnNullOrEmptyObjectExceptionWithEmptyStation(List<Integer> station_Numbers) {
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> floodStationsService.getMembersByStation(station_Numbers));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -115,13 +113,17 @@ public class FloodStationsServiceTest {
         assertThat(result.getFirst().getPhone()).isEqualTo(person1.getPhone());
         assertThat(result.getFirst().getMedications()).isEqualTo(medicalRecord1.getMedications());
         assertThat(result.getFirst().getAllergies()).isEqualTo(medicalRecord1.getAllergies());
-        // FIXME Pas certain de cet assertion. Le résultat peut changer dans le temps
-        assertThat(result.getFirst().getAge()).isEqualTo(34);
+        int expectedAge = Period.between(birthdate1, LocalDate.now()).getYears();
+        assertThat(result.getFirst().getAge()).isEqualTo(expectedAge);
+
+        verify(firestationRepository, times(1)).getAll();
+        verify(personRepository, times(1)).getByAddresses(addressList);
+        verify(personRepository, times(1)).getPersonsWithMedicalRecord(idList);
     }
 
 
     // Fournit des valeurs de station_Numbers, y compris null
     static Stream<List<Integer>> provideInvalidStation_Numbers() {
-        return Stream.of(Collections.emptyList(), Arrays.asList(1, null, 2));
+        return Stream.of(Collections.emptyList(), Arrays.asList(1, null, 2, 9));
     }
 }
