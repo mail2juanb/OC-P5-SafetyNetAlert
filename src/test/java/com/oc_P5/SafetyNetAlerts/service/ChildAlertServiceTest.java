@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ChildAlertServiceTest {
@@ -41,10 +42,7 @@ public class ChildAlertServiceTest {
     void getChildByAddress_shouldReturnNullOrEmptyObjectExceptionWithAddressEmpty(String address) {
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> childAlertService.getChildByAddress(address));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -137,8 +135,25 @@ public class ChildAlertServiceTest {
         assertThat(result.getFirst().getLastName()).isEqualTo(person1.getLastName());
         assertThat(result.getFirst().getFamilyMembers().getFirst().getFirstName()).isEqualTo(person3.getFirstName());
         assertThat(result.getFirst().getFamilyMembers().getFirst().getLastName()).isEqualTo(person3.getLastName());
-        // FIXME Pas certain de cet assertion. Le résultat peut changer dans le temps
-        assertThat(result.getFirst().getAge()).isEqualTo(3);
+
+        int expectedAge = Period.between(birthdate1, LocalDate.now()).getYears();
+        assertThat(result.getFirst().getAge()).isEqualTo(expectedAge);
+
+        verify(personRepository, times(1)).getByAddress(address);
+        verify(personRepository, times(1)).getPersonsWithMedicalRecord(idList);
+    }
+
+    @Test
+    // On va vérifier ici que la méthode retourne bien une liste vide avec une address non existante.
+    void getChildByAddress_shouldReturnEmptyListWhenAddressNotFound() {
+        // Given
+        String address = "unknownAddress";
+
+        // When
+        List<ChildrenByAddress> result = childAlertService.getChildByAddress(address);
+
+        // Then
+        assertThat(result).isEmpty();
     }
 
 

@@ -27,7 +27,7 @@ public class ChildAlertController {
      * @return Liste de ChildrenByAddress OR empty
      */
     @GetMapping("/childAlert")
-    public List<ChildrenByAddress> getChildByAddressController(@RequestParam("address") String address) {
+    public List<ChildrenByAddress> getChildByAddress(@RequestParam("address") String address) {
         return childAlertService.getChildByAddress(address);
     }
 
