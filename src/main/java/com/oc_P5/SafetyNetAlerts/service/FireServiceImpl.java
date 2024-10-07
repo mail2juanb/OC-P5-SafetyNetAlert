@@ -1,13 +1,11 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.FirePersonsByAddress;
+import com.oc_P5.SafetyNetAlerts.dto.FirePersonByAddress;
+import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
+import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
-import com.oc_P5.SafetyNetAlerts.model.Firestation;
-import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
-import com.oc_P5.SafetyNetAlerts.model.NamedModel;
-import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.*;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
-import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -22,17 +22,28 @@ import java.util.List;
 public class FireServiceImpl implements FireService {
 
     private final PersonRepository personRepository;
-    private final MedicalRecordRepository medicalRecordRepository;
     private final FirestationRepository firestationRepository;
 
-    public FirePersonsByAddress getFirePersonsByAddress(String address) {
+    @Override
+    public FirePersonsResponse getFirePersonsByAddress(String address) {
 
-        // Vérifier si l'adresse est null ou vide
+        // NOTE Vérifier si l'adresse est null ou vide
         if (StringUtils.isBlank(address)) {
             throw new NullOrEmptyObjectException("Address cannot be null or empty");
         }
 
-        // Récupère la stationNumber correspondant à l'adresse
+        // NOTE Vérifier que l'adresse existe dans la liste des Firestation
+        if(!firestationRepository.existsByAddress(address)) {
+            throw new NotFoundException("There is no Firestation at this address = " + address);
+        }
+
+        // NOTE Vérifier que l'adresse existe dans la liste des Person
+        Optional<Person> personOptional = personRepository.findByAddress(address);
+        if (personOptional.isEmpty()) {
+            throw new NotFoundException("There is no Person at this address = " + address);
+        }
+
+        // NOTE Récupère la stationNumber correspondant à l'adresse
         Integer stationNumber = firestationRepository.getAll()
                 .stream()
                 .filter(firestation -> firestation.getAddress().equals(address))
@@ -40,57 +51,29 @@ public class FireServiceImpl implements FireService {
                 .findFirst()
                 .orElseThrow();
 
-        // Récupére la liste des personnes correspondant à l'adresse
+        // NOTE Récupére la liste des personnes correspondant à l'adresse
         List<Person> personsByAddress = personRepository.getByAddress(address);
 
-        // Récupère la liste de l'id des personnes à l'adresse demandée
+        // NOTE Récupère la liste de l'id des personnes à l'adresse demandée
         List<String> personIds = personsByAddress
                 .stream()
                 .map(NamedModel::getId)
                 .toList();
 
-        // Récupère les dossiers médicaux des person via leur id
-        List<MedicalRecord> medicalRecordByAddress = medicalRecordRepository.getAll()
-                .stream()
-                .filter(medicalRecord -> personIds.contains(medicalRecord.getId()))
-                .toList();
+        // NOTE Récupère la liste de PersonWithMedicalRecord avec les personIds
+        List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(personIds);
 
-        // Récupère la liste accumulée de Person + MedicalRecord à l'adresse demandée
-        List<PersonWithMedicalRecord> personWithMedicalRecord = personsByAddress
-                .stream()
-                .map(person -> mapToPersonWithMedicalRecord(person, medicalRecordByAddress))
-                .toList();
-
-        // Retourne une liste de FirePersonByAddress
-        List<FirePersonsByAddress.FirePersonByAddress> firePersonByAdressList = personWithMedicalRecord
+        // NOTE Mapper la liste de PersonWithMedicalRecord dans une liste de FirePersonByAddress
+        List<FirePersonByAddress> firePersonByAdressList = personWithMedicalRecordList
                 .stream()
                 .map(FireServiceImpl::mapToFirePersonByAddress)
                 .toList();
 
-
-        return new FirePersonsByAddress(address, stationNumber, firePersonByAdressList);
+        return new FirePersonsResponse (firePersonByAdressList, address, stationNumber);
     }
 
-    private static FirePersonsByAddress.FirePersonByAddress mapToFirePersonByAddress(PersonWithMedicalRecord person) {
-        return new FirePersonsByAddress.FirePersonByAddress(person.person, person.medicalRecord);
-    }
-
-    private static PersonWithMedicalRecord mapToPersonWithMedicalRecord(Person person, List<MedicalRecord> medicalRecordByAddress) {
-        return medicalRecordByAddress
-                .stream()
-                .filter(medicalRecord -> medicalRecord.getId().equals(person.getId()))
-                .map(medicalRecord -> new PersonWithMedicalRecord(person, medicalRecord))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    record PersonWithMedicalRecord(Person person, MedicalRecord medicalRecord){
-        public String getFirstName() {
-            return person.getFirstName();
-        }
-        public String getLastName() {
-            return person.getLastName();
-        }
+    private static FirePersonByAddress mapToFirePersonByAddress(PersonWithMedicalRecord person) {
+        return new FirePersonByAddress(person.person(), person.medicalRecord());
     }
 
 }

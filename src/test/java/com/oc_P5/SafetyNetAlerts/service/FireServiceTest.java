@@ -1,12 +1,13 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.FirePersonsByAddress;
+import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
+import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
-import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,43 +15,44 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FireServiceTest {
 
     @Mock
     private PersonRepository personRepository;
-    @Mock
-    private MedicalRecordRepository medicalRecordRepository;
+
     @Mock
     private FirestationRepository firestationRepository;
 
     @InjectMocks
     private FireServiceImpl fireService;
 
+    // Pour typer correctement la liste
+    @Captor
+    ArgumentCaptor<List<String>> personIdsArgumentCaptor;
+
     private List<Person> personListMock;
     private List<Firestation> firestationListMock;
     private List<MedicalRecord> medicalRecordListMock;
+    private List<PersonWithMedicalRecord> personWithMedicalRecordListMock;
 
     @BeforeEach
     public void SetUp(){
-        // Initialisation des mocks fait par l'annotation @ExtendWith(SpringExtension.class)
         // Création des données de test Person
         Person person1 = new Person();
         person1.setFirstName("firstNameTest1");
@@ -114,41 +116,52 @@ public class FireServiceTest {
         medicalRecordListMock.add(medicalRecord1);
         medicalRecordListMock.add(medicalRecord2);
 
-        // Configure les mocks
-        lenient().when(firestationRepository.getAll()).thenReturn(firestationListMock);
-        lenient().when(personRepository.getAll()).thenReturn(personListMock);
-        lenient().when(medicalRecordRepository.getAll()).thenReturn(medicalRecordListMock);
+        PersonWithMedicalRecord person1WithMedicalRecord = new PersonWithMedicalRecord(person1, medicalRecord1);
+        PersonWithMedicalRecord person2WithMedicalRecord = new PersonWithMedicalRecord(person2, medicalRecord2);
+
+        personWithMedicalRecordListMock = new ArrayList<>();
+        personWithMedicalRecordListMock.add(person1WithMedicalRecord);
+        personWithMedicalRecordListMock.add(person2WithMedicalRecord);
     }
+
+
 
     @Test
     // On va vérifier ici que la méthode retourne correctement les informations des personnes associées à une adresse connue.
     void getFirePersonsByAddress_shouldReturnFirePersonsByAddressWithKnownAddress() {
         // Given
         String address = "addressTest1";
-        List<Person> personListMockByAddress = personListMock
-                .stream()
-                .filter(person -> person.getAddress().equals(address))
-                .toList();
-        when(personRepository.getByAddress(address)).thenReturn(personListMockByAddress);
+        List<String> personIds = new ArrayList<>();
+        personIds.add(personListMock.get(0).getId());
+        personIds.add(personListMock.get(1).getId());
+
+        when(firestationRepository.existsByAddress(address)).thenReturn(true);
+        when(personRepository.findByAddress(address)).thenReturn(Optional.of(personListMock.getFirst()));
+        when(firestationRepository.getAll()).thenReturn(firestationListMock);
+        when(personRepository.getByAddress(address)).thenReturn(personListMock);
+        when(personRepository.getPersonsWithMedicalRecord(personIds)).thenReturn(personWithMedicalRecordListMock);
 
         // When
-        FirePersonsByAddress result = fireService.getFirePersonsByAddress(address);
+        FirePersonsResponse result = fireService.getFirePersonsByAddress(address);
 
         // Then
+        verify(firestationRepository, times(1)).getAll();
+        verify(personRepository, times(1)).getByAddress(address);
+        verify(personRepository, times(1)).getPersonsWithMedicalRecord(personIds);
+
         assertEquals(address, result.getAddress());
         assertEquals(1, result.getStationNumber());
         assertEquals(2, result.getFirePersonByAdressList().size());
-
-        FirePersonsByAddress.FirePersonByAddress person1 = result.getFirePersonByAdressList().get(0);
-        FirePersonsByAddress.FirePersonByAddress person2 = result.getFirePersonByAdressList().get(1);
-        assertEquals("lastNameTest1", person1.getLastName());
-        assertEquals("lastNameTest2", person2.getLastName());
-
+        assertEquals("lastNameTest1", result.getFirePersonByAdressList().get(0).getLastName());
+        assertEquals("lastNameTest2", result.getFirePersonByAdressList().get(1).getLastName());
         assertTrue(result.getFirePersonByAdressList().get(0).getMedications().isEmpty());
         assertEquals(result.getFirePersonByAdressList().get(1).getMedications(), medicalRecordListMock.get(1).getMedications());
-
         assertTrue(result.getFirePersonByAdressList().get(0).getAllergies().isEmpty());
         assertEquals(result.getFirePersonByAdressList().get(1).getAllergies(), medicalRecordListMock.get(1).getAllergies());
+
+        verify(personRepository).getPersonsWithMedicalRecord(personIdsArgumentCaptor.capture());
+        List<String> sentPersonIds = personIdsArgumentCaptor.getValue();
+        assertThat(sentPersonIds).isEqualTo(personIds);
     }
 
     @ParameterizedTest
@@ -157,58 +170,38 @@ public class FireServiceTest {
     void getFirePersonsByAddress_shouldReturnFNullOrEmptyObjectExceptionWithBlankAddress(String address){
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> fireService.getFirePersonsByAddress(address));
-        assertThat(thrown.getMessage().contains("null"));
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne une exception si l'adresse n'est pas reconnue.
-    void getFirePersonsByAddress_shouldThrowExceptionForUnknownAddress() {
+    // On va vérifier ici que la méthode retourne une exception si l'adresse n'est pas reconnue dans la liste des Firestation.
+    void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForFirestationList() {
         // Given
         String address = "unknownAddressTest1";
 
-        // Configure mock pour retourner une liste vide lorsque l'adresse est inconnue
-        //when(personRepository.getByAddress(address)).thenReturn(Collections.emptyList());
+        when(firestationRepository.existsByAddress(address)).thenReturn(false);
 
         // When / Then
-        assertThrows(NoSuchElementException.class, () -> fireService.getFirePersonsByAddress(address));
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> fireService.getFirePersonsByAddress(address));
+        assertThat(thrown.getMessage()).contains(address);
+
+        verify(firestationRepository, times(1)).existsByAddress(address);
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne une liste vide si l'adresse est valide mais qu'il n'y a pas de personnes associées.
-    void getFirePersonsByAddress_shouldReturnEmptyListWhenNoPersonsFound() {
+    // On va vérifier ici que la méthode retourne une exception si l'adresse n'est pas reconnue dans la liste des Firestation.
+    void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForPersonList() {
         // Given
-        String address = "addressTest1";
+        String address = "unknownAddressTest1";
 
-        // Configure mock pour retourner une liste vide de personnes
-        when(personRepository.getByAddress(address)).thenReturn(Collections.emptyList());
+        when(firestationRepository.existsByAddress(address)).thenReturn(true);
+        when(personRepository.findByAddress(address)).thenReturn(Optional.empty());
 
-        // When
-        FirePersonsByAddress result = fireService.getFirePersonsByAddress(address);
+        // When / Then
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> fireService.getFirePersonsByAddress(address));
+        assertThat(thrown.getMessage()).contains(address);
 
-        // Then
-        assertEquals(address, result.getAddress());
-        assertEquals(1, result.getStationNumber());
-        assertTrue(result.getFirePersonByAdressList().isEmpty());
-    }
-
-    @Test
-    // Vérifie que les getters de PersonWithMedicalRecord retournent les bonnes valeurs
-    void personWithMedicalRecord_gettersShouldReturnCorrectValues() {
-        // Given
-        Person person = new Person();
-        person.setFirstName("firstNameTest");
-        person.setLastName("lastNameTest");
-
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setFirstName("firstNameTest");
-        medicalRecord.setLastName("lastNameTest");
-
-        // When
-        FireServiceImpl.PersonWithMedicalRecord personWithMedicalRecord = new FireServiceImpl.PersonWithMedicalRecord(person, medicalRecord);
-
-        // Then
-        assertEquals("firstNameTest", personWithMedicalRecord.getFirstName());
-        assertEquals("lastNameTest", personWithMedicalRecord.getLastName());
+        verify(personRepository, times(1)).findByAddress(address);
     }
 
 

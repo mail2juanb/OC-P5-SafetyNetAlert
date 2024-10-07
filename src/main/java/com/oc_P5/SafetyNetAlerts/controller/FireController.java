@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.dto.FirePersonsByAddress;
+
+import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
 import com.oc_P5.SafetyNetAlerts.service.FireServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class FireController {
      * mise en forme : String lastname, String phone, Integer age, List<String>medications, List<String>allergies
      */
     @GetMapping("/fire")
-    public FirePersonsByAddress getFirePersonsByAddressController(@RequestParam("address") String address) {
+    public FirePersonsResponse getFirePersonsByAddressController(@RequestParam("address") String address) {
         return fireService.getFirePersonsByAddress(address);
     }
 

@@ -1,11 +1,10 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.dto.FirePersonsByAddress;
+import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
 
-import java.util.List;
 
 public interface FireService {
 
-    FirePersonsByAddress getFirePersonsByAddress(String address);
+    FirePersonsResponse getFirePersonsByAddress(String address);
 
 }
