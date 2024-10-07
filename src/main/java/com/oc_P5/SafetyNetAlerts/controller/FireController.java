@@ -25,7 +25,7 @@ public class FireController {
      * mise en forme : String lastname, String phone, Integer age, List<String>medications, List<String>allergies
      */
     @GetMapping("/fire")
-    public FirePersonsResponse getFirePersonsByAddressController(@RequestParam("address") String address) {
+    public FirePersonsResponse getFirePersonsByAddress(@RequestParam("address") String address) {
         return fireService.getFirePersonsByAddress(address);
     }
 

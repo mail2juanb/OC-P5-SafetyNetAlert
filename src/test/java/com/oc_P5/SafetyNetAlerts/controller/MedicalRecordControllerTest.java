@@ -44,13 +44,13 @@ public class MedicalRecordControllerTest {
 
     @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
-    void addMedicalRecordController_shouldReturnResponseEntity() {
+    void addMedicalRecord_shouldReturnResponseEntity() {
         // Given
         MedicalRecord medicalRecord = new MedicalRecord();
         doNothing().when(medicalRecordService).addMedicalRecord(medicalRecord);
 
         // When
-        ResponseEntity<String> response = medicalRecordController.addMedicalRecordController(medicalRecord);
+        ResponseEntity<String> response = medicalRecordController.addMedicalRecord(medicalRecord);
 
         // Then
         verify(medicalRecordService, times(1)).addMedicalRecord(medicalRecord);
@@ -59,13 +59,13 @@ public class MedicalRecordControllerTest {
 
     @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
-    void updateMedicalRecordController_shouldReturnResponseEntity() {
+    void updateMedicalRecord_shouldReturnResponseEntity() {
         // Given
         MedicalRecord medicalRecord = new MedicalRecord();
         doNothing().when(medicalRecordService).updateMedicalRecord(medicalRecord);
 
         // When
-        ResponseEntity<Void> response = medicalRecordController.updateMedicalRecordController(medicalRecord);
+        ResponseEntity<Void> response = medicalRecordController.updateMedicalRecord(medicalRecord);
 
         // Then
         verify(medicalRecordService, times(1)).updateMedicalRecord(medicalRecord);
@@ -74,13 +74,13 @@ public class MedicalRecordControllerTest {
 
     @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
-    void deleteMedicalRecordController_shouldReturnResponseEntity() {
+    void deleteMedicalRecord_shouldReturnResponseEntity() {
         // Given
         MedicalRecord medicalRecord = new MedicalRecord();
         doNothing().when(medicalRecordService).deleteMedicalRecord(medicalRecord);
 
         // When
-        ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecordController(medicalRecord);
+        ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecord(medicalRecord);
 
         // Then
         verify(medicalRecordService, times(1)).deleteMedicalRecord(medicalRecord);

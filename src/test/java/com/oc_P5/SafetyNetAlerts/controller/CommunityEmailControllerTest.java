@@ -38,4 +38,18 @@ public class CommunityEmailControllerTest {
         verify(communityEmailService, times(1)).getCommunityEmailByCity(city);
         assertEquals(result, Collections.emptyList());
     }
+
+    @Test
+    // On va vérifier ici que la méthode du service renvoi une liste vide lorsque la ville n'existe pas
+    void getCommunityEmailByCity_shouldReturnEmptyListWhenCityNotExist() {
+        // Given
+        String city = "unknowCity";
+
+        // When
+        List<String> result = communityEmailController.getCommunityEmailByCity(city);
+
+        // Then
+        verify(communityEmailService, times(1)).getCommunityEmailByCity(city);
+        assertEquals(Collections.emptyList(), result);
+    }
 }

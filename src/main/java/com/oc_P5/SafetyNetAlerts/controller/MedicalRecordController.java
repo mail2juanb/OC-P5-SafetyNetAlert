@@ -34,7 +34,7 @@ public class MedicalRecordController {
      * @return ResponseEntity<>(HttpStatus.CREATED)
      */
     @PostMapping("/medicalRecord")
-    public ResponseEntity<String> addMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<String> addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         medicalRecordService.addMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -46,7 +46,7 @@ public class MedicalRecordController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @PutMapping("/medicalRecord")
-    public ResponseEntity<Void> updateMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<Void> updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         medicalRecordService.updateMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class MedicalRecordController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @DeleteMapping("/medicalRecord")
-    public ResponseEntity<Void> deleteMedicalRecordController(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<Void> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         medicalRecordService.deleteMedicalRecord(medicalRecord);
         return new ResponseEntity<>(HttpStatus.OK);
     }
