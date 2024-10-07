@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,9 +121,10 @@ public class PersonsInfoLastNameServiceTest {
         assertThat(result.get(0).getAllergies()).isEqualTo(medicalRecord1.getAllergies());
         assertThat(result.get(1).getAllergies()).isEqualTo(medicalRecord2.getAllergies());
 
-        // FIXME Pas certain de cet assertion. Le résultat peut changer dans le temps
-        assertThat(result.get(0).getAge()).isEqualTo(4);
-        assertThat(result.get(1).getAge()).isEqualTo(34);
+        int expectedAge1 = Period.between(birthdate1, LocalDate.now()).getYears();
+        int expectedAge2 = Period.between(birthdate2, LocalDate.now()).getYears();
+        assertThat(result.get(0).getAge()).isEqualTo(expectedAge1);
+        assertThat(result.get(1).getAge()).isEqualTo(expectedAge2);
     }
 
     @ParameterizedTest
@@ -131,10 +133,7 @@ public class PersonsInfoLastNameServiceTest {
     void getPersonsInfoLastName_shouldReturnNullOrEmptyObjectExceptionWithBlankLastName(String lastName) {
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> personsInfoLastNameService.getPersonsInfoLastName(lastName));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class PersonsInfoLastNameServiceTest {
 
         // When / Then
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> personsInfoLastNameService.getPersonsInfoLastName(lastName));
-        assertThat(thrown.getMessage().contains(lastName));
+        assertThat(thrown.getMessage()).contains(lastName);
     }
 
 
