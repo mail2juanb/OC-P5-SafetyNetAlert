@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommunityEmailServiceTest {
@@ -90,6 +90,9 @@ public class CommunityEmailServiceTest {
         assertTrue(emails.contains(person1.getEmail()));
         assertTrue(emails.contains(person2.getEmail()));
 
+        verify(personRepository, times(1)).existsByCity(city);
+        verify(personRepository, times(1)).getByCity(city);
+
     }
 
     @ParameterizedTest
@@ -98,10 +101,7 @@ public class CommunityEmailServiceTest {
     void getCommunityEmailByCity_shouldReturnNullOrEmptyObjectExceptionWithBlankCity(String city){
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> communityEmailService.getCommunityEmailByCity(city));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class CommunityEmailServiceTest {
 
         // When / Then
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> communityEmailService.getCommunityEmailByCity(city));
-        assertThat(thrown.getMessage().contains(city));
+        assertThat(thrown.getMessage()).contains(city);
     }
 
 
