@@ -5,7 +5,6 @@ import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataWrapperList;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@Slf4j
+
 @ExtendWith(MockitoExtension.class)
 public class PersonRepositoryTest {
 
@@ -85,7 +84,7 @@ public class PersonRepositoryTest {
         Person person = new Person();
         person.setFirstName("firstNameTest3");
         person.setLastName("lastNameTest3");
-        person.setAddress("adressTest3");
+        person.setAddress("addressTest3");
         person.setCity("cityTest3");
         person.setZip(3);
         person.setPhone("phoneTest3");
@@ -100,7 +99,7 @@ public class PersonRepositoryTest {
         assertEquals("firstNameTest2", personListMock.get(1).getFirstName());
         assertEquals("firstNameTest3", personListMock.get(2).getFirstName());
         assertEquals("lastNameTest3", personListMock.get(2).getLastName());
-        assertEquals("adressTest3", personListMock.get(2).getAddress());
+        assertEquals("addressTest3", personListMock.get(2).getAddress());
         assertEquals("cityTest3", personListMock.get(2).getCity());
         assertEquals(3, personListMock.get(2).getZip());
         assertEquals("phoneTest3", personListMock.get(2).getPhone());
@@ -203,7 +202,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par id connue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id connue
     void existsById_shouldBeTrueIfIdExists() {
         // Given
         String id = "firstNameTest1-lastNameTest1";
@@ -213,7 +212,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par id inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id inconnue
     void existsById_shouldBeFalseIfIdNotExists() {
         // Given
         String id = "unknownId";
@@ -223,7 +222,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville connue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville connue
     void existsByCity_shouldBeTrueIfCityExists(){
         // Given
         String city = "cityTest1";
@@ -233,7 +232,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByCity_shouldBeFalseIfCityNotExists(){
         // Given
         String city = "unknownCityTest1";
@@ -243,7 +242,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de de la recherche de Person par adresse
+    // On va vérifier ici le bon fonctionnement de la recherche de Person par adresse
     void findByAddress_shouldReturnPersonByAddress() {
         // Given
         String address = "addressTest1";
@@ -257,7 +256,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville connue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville connue
     void existsByLastName_shouldBeTrueIfLastNameExists(){
         // Given
         String lastName = "lastNameTest1";
@@ -267,7 +266,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une trouver une Person par ville inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByLastName_shouldBeFalseIfLastNameNotExists(){
         // Given
         String lastName = "unknownLastNameTest1";

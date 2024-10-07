@@ -25,7 +25,7 @@ public class PersonController {
      * @return Liste des Person ainsi que leurs attributs
      */
     @GetMapping("/persons")
-    public List<Person> getPersonsController() {
+    public List<Person> getPersons() {
         return personService.getPersons();
     }
 
@@ -36,7 +36,7 @@ public class PersonController {
      * @return ResponseEntity<>(HttpStatus.CREATED)
      */
     @PostMapping("/person")
-    public ResponseEntity<String> addPersonController(@RequestBody Person person) {
+    public ResponseEntity<String> addPerson(@RequestBody Person person) {
         personService.addPerson(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -49,7 +49,7 @@ public class PersonController {
      * @return ResponseEntity<>(HttpStatus.OK)
      */
     @PutMapping("/person")
-    public ResponseEntity<String> updatePersonController(@RequestBody Person person) {
+    public ResponseEntity<Void> updatePerson(@RequestBody Person person) {
         personService.updatePerson(person);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class PersonController {
      * @return null
      */
     @DeleteMapping("/person")
-    public ResponseEntity<String> deleteFirestationController(@RequestBody Person person) {
+    public ResponseEntity<Void> deleteFirestation(@RequestBody Person person) {
         personService.deletePerson(person);
         return new ResponseEntity<>(HttpStatus.OK);
     }

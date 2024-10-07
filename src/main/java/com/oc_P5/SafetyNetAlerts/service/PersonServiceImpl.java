@@ -7,6 +7,7 @@ import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,15 +58,15 @@ public class PersonServiceImpl implements PersonService {
         personRepository.delete(person);
     }
 
-    // TODO ajouter le StringUtil quand nécessaire
+
     public boolean isPersonEmpty(Person person) {
-        return (person.getFirstName() == null || person.getFirstName().isEmpty()) &&
-                (person.getLastName() == null || person.getLastName().isEmpty()) &&
-                (person.getAddress() == null || person.getAddress().isEmpty()) &&
-                (person.getCity() == null || person.getCity().isEmpty()) &&
+        return (StringUtils.isBlank(person.getFirstName())) &&
+                (StringUtils.isBlank(person.getLastName())) &&
+                (StringUtils.isBlank(person.getAddress())) &&
+                (StringUtils.isBlank(person.getCity())) &&
                 (person.getZip() == null) &&
-                (person.getPhone() == null || person.getPhone().isEmpty()) &&
-                (person.getEmail() == null || person.getEmail().isEmpty());
+                (StringUtils.isBlank(person.getPhone())) &&
+                (StringUtils.isBlank(person.getPhone()));
     }
 
 
