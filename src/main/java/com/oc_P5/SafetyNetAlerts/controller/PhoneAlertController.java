@@ -26,7 +26,7 @@ public class PhoneAlertController {
      * @return Liste de numéros de téléphone
      */
     @GetMapping("/phoneAlert")
-    public List<String> getPhonesByStationNumberController(@RequestParam("firestation_Number") Integer firestation_Number) {
+    public List<String> getPhonesByStationNumber(@RequestParam("firestation_Number") Integer firestation_Number) {
         return phoneAlertService.getPhonesByStation(firestation_Number);
     }
 

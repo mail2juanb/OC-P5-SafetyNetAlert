@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PhoneAlertServiceTest {
@@ -100,6 +100,10 @@ public class PhoneAlertServiceTest {
         assertEquals(2, phones.size());
         assertTrue(phones.contains(person1.getPhone()));
         assertTrue(phones.contains(person2.getPhone()));
+
+        verify(firestationRepository, times(1)).existsByStation(firestation_Number);
+        verify(firestationRepository, times(1)).getByStation(firestation_Number);
+        verify(personRepository, times(1)).getByAddresses(addresses);
     }
 
     @Test
@@ -110,10 +114,7 @@ public class PhoneAlertServiceTest {
 
         // When / Then
         NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> phoneAlertService.getPhonesByStation(firestation_Number));
-        assertThat(thrown.getMessage()).satisfiesAnyOf(
-                message -> assertThat(message).contains("null"),
-                message -> assertThat(message).contains("empty")
-        );
+        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
     }
 
     @Test
@@ -124,7 +125,7 @@ public class PhoneAlertServiceTest {
 
         // When / Then
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> phoneAlertService.getPhonesByStation(firestation_Number));
-        assertThat(thrown.getMessage().contains(firestation_Number.toString()));
+        assertThat(thrown.getMessage()).contains(firestation_Number.toString());
     }
 
 }
