@@ -60,11 +60,7 @@ public class RequestInterceptor implements HandlerInterceptor {
             final String curr = (String) e.nextElement();
             posted.append(curr)
                     .append("=");
-            if (curr.contains("password") || curr.contains("answer") || curr.contains("pwd")) {
-                posted.append("*****");
-            } else {
-                posted.append(request.getParameter(curr));
-            }
+            posted.append(request.getParameter(curr));
         }
 
         final String ip = request.getHeader("X-FORWARDED-FOR");
