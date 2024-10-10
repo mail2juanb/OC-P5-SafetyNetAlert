@@ -17,20 +17,18 @@ public interface FirestationRepository {
 
     boolean existsByAddress(String address);
 
-    Optional<Firestation> findByStation(Integer stationNumber);
+    Optional<Firestation> findByStation(Integer station_number);
 
-    boolean existsByStation(Integer stationNumber);
+    boolean existsByStation(Integer station_number);
 
     void update(Firestation firestation);
 
     void save(Firestation firestation);
 
-    void delete(Firestation firestation);
-
     void deleteByAddress(String address);
 
-    void deleteByStation(Integer stationNumber);
+    void deleteByStation(Integer station_number);
 
-    List<Firestation> getByStation(Integer stationNumber);
+    List<Firestation> getByStation(Integer station_number);
 
 }

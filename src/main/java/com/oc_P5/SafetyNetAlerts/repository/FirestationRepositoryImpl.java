@@ -51,16 +51,16 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
-    public Optional<Firestation> findByStation(Integer stationNumber) {
+    public Optional<Firestation> findByStation(Integer station_number) {
         return getAll()
                 .stream()
-                .filter(f -> f.getStation().equals(stationNumber))
+                .filter(f -> f.getStation().equals(station_number))
                 .findFirst();
     }
 
     @Override
-    public boolean existsByStation(Integer stationNumber) {
-        return findByStation(stationNumber)
+    public boolean existsByStation(Integer station_number) {
+        return findByStation(station_number)
                 .isPresent();
     }
 
@@ -71,18 +71,10 @@ public class FirestationRepositoryImpl implements FirestationRepository {
         getAll().set(index, updateFirestation);
     }
 
-
     @Override
     public void save(Firestation addFirestation) {
         List<Firestation> firestationList = getAll();
         firestationList.add(addFirestation);
-    }
-
-    @Override
-    public void delete(Firestation deleteFirestation) {
-        List<Firestation> firestations = getAll();
-        firestations.removeIf(firestation -> firestation.getAddress().equals(deleteFirestation.getAddress()) &&
-                firestation.getStation().equals(deleteFirestation.getStation()));
     }
 
     @Override
@@ -92,16 +84,16 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     @Override
-    public void deleteByStation(Integer stationNumber) {
+    public void deleteByStation(Integer station_number) {
         List<Firestation> firestations = getAll();
-        firestations.removeIf(firestation -> firestation.getStation().equals(stationNumber));
+        firestations.removeIf(firestation -> firestation.getStation().equals(station_number));
     }
 
     @Override
-    public List<Firestation> getByStation(Integer stationNumber) {
+    public List<Firestation> getByStation(Integer station_number) {
         return getAll()
                 .stream()
-                .filter(Firestation -> Firestation.getStation().equals(stationNumber))
+                .filter(Firestation -> Firestation.getStation().equals(station_number))
                 .toList();
     }
 

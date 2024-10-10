@@ -3,7 +3,6 @@ package com.oc_P5.SafetyNetAlerts.service;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
@@ -14,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,98 +47,131 @@ public class FirestationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // Création des données de test pour firestation
-        Firestation firestation1 = new Firestation();
-        firestation1.setAddress("addressTest1");
-        firestation1.setStation(1);
-
-        Firestation firestation2 = new Firestation();
-        firestation2.setAddress("addressTest2");
-        firestation2.setStation(2);
+        // NOTE Firestation Test data creation
+        Firestation firestation1 = new Firestation("addressTest1", 1);
+        Firestation firestation2 = new Firestation("addressTest2", 2);
 
         firestationListMock = new ArrayList<>();
         firestationListMock.add(firestation1);
         firestationListMock.add(firestation2);
 
-        // Création des données de test pour Person
-        Person person1 = new Person();
-        person1.setFirstName("firstNameTest1");
-        person1.setLastName("lastName1");
-        person1.setAddress("addressTest1");
-        person1.setCity("cityTest1");
-        person1.setZip(10001);
-        person1.setPhone("123-456-7890");
-        person1.setEmail("emailTest1@email.fr");
-
-        Person person2 = new Person();
-        person2.setFirstName("firstNameTest2");
-        person2.setLastName("lastName2");
-        person2.setAddress("addressTest1");
-        person2.setCity("cityTest1");
-        person2.setZip(10001);
-        person2.setPhone("123-456-7891");
-        person2.setEmail("emailTest2@email.fr");
+        // NOTE Person Test data creation
+        Person person1 = new Person("firstNameTest1", "lastName1", "addressTest1", "cityTest1", 10001, "123-456-7890", "emailTest1@email.fr");
+        Person person2 = new Person("firstNameTest2", "lastName2", "addressTest1", "cityTest1", 10001, "123-456-7891", "emailTest2@email.fr");
 
         personListMock = new ArrayList<>();
         personListMock.add(person1);
         personListMock.add(person2);
 
-        // Création des données de test pour MedicalRecord
+        // NOTE MedicalRecord Test data creation
         LocalDate birthdate1 = LocalDate.parse("03/06/1984", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList1 = List.of("medicationTest1:100mg", "medicationTest2:200mg");
         List<String> allergiesList1 = List.of("allergieTest1", "allergieTest2");
-
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setFirstName("firstNameTest1");
-        medicalRecord1.setLastName("lastNameTest1");
-        medicalRecord1.setBirthdate(birthdate1);
-        medicalRecord1.setMedications(medicationList1);
-        medicalRecord1.setAllergies(allergiesList1);
 
         LocalDate birthdate2 = LocalDate.parse("02/18/2012", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList2 = Collections.emptyList();
         List<String> allergiesList2 = Collections.emptyList();
 
-        MedicalRecord medicalRecord2 = new MedicalRecord();
-        medicalRecord2.setFirstName("firstNameTest2");
-        medicalRecord2.setLastName("lastNameTest2");
-        medicalRecord2.setBirthdate(birthdate2);
-        medicalRecord2.setMedications(medicationList2);
-        medicalRecord2.setAllergies(allergiesList2);
+        MedicalRecord medicalRecord1 = new MedicalRecord("firstNameTest1", "lastNameTest1", birthdate1, medicationList1, allergiesList1);
+        MedicalRecord medicalRecord2 = new MedicalRecord("firstNameTest2", "lastNameTest2", birthdate2, medicationList2, allergiesList2);
 
         medicalRecordMock = new ArrayList<>();
         medicalRecordMock.add(medicalRecord1);
         medicalRecordMock.add(medicalRecord2);
     }
 
+
+
     @Test
-    // On va vérifier ici que la méthode retourne bien la liste des firestations
-    void getFirestationsService_shouldReturnListOfFirestations() {
-        // Given
-        when(firestationRepository.getAll()).thenReturn(firestationListMock);
+    // On va vérifier ici la liste des PersonsByStation avec une station valide
+    void getPersonsByStation_shouldReturnPersonsByStation() {
+        // Given a station_number
+        final Integer station_number = 1;
 
-        // When
-        List<Firestation> result = firestationService.getFirestations();
+        // Given a list of Firestations
+        final List<Firestation> firestationList = new ArrayList<>();
+        firestationList.add(firestationListMock.getFirst());
 
-        // Then
-        assertEquals(firestationListMock, result);
-        verify(firestationRepository, times(1)).getAll();
+        // Given a list of address
+        final Set<String> stationAddresses = new HashSet<>();
+        stationAddresses.add("addressTest1");
+
+        // Given a list of Persons
+        final List<Person> personsListMock = new ArrayList<>();
+        personsListMock.add(personListMock.get(0));
+        personsListMock.add(personListMock.get(1));
+
+        when(firestationRepository.existsByStation(station_number)).thenReturn(true);
+        when(firestationRepository.getByStation(station_number)).thenReturn(firestationList);
+        when(personRepository.getByAddresses(stationAddresses)).thenReturn(personsListMock);
+        when(medicalRecordRepository.findById(personsListMock.get(0).getId())).thenReturn(Optional.of(medicalRecordMock.get(0)));
+        when(medicalRecordRepository.findById(personsListMock.get(1).getId())).thenReturn(Optional.of(medicalRecordMock.get(1)));
+
+        // When call method on service
+        PersonsByStation result = firestationService.getPersonsByStation(station_number);
+
+        // Then verify that the object returned contains expected values
+        assertEquals(2, result.getPersons().size());
+        assertEquals(1, result.getNbrOfMinors());
+
+        assertEquals(1, result.getNbrOfMinors());
+        assertEquals(1, result.nbrOfMajors());
+        assertThat(result.getPersons())
+                .extracting("firstName", "lastName", "address", "phone")
+                        .contains(tuple(personsListMock.getFirst().getFirstName(),
+                                personsListMock.getFirst().getLastName(),
+                                personsListMock.getFirst().getAddress(),
+                                personsListMock.getFirst().getPhone()));
+        assertThat(result.getPersons())
+                .extracting("firstName", "lastName", "address", "phone")
+                .contains(tuple(personsListMock.get(1).getFirstName(),
+                        personsListMock.get(1).getLastName(),
+                        personsListMock.get(1).getAddress(),
+                        personsListMock.get(1).getPhone()));
+
+        verify(firestationRepository, times(1)).existsByStation(station_number);
+        verify(firestationRepository, times(1)).getByStation(station_number);
+        verify(personRepository, times(1)).getByAddresses(anyCollection());
+        verify(medicalRecordRepository, times(2)).findById(anyString());
+
+        ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(firestationRepository).getByStation(stationArgumentCaptor.capture());
+        Integer capturedStation = stationArgumentCaptor.getValue();
+        assertThat(capturedStation)
+                .isNotNull()
+                .isEqualTo(station_number);
     }
 
+
     @Test
-    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation existante
+    // On va vérifier ici la levée d'une NotFoundException lors de la récupération de la liste des PersonsByStation, lorsque la station n'existe pas
+    void getPersonsByStation_shouldThrowNotFoundExceptionWhenStationNotExist() {
+        // Given an unknown station
+        final Integer station_number = 99;
+
+        // When / Then a NotFoundException is thrown
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.getPersonsByStation(station_number));
+        assertThat(thrown.getMessage()).contains(station_number.toString());
+
+        verify(firestationRepository, times(1)).existsByStation(station_number);
+        verify(firestationRepository, never()).getByStation(station_number);
+        verify(personRepository, never()).getByAddresses(anyCollection());
+        verify(medicalRecordRepository, never()).existsById(anyString());
+    }
+
+
+    @Test
+    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation avec une Firestation existante
     void updateFirestation_shouldUpdateFirestationWhenExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest1");
-        firestation.setStation(10);
+        // Given a known Firestation to update
+        final Firestation firestation = new Firestation("addressTest1", 10);
 
         when(firestationRepository.findByAddress(firestation.getAddress())).thenReturn(Optional.of(firestationListMock.getFirst()));
 
-        // When
+        // When call method on service
         firestationService.updateFirestation(firestation);
 
-        // Then
+        // Then verify that the object sent is correctly distributed
         verify(firestationRepository, times(1)).findByAddress(firestation.getAddress());
         verify(firestationRepository, times(1)).update(any(Firestation.class));
 
@@ -159,16 +188,14 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque l'on met à jour le mapping d'une firestation inexistant
+    // On va vérifier ici le bon fonctionnement de la levée d'une NotFoundException lorsque l'on met à jour le mapping d'une Firestation inexistante
     void updateFirestation_shouldThrowNotFoundExceptionWhenNotExists() {
-        // Given
-        Firestation firestation = firestationListMock.getFirst();
-        firestation.setAddress("unknownAddressTest30");
-        firestation.setStation(30);
+        // Given an unknown Firestation to update
+        final Firestation firestation = new Firestation("unknownAddressTest30", 30);
 
         when(firestationRepository.findByAddress(firestation.getAddress())).thenReturn(Optional.empty());
 
-        // When / Then
+        // When / Then a NotFoundException is thrown
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.updateFirestation(firestation));
         assertThat(thrown.getMessage()).contains(firestation.getAddress());
 
@@ -176,55 +203,18 @@ public class FirestationServiceTest {
         verify(firestationRepository, never()).update(firestation);
     }
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidFirestation")
-    // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque la Firestation est vide ou null
-    void updateFirestation_shouldThrowNullOrEmptyObjectException(Firestation firestation) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.updateFirestation(firestation));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-
-        verify(firestationRepository, never()).findByAddress(anyString());
-        verify(firestationRepository, never()).update(firestation);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideInvalidFirestation")
-    // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque la Firestation est vide ou null
-    void addFirestation_shouldThrowNullOrEmptyObjectException(Firestation firestation) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.addFirestation(firestation));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-
-        verify(firestationRepository, never()).existsByAddress(anyString());
-        verify(firestationRepository, never()).save(firestation);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideInvalidFirestation")
-        // On va vérifier ici la levée d'exception lors de la suppression d'une Firestation avec une address et une station null
-    void deleteFirestation_shouldThrowNullOrEmptyObjectExceptionWhenAddressAndStationNull(Firestation firestation) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-
-        verify(firestationRepository, never()).save(firestation);
-    }
-
     @Test
     // On va vérifier ici que lorsqu'une nouvelle caserne est ajoutée, elle est correctement sauvegardée avec les bons attributs.
     void addFirestation_shouldAddFirestationWhenNotExists() {
-        // Given a firestation
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest13");
-        firestation.setStation(1);
+        // Given an unknown Firestation to save
+        final Firestation firestation = new Firestation("addressTest13", 1);
 
         when(firestationRepository.existsByAddress(firestation.getAddress())).thenReturn(false);
 
-        // When
+        // When call method on service
         firestationService.addFirestation(firestation);
 
-        // Then the firestation is corretly saved
+        // Then the new Firestation is saved
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
         verify(firestationRepository).save(firestationArgumentCaptor.capture());
 
@@ -243,14 +233,12 @@ public class FirestationServiceTest {
     @Test
     // On va vérifier ici que la méthode lève une ConflictException lorsque la Firestation existe déjà
     void addFirestation_shouldThrowConflictExceptionWhenExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest1");
-        firestation.setStation(14);
+        // Given a known Firestation to save
+        final Firestation firestation = new Firestation("addressTest1", 14);
 
         when(firestationRepository.existsByAddress(firestation.getAddress())).thenReturn(true);
 
-        // When / Then
+        // When / Then  a ConflictException is thrown
         ConflictException thrown = assertThrows(ConflictException.class, () -> firestationService.addFirestation(firestation));
         assertThat(thrown.getMessage()).contains(firestation.getAddress());
 
@@ -259,239 +247,75 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici la suppression d'une Firestation avec une Firestation
-    void deleteFirestation_shouldRemoveFirestationWhenAddressAndStationNumberExist() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest1");
-        firestation.setStation(1);
+    // On va vérifier ici la suppression d'une Firestation existante avec une address connue
+    void deleteFirestationByAddress_shouldRemoveFirestationWhenAddressExists() {
+        // Given a known address to delete Firestation
+        final String address = "addressTest1";
 
-        when(firestationRepository.existsByAddressByStation(any(Firestation.class))).thenReturn(true);
+        when(firestationRepository.existsByAddress(address)).thenReturn(true);
 
-        // When
-        firestationService.deleteFirestation(firestation);
+        // When call method on service
+        firestationService.deleteFirestationByAddress(address);
 
-        // Then
-        ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
-        verify(firestationRepository).delete(firestationArgumentCaptor.capture());
+        // Then Firestation with address given is deleted
+        ArgumentCaptor<String> addressArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(firestationRepository).deleteByAddress(addressArgumentCaptor.capture());
 
-        Firestation deletedFirestation = firestationArgumentCaptor.getValue();
+        String deletedAddress = addressArgumentCaptor.getValue();
+        assertThat(deletedAddress).isEqualTo(address);
 
-        assertThat(deletedFirestation)
-                .isNotNull()
-                .satisfies(f -> {
-                    assertThat(f.getAddress()).isEqualTo(firestation.getAddress());
-                    assertThat(f.getStation()).isEqualTo(firestation.getStation());
-                });
-
-        verify(firestationRepository, times(1)).existsByAddressByStation(firestation);
-        verify(firestationRepository, times(1)).delete(firestation);
+        verify(firestationRepository, times(1)).existsByAddress(address);
+        verify(firestationRepository, times(1)).deleteByAddress(address);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la levée d'exception lorsque l'address de l'objet Firestation n'existe pas
-    void deleteFirestation_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("unknownAddressTest30");
-        firestation.setStation(null);
+    // On va vérifier ici que la méthode lève une NotFoundException avec une address inconnue
+    void deleteFirestationByAddress_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
+        // Given an unknown address
+        final String address = "unknownAddressTest30";
 
-        // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).contains(firestation.getAddress());
+        // When / Then a NotFoundException is thrown
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationByAddress(address));
+        assertThat(thrown.getMessage()).contains(address);
 
-        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
-        verify(firestationRepository, never()).deleteByAddress(firestation.getAddress());
+        verify(firestationRepository, times(1)).existsByAddress(address);
+        verify(firestationRepository, never()).deleteByAddress(address);
     }
 
     @Test
-    // On va vérifier ici la suppression d'une Firestation grace une addresse lorsque l'address existe
-    void deleteFirestation_shouldRemoveFirestationByAddressWhenExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest1");
-        firestation.setStation(null);
+    // On va vérifier ici la suppression d'une Firestation existante avec une station connue
+    void deleteFirestationByStation_shouldRemoveFirestationWhenStationExists() {
+        // Given a known station to delete Firestation
+        final Integer station_number = 1;
 
-        when(firestationRepository.existsByAddress(anyString())).thenReturn(true);
+        when(firestationRepository.existsByStation(station_number)).thenReturn(true);
 
-        // When
-        firestationService.deleteFirestation(firestation);
+        // When call method on service
+        firestationService.deleteFirestationByStation(station_number);
 
-        // Then
-        ArgumentCaptor<String> addressCaptor = ArgumentCaptor.forClass(String.class);
-        verify(firestationRepository).deleteByAddress(addressCaptor.capture());
+        // Then Firestation with station given are deleted
+        ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(firestationRepository).deleteByStation(stationArgumentCaptor.capture());
 
-        String deletedAddress = addressCaptor.getValue();
+        Integer deletedStation = stationArgumentCaptor.getValue();
+        assertThat(deletedStation).isEqualTo(station_number);
 
-        assertNotNull(deletedAddress);
-        assertEquals(firestation.getAddress(), deletedAddress);
-
-        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
-        verify(firestationRepository, times(1)).deleteByAddress(firestation.getAddress());
+        verify(firestationRepository, times(1)).existsByStation(station_number);
+        verify(firestationRepository, times(1)).deleteByStation(station_number);
     }
 
     @Test
-    // On va vérifier ici la levée d'exception lors de la suppression d'une Firestation avec à une address qui n'existe pas
-    void deleteFirestation_shouldThrowNotFoundExceptionWhenAddressNotExist() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("unknownAddressTest30");
-        firestation.setStation(30);
+    // On va vérifier ici que la méthode lève une NotFoundException avec une station inconnue
+    void deleteFirestationByStation_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
+        // Given an unknown station
+        final Integer station_number = 89;
 
-        // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).contains(firestation.getAddress());
+        // When / Then a NotFoundException is thrown
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationByStation(station_number));
+        assertThat(thrown.getMessage()).contains(station_number.toString());
 
-        verify(firestationRepository, times(1)).existsByAddressByStation(firestation);
-        verify(firestationRepository, never()).delete(firestation);
-    }
-
-    @Test
-    // On va vérifier ici le bon fonctionnement de la méthode lorsque l'address n'est pas null et que la Station est null
-    void deleteFirestation_shouldRemoveFirestationWhenAddressNotExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest90");
-        firestation.setStation(null);
-
-        // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).contains(firestation.getAddress());
-
-        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
-        verify(firestationRepository, never()).deleteByAddress(firestation.getAddress());
-    }
-
-    @Test
-    // On va vérifier ici le bon fonctionnement de la méthode lorsque l'address n'est pas null et que la Station est null
-    void deleteFirestation_shouldRemoveFirestationWhenAddressExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress("addressTest1");
-        firestation.setStation(null);
-
-        when(firestationRepository.existsByAddress(firestation.getAddress())).thenReturn(true);
-
-        // When
-        firestationService.deleteFirestation(firestation);
-
-        // Then
-        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(firestationRepository).deleteByAddress(stringArgumentCaptor.capture());
-
-        String deletedByAddress = stringArgumentCaptor.getValue();
-        assertNotNull(deletedByAddress);
-        assertEquals(deletedByAddress, firestation.getAddress());
-
-        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
-        verify(firestationRepository, times(1)).deleteByAddress(firestation.getAddress());
-    }
-
-    @Test
-    // On va vérifier ici la suppression d'une Firestation avec un stationNumber existant
-    void deleteFirestation_shouldRemoveFirestationByStationWhenExists() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress(null);
-        firestation.setStation(1);
-
-        when(firestationRepository.existsByStation(firestation.getStation())).thenReturn(true);
-
-        // When
-        firestationService.deleteFirestation(firestation);
-
-        // Then
-        ArgumentCaptor<Integer> stationCaptor = ArgumentCaptor.forClass(Integer.class);
-        verify(firestationRepository).deleteByStation(stationCaptor.capture());
-
-        Integer deletedStation = stationCaptor.getValue();
-
-        assertNotNull(deletedStation);
-        assertEquals(firestation.getStation(), deletedStation);
-
-        verify(firestationRepository, times(1)).existsByStation(firestation.getStation());
-        verify(firestationRepository, times(1)).deleteByStation(firestation.getStation());
-    }
-
-    @Test
-    // On va vérifier ici la levée d'exception lors de la suppression d'une Firestation avec une station inexistante
-    void deleteFirestation_shouldThrowNotFoundExceptionWhenStationNotExist() {
-        // Given
-        Firestation firestation = new Firestation();
-        firestation.setAddress(null);
-        firestation.setStation(99);
-
-        // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestation(firestation));
-        assertThat(thrown.getMessage()).contains(firestation.getStation().toString());
-
-        verify(firestationRepository, times(1)).existsByStation(firestation.getStation());
-        verify(firestationRepository, never()).deleteByStation(firestation.getStation());
-    }
-
-    @Test
-    // On va vérifier ici la levée d'exception lors de la récupération de la liste des PersonsByStation, lorsque la station n'existe pas
-    void getPersonsByStation_shouldThrowNotFoundExceptionWhenStationNotExist() {
-        // Given
-        Integer stationNumber = 99;
-
-        // When / Then
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.getPersonsByStation(stationNumber));
-        assertThat(thrown.getMessage()).contains(stationNumber.toString());
-
-        verify(firestationRepository, times(1)).existsByStation(stationNumber);
-        verify(firestationRepository, never()).getByStation(stationNumber);
-        verify(personRepository, never()).getByAddresses(anyCollection());
-        verify(medicalRecordRepository, never()).existsById(anyString());
-    }
-
-    @Test
-    // On va vérifier ici la liste des PersonsByStation avec une station valide
-    void getPersonsByStation_shouldReturnListOfPersonsByStation() {
-        // Given
-        Integer stationNumber = 1;
-
-        List<Firestation> firestationList = new ArrayList<>();
-        firestationList.add(firestationListMock.getFirst());
-
-        Set<String> stationAddresses = new HashSet<>();
-        stationAddresses.add("addressTest1");
-
-        List<Person> personsListMock = new ArrayList<>();
-        personsListMock.add(personListMock.get(0));
-        personsListMock.add(personListMock.get(1));
-
-        when(firestationRepository.existsByStation(stationNumber)).thenReturn(true);
-        when(firestationRepository.getByStation(stationNumber)).thenReturn(firestationList);
-        when(personRepository.getByAddresses(stationAddresses)).thenReturn(personsListMock);
-        when(medicalRecordRepository.findById(personsListMock.get(0).getId())).thenReturn(Optional.of(medicalRecordMock.get(0)));
-        when(medicalRecordRepository.findById(personsListMock.get(1).getId())).thenReturn(Optional.of(medicalRecordMock.get(1)));
-
-        // When
-        PersonsByStation result = firestationService.getPersonsByStation(stationNumber);
-
-        // Then
-        assertEquals(2, result.getPersons().size());
-        assertEquals(1, result.getNbrOfMinors());
-
-        verify(firestationRepository, times(1)).existsByStation(stationNumber);
-        verify(firestationRepository, times(1)).getByStation(stationNumber);
-        verify(personRepository, times(1)).getByAddresses(anyCollection());
-        verify(medicalRecordRepository, times(2)).findById(anyString());
-    }
-
-
-    // Fournit des valeurs de Firestation, y compris null
-    static Stream<Firestation> provideInvalidFirestation() {
-        Firestation firestation1 = new Firestation();
-        firestation1.setAddress(null);
-        firestation1.setStation(null);
-
-        Firestation firestation2 = new Firestation();
-        firestation2.setAddress("");
-        firestation2.setStation(null);
-
-        return Stream.of(firestation1, firestation2);
+        verify(firestationRepository, times(1)).existsByStation(station_number);
+        verify(firestationRepository, never()).deleteByStation(station_number);
     }
 
 }

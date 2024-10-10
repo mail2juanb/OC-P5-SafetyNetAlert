@@ -32,18 +32,10 @@ public class FirestationRepositoryTest {
     public void setUp() {
         // NOTE Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
 
-        // Création des données de test
-        Firestation firestation1 = new Firestation();
-        firestation1.setAddress("addressTest1");
-        firestation1.setStation(1);
-
-        Firestation firestation2 = new Firestation();
-        firestation2.setAddress("addressTest2");
-        firestation2.setStation(2);
-
-        Firestation firestation1b = new Firestation();
-        firestation1b.setAddress("addressTest1b");
-        firestation1b.setStation(1);
+        // NOTE Test data creation
+        Firestation firestation1 = new Firestation("addressTest1", 1);
+        Firestation firestation2 = new Firestation("addressTest2", 2);
+        Firestation firestation1b = new Firestation("addressTest1b", 1);
 
         firestationListMock = new ArrayList<>();
         firestationListMock.add(firestation1);
@@ -61,10 +53,10 @@ public class FirestationRepositoryTest {
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfFirestations() {
-        // When
+        // When call method on repository
         List<Firestation> firestationList = firestationRepository.getAll();
 
-        // Then
+        // Then verify that the returned list contains expected values
         assertEquals(3, firestationList.size());
         assertTrue(firestationList.containsAll(firestationListMock));
         assertEquals("addressTest1", firestationList.get(0).getAddress());
@@ -73,175 +65,176 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation (address, stationNumber) connue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address et par station_number connue
     void findByAddressByStation_shouldReturnFirestation() {
-        // Given
+        // Given a known Firestation
         Firestation firestation = new Firestation("addressTest1", 1);
 
-        // When
+        // When call method on repository
         Optional<Firestation> result = firestationRepository.findByAddressByStation(firestation);
 
-        // Then
+        // Then verify that the returned object contains expected values
         assertTrue(result.isPresent());
         assertEquals(firestation.getAddress(), result.get().getAddress());
         assertEquals(firestation.getStation(), result.get().getStation());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation (address, stationNumber) inconnue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address et par station_number inconnue
     void findByAddressByStation_shouldReturnFirestationEmpty() {
-        // Given
+        // Given an unknown Firestation
         Firestation firestation = new Firestation("addressNotExists", 20);
 
-        // When
+        // When call method on repository
         Optional<Firestation> result = firestationRepository.findByAddressByStation(firestation);
 
-        // Then
+        // Then verify that object returned is empty
         assertTrue(result.isEmpty());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address, stationNumber) connue
+    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation connue
     void existsByAddressByStation_shouldReturnTrue() {
-        // Given
+        // Given a known Firestation
         Firestation firestation = new Firestation("addressTest1", 1);
 
-        // When
+        // When call method on repository
         boolean exists = firestationRepository.existsByAddressByStation(firestation);
 
-        // Then
+        // Then verify that response is true
         assertTrue(exists);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address, stationNumber) inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation inconnue
     void existsByAddressByStation_shouldReturnFalse() {
-        // Given
+        // Given an unknown Firestation
         Firestation firestation = new Firestation("addressNotExists", 20);
 
-        // When
+        // When call method on repository
         boolean exists = firestationRepository.existsByAddressByStation(firestation);
 
-        // Then
+        // Then verify that response is false
         assertFalse(exists);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) connue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address connue
     void findByAddress_shouldReturnFirestation() {
-        // Given
+        // Given a known address
         String address = "addressTest1";
 
-        // When
+        // When call method on repository
         Optional<Firestation> result = firestationRepository.findByAddress(address);
 
-        // Then
+        // Then verify that the returned object contains expected values
         assertTrue(result.isPresent());
         assertEquals(address, result.get().getAddress());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) inconnue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address inconnue
     void findByAddress_shouldReturnFirestationEmpty() {
-        // Given
+        // Given an unknown address
         String address = "addressNotExists";
 
-        // When
+        // When call method on repository
         Optional<Firestation> result = firestationRepository.findByAddress(address);
 
-        // Then
+        // Then verify that object returned is empty
         assertTrue(result.isEmpty());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) connue
+    // On va vérifier ici le bon fonctionnement de la réponse avec une address connue
     void existsByAddress_shouldReturnTrue() {
-        // Given
+        // Given a known address
         String address = "addressTest1";
 
-        // When
+        // When call method on repository
         boolean exists = firestationRepository.existsByAddress(address);
 
-        // Then
+        // Then verify that response is true
         assertTrue(exists);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (address) inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse avec une address inconnue
     void existsByAddress_shouldReturnFalse() {
-        // Given
+        // Given an unknown address
         String address = "addressNotExists";
 
-        // When
+        // When call method on repository
         boolean exists = firestationRepository.existsByAddress(address);
 
-        // Then
+        // Then verify that response is false
         assertFalse(exists);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) connue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation avec une station connue
     void findByStation_shouldReturnFirestation() {
-        // Given
-        Integer stationNumber = 1;
+        // Given a known station
+        Integer station_number = 1;
 
-        // When
-        Optional<Firestation> result = firestationRepository.findByStation(stationNumber);
+        // When call method on repository
+        Optional<Firestation> result = firestationRepository.findByStation(station_number);
 
-        // Then
+        // Then verify that the returned object contains expected values
         assertTrue(result.isPresent());
-        assertEquals(stationNumber, result.get().getStation());
+        assertEquals(station_number, result.get().getStation());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) inconnue
+    // On va vérifier ici le bon fonctionnement de la recherche de Firestation avec une station inconnue
     void findByStation_shouldReturnFirestationEmpty() {
-        // Given
-        Integer stationNumber = 999;
+        // Given an unknown station
+        Integer station_number = 999;
 
-        // When
-        Optional<Firestation> result = firestationRepository.findByStation(stationNumber);
+        // When call method on repository
+        Optional<Firestation> result = firestationRepository.findByStation(station_number);
 
-        // Then
+        // Then verify that object returned is empty
         assertTrue(result.isEmpty());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) connue
+    // On va vérifier ici le bon fonctionnement de la réponse avec une station connue
     void existsByStation_shouldReturnTrue() {
-        // Given
-        Integer stationNumber = 1;
+        // Given a known station
+        Integer station_number = 1;
 
-        // When
-        boolean exists = firestationRepository.existsByStation(stationNumber);
+        // When call method on repository
+        boolean exists = firestationRepository.existsByStation(station_number);
 
-        // Then
+        // Then verify that response is true
         assertTrue(exists);
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation (station) inconnue
+    // On va vérifier ici le bon fonctionnement de la réponse avec une station inconnue
     void existsByStation_shouldReturnFalse() {
-        // Given
-        Integer stationNumber = 999;
+        // Given an unknown station
+        Integer station_number = 999;
 
-        // When
-        boolean exists = firestationRepository.existsByStation(stationNumber);
+        // When call method on repository
+        boolean exists = firestationRepository.existsByStation(station_number);
 
-        // Then
+        // Then verify that response is false
         assertFalse(exists);
     }
 
     @Test
-    // On va vérifier ici qu'avec un objet Firestation dont l'adresse est connue, on met à jour le numéro de station
+    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation
     void updateFirestation_shouldUpdate() {
-        // Given
+        // Given a Firestation to update
         Firestation firestation = new Firestation("addressTest1", 199);
 
-        // When
+        // When call method on repository
         firestationRepository.update(firestation);
 
-        // Then
+        // Then verify that Firestation is updated
+        assertEquals(3, firestationListMock.size());
         assertEquals(firestation.getAddress(), firestationListMock.getFirst().getAddress());
         assertEquals(firestation.getStation(), firestationListMock.getFirst().getStation());
     }
@@ -250,13 +243,13 @@ public class FirestationRepositoryTest {
     @Test
     // On va vérifier ici le bon fonctionnement de l'ajout d'une Firestation
     void saveFirestation_shouldSave() {
-        // Given
+        // Given a Firestation to save
         Firestation firestation = new Firestation("addressTest10", 10);
 
-        // When
+        // When call method on repository
         firestationRepository.save(firestation);
 
-        // Then
+        // Then verify that Firestation is saved
         assertEquals(4, firestationListMock.size());
         assertTrue(firestationListMock.contains(firestation));
         assertEquals(firestation.getAddress(), firestationListMock.get(3).getAddress());
@@ -264,59 +257,45 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la suppression d'une Firestation connue
-    void deleteFirestation_shouldDelete() {
-        // Given
-        Firestation firestation = new Firestation("addressTest1", 1);
-
-        // When
-        firestationRepository.delete(firestation);
-
-        // Then
-        assertFalse(firestationListMock.contains(firestation));
-        assertEquals(2, firestationListMock.size());
-        assertEquals("addressTest1b", firestationListMock.get(0).getAddress());
-        assertEquals("addressTest2", firestationListMock.get(1).getAddress());
-    }
-
-    @Test
-    // On va vérifier ici le bon fonctionnement de la suppression d'une Firestation avec une adresse
+    // On va vérifier ici le bon fonctionnement de la suppression d'une Firestation avec une address
     void deleteByAddress_shouldRemoveFirestation() {
-        // Given
+        // Given an address to delete
         String address = "addressTest2";
 
-        // When
+        // When call method on repository
         firestationRepository.deleteByAddress(address);
 
-        // Then
+        // Then verify that Firestation is deleted
+        assertEquals(2, firestationListMock.size());
         assertFalse(firestationListMock.stream().anyMatch(firestation -> firestation.getAddress().equals(address)));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la suppression d'une ou plusieurs Firestations avec un numéro de station connu
     void deleteByStation_shouldDeleteFirestations() {
-        // Given
-        Integer stationNumber = 1;
+        // Given a station_number to delete
+        Integer station_number = 1;
 
-        // When
-        firestationRepository.deleteByStation(stationNumber);
+        // When call method on repository
+        firestationRepository.deleteByStation(station_number);
 
-        // Then
-        assertFalse(firestationListMock.stream().anyMatch(firestation -> firestation.getStation().equals(stationNumber)));
+        // Then verify that Firestations are deleted
+        assertEquals(1, firestationListMock.size());
+        assertFalse(firestationListMock.stream().anyMatch(firestation -> firestation.getStation().equals(station_number)));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la récupération de la liste des Firestation par station
     void getByStation_shouldReturnListOfFirestation() {
-        // Given
-        Integer stationNumber = 1;
+        // Given a station_number
+        Integer station_number = 1;
 
-        // When
-        List<Firestation> resultFirestationList = firestationRepository.getByStation(stationNumber);
+        // When call method on repository
+        List<Firestation> resultFirestationList = firestationRepository.getByStation(station_number);
 
-        // Then
+        // Then verify that result is correct
         assertEquals(2, resultFirestationList.size());
-        assertTrue(resultFirestationList.stream().allMatch(firestation -> firestation.getStation().equals(stationNumber)));
+        assertTrue(resultFirestationList.stream().allMatch(firestation -> firestation.getStation().equals(station_number)));
     }
 
 

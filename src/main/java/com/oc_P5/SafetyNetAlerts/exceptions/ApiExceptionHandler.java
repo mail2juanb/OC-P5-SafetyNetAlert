@@ -17,13 +17,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ErrorResponse handleConflictException(ConflictException exception){
         return createErrorResponse(exception, HttpStatus.CONFLICT);
-
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ErrorResponse handleNotFoundException(NotFoundException exception){
         return  createErrorResponse(exception, HttpStatus.NOT_FOUND);
-
     }
 
     @ExceptionHandler(NullOrEmptyObjectException.class)
@@ -31,9 +29,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return createErrorResponse(exception, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ArgumentNotValidException.class)
+    public ErrorResponse handleValidationExceptions(ArgumentNotValidException exception) {
+        return createErrorResponse(exception, HttpStatus.BAD_REQUEST);
+    }
+
+
     private static ErrorResponse createErrorResponse(RuntimeException exception, HttpStatus status) {
         return ErrorResponse.builder(exception, status, exception.getMessage())
                 .property("timestamp", Instant.now())
                 .build();
     }
+
 }

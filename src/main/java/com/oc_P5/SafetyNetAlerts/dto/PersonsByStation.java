@@ -8,8 +8,8 @@ import java.util.List;
 
 @Value
 public class PersonsByStation {
-    private final List<PersonByStation> persons;
-    private final Integer nbrOfMinors;
+    List<PersonByStation> persons;
+    Integer nbrOfMinors;
 
     public PersonsByStation(List<Person> persons, Integer nbrOfMinors){
 
@@ -25,10 +25,10 @@ public class PersonsByStation {
 
     @Value
     static class PersonByStation {
-        private final String firstName;
-        private final String lastName;
-        private final String address;
-        private final String phone;
+        String firstName;
+        String lastName;
+        String address;
+        String phone;
 
         public PersonByStation(Person person){
             this.firstName = person.getFirstName();
