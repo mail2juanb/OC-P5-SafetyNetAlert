@@ -2,6 +2,7 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,14 @@ import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 public class MedicalRecordController {
 
     private final MedicalRecordServiceImpl medicalRecordService;
 
-    public MedicalRecordController(MedicalRecordServiceImpl medicalRecordService) {
-        this.medicalRecordService = medicalRecordService;
-    }
+//    public MedicalRecordController(MedicalRecordServiceImpl medicalRecordService) {
+//        this.medicalRecordService = medicalRecordService;
+//    }
 
     /**
      * GET http://localhost:8080/medicalRecords

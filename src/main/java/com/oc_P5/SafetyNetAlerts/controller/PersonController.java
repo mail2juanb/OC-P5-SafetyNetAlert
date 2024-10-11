@@ -2,6 +2,7 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.service.PersonServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +12,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PersonController {
 
     private final PersonServiceImpl personService;
 
-    public PersonController(PersonServiceImpl personService) {
-        this.personService = personService;
-    }
+//    public PersonController(PersonServiceImpl personService) {
+//        this.personService = personService;
+//    }
 
 
     /**

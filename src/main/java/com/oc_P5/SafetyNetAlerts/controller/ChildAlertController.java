@@ -1,7 +1,8 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.dto.ChildrenByAddress;
-import com.oc_P5.SafetyNetAlerts.service.ChildAlertServiceImpl;
+import com.oc_P5.SafetyNetAlerts.service.ChildAlertService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,13 +12,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class ChildAlertController {
 
-    private final ChildAlertServiceImpl childAlertService;
+    private final ChildAlertService childAlertService;
 
-    public ChildAlertController(ChildAlertServiceImpl childAlertService) {
-        this.childAlertService = childAlertService;
-    }
 
     /**
      * GET http://localhost:8080/childAlert?address=<address>
@@ -26,6 +25,7 @@ public class ChildAlertController {
      * @param address (String) adresse concernée
      * @return Liste de ChildrenByAddress OR empty
      */
+
     @GetMapping("/childAlert")
     public List<ChildrenByAddress> getChildByAddress(@RequestParam("address") String address) {
         return childAlertService.getChildByAddress(address);

@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.service.PhoneAlertServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,14 +11,15 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PhoneAlertController {
 
     private final PhoneAlertServiceImpl phoneAlertService;
 
 
-    public PhoneAlertController(PhoneAlertServiceImpl phoneAlertService) {
-        this.phoneAlertService = phoneAlertService;
-    }
+//    public PhoneAlertController(PhoneAlertServiceImpl phoneAlertService) {
+//        this.phoneAlertService = phoneAlertService;
+//    }
 
     /**
      * GET http://localhost:8080/phoneAlert?firestation=<firestation_number>

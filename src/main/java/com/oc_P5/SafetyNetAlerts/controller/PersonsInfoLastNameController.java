@@ -2,6 +2,7 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonInfoLastName;
 import com.oc_P5.SafetyNetAlerts.service.PersonsInfoLastNameServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,13 +12,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PersonsInfoLastNameController {
 
     private final PersonsInfoLastNameServiceImpl personsInfoLastNameService;
 
-    public PersonsInfoLastNameController(PersonsInfoLastNameServiceImpl personsInfoLastNameService) {
-        this.personsInfoLastNameService = personsInfoLastNameService;
-    }
+//    public PersonsInfoLastNameController(PersonsInfoLastNameServiceImpl personsInfoLastNameService) {
+//        this.personsInfoLastNameService = personsInfoLastNameService;
+//    }
 
 
     /**

@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.service.CommunityEmailServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,13 +11,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class CommunityEmailController {
 
     private final CommunityEmailServiceImpl communityEmailService;
-
-    public CommunityEmailController(CommunityEmailServiceImpl communityEmailService) {
-        this.communityEmailService = communityEmailService;
-    }
 
     /**
      * GET http://localhost:8080/communityEmail?city=<city>
