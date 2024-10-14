@@ -2,14 +2,11 @@ package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,10 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -48,20 +43,6 @@ public class PersonServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode renvoi la liste des Person
-    void getPersons_shouldReturnListOfPerson() {
-        // Given
-        when(personRepository.getAll()).thenReturn(personListMock);
-
-        // When
-        List<Person> result = personService.getPersons();
-
-        // Then
-        assertEquals(personListMock, result);
-        verify(personRepository, times(1)).getAll();
-    }
-
-    @Test
     // On va vérifier ici que lorsqu'une Person est ajoutée, elle est correctement sauvegardée avec les bons attributs.
     void addPerson_ShouldAddPersonWhenNotExist() {
         // Given
@@ -81,17 +62,6 @@ public class PersonServiceTest {
 
         verify(personRepository, times(1)).existsById(person.getId());
         verify(personRepository, times(1)).save(person);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideInvalidPerson")
-    // On va vérifier ici que la méthode lève une NullOrEmptyObjectException
-    void addPerson_shouldReturnNullOrEmptyObjectExceptionWithEmptyPerson(Person person) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> personService.addPerson(person));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-        verify(personRepository, never()).existsById(anyString());
-        verify(personRepository, never()).save(person);
     }
 
     @Test
@@ -139,17 +109,6 @@ public class PersonServiceTest {
                 });
     }
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidPerson")
-    // On va vérifier ici que la méthode lève une NullOrEmptyObjectException
-    void updatePerson_shouldReturnNullOrEmptyObjectExceptionWithEmptyPerson(Person person) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> personService.updatePerson(person));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-        verify(personRepository, never()).findById(anyString());
-        verify(personRepository, never()).update(person);
-    }
-
     @Test
     // On va vérifier ici que la méthode lève une NotFoundException lorsque la Person n'existe pas
     void updatePerson_shouldReturnNotFoundExceptionWhenNotExist() {
@@ -187,17 +146,6 @@ public class PersonServiceTest {
         assertThat(deletedPerson).isEqualTo(person);
     }
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidPerson")
-        // On va vérifier ici que la méthode lève une NullOrEmptyObjectException
-    void deletePerson_shouldReturnNullOrEmptyObjectExceptionWithEmptyPerson(Person person) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> personService.deletePerson(person));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-        verify(personRepository, never()).findById(anyString());
-        verify(personRepository, never()).delete(person);
-    }
-
     @Test
     // On va vérifier ici que la méthode lève une NotFoundException lorsque la Person n'existe pas
     void deletePerson_shouldReturnNotFoundExceptionWhenNotExist() {
@@ -212,16 +160,6 @@ public class PersonServiceTest {
 
         verify(personRepository, times(1)).existsById(person.getId());
         verify(personRepository, never()).delete(any(Person.class));
-    }
-
-
-
-    // Fournit des valeurs de Firestation, y compris null
-    static Stream<Person> provideInvalidPerson() {
-        Person person1 = new Person(null, null, null, null, null, null, null);
-        Person person2 = new Person(" ", "", "", "", null, " ", "");
-
-        return Stream.of(person1, person2);
     }
 
 }

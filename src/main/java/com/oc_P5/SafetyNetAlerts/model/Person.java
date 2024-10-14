@@ -1,5 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.model;
 
+import com.oc_P5.SafetyNetAlerts.controller.requests.PersonRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,7 @@ public class Person extends NamedModel {
     private String phone;
     private String email;
 
-    // NOTE Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
-    // NOTE C'est à cause du super.
+
     public Person(String firstName, String lastName, String address, String city, Integer zip, String phone, String email) {
         super(firstName, lastName);
         this.address = address;
@@ -27,6 +27,17 @@ public class Person extends NamedModel {
         this.phone = phone;
         this.email = email;
     }
+
+
+    public Person(PersonRequest request) {
+        super(request.getFirstName(), request.getLastName());
+        this.address = request.getAddress();
+        this.city = request.getCity();
+        this.zip = request.getZip();
+        this.phone = request.getPhone();
+        this.email = request.getEmail();
+    }
+
 
     public Person update(Person update) {
         if(update.getAddress() != null && !update.getAddress().isEmpty()) {

@@ -34,25 +34,8 @@ public class PersonRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
-
-        Person person1 = new Person();
-        person1.setFirstName("firstNameTest1");
-        person1.setLastName("lastNameTest1");
-        person1.setAddress("addressTest1");
-        person1.setCity("cityTest1");
-        person1.setZip(1);
-        person1.setPhone("phoneTest1");
-        person1.setEmail("emailTest1");
-
-        Person person2 = new Person();
-        person2.setFirstName("firstNameTest2");
-        person2.setLastName("lastNameTest2");
-        person2.setAddress("addressTest2");
-        person2.setCity("cityTest2");
-        person2.setZip(2);
-        person2.setPhone("phoneTest2");
-        person2.setEmail("emailTest2");
+        Person person1 = new Person("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 1, "phoneTest1", "emailTest1");
+        Person person2 = new Person("firstNameTest2", "lastNameTest2", "addressTest2", "cityTest2", 2, "phoneTest2", "emailTest2");
 
         personListMock = new ArrayList<>();
         personListMock.add(person1);
@@ -61,17 +44,16 @@ public class PersonRepositoryTest {
         DataWrapperList dataWrapperList = new DataWrapperList();
         dataWrapperList.setPersons(personListMock);
 
-        // Configure le mock pour PersonRepository
         when(dataReaderService.getData()).thenReturn(dataWrapperList);
     }
 
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfPerson() {
-        // When
+        // When method is called
         List<Person> personList = personRepository.getAll();
 
-        // Then
+        // Then return the correct list of persons
         assertEquals(2, personList.size());
         assertEquals("firstNameTest1", personList.get(0).getFirstName());
         assertEquals("firstNameTest2", personList.get(1).getFirstName());
@@ -80,20 +62,13 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici que la méthode ajoute correctement une Person
     void savePerson_shouldSave() {
-        // Given
-        Person person = new Person();
-        person.setFirstName("firstNameTest3");
-        person.setLastName("lastNameTest3");
-        person.setAddress("addressTest3");
-        person.setCity("cityTest3");
-        person.setZip(3);
-        person.setPhone("phoneTest3");
-        person.setEmail("emailTest3");
+        // Given a new person to be added
+        Person person = new Person("firstNameTest3", "lastNameTest3", "addressTest3", "cityTest3", 3, "phoneTest3", "email@Test3");
 
-        // When
+        // When the save method is called
         personRepository.save(person);
 
-        // Then
+        // Then the new person added to the list
         assertEquals(3, personListMock.size());
         assertEquals("firstNameTest1", personListMock.get(0).getFirstName());
         assertEquals("firstNameTest2", personListMock.get(1).getFirstName());
@@ -103,27 +78,20 @@ public class PersonRepositoryTest {
         assertEquals("cityTest3", personListMock.get(2).getCity());
         assertEquals(3, personListMock.get(2).getZip());
         assertEquals("phoneTest3", personListMock.get(2).getPhone());
-        assertEquals("emailTest3", personListMock.get(2).getEmail());
+        assertEquals("email@Test3", personListMock.get(2).getEmail());
 
     }
 
     @Test
     // On va vérifier ici que la méthode met à jour correctement une Person
     void updatePerson_shouldUpdate() {
-        // Given
-        Person person = new Person();
-        person.setFirstName("firstNameTest1");
-        person.setLastName("lastNameTest1");
-        person.setAddress("addressTest1_Updated");
-        person.setCity("cityTest1_Updated");
-        person.setZip(10);
-        person.setPhone("phoneTest1_updated");
-        person.setEmail("emailTest1_updated");
+        // Given a person with updated details
+        Person person = new Person("firstNameTest1", "lastNameTest1", "addressTest1_Updated", "cityTest1_Updated", 10, "phoneTest1_updated", "email@Test1_updated");
 
-        // When
+        // When the update method is called
         personRepository.update(person);
 
-        // Then
+        // Then person's details are updated in the list
         assertEquals(2, personListMock.size());
         assertEquals(person.getFirstName(), personListMock.getFirst().getFirstName());
         assertEquals(person.getLastName(), personListMock.getFirst().getLastName());
@@ -137,20 +105,13 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici que la méthode supprime correctement une Person
     void delete_shouldDelete() {
-        // Given
-        Person person = new Person();
-        person.setFirstName("firstNameTest1");
-        person.setLastName("lastNameTest1");
-        person.setAddress(null);
-        person.setCity(null);
-        person.setZip(null);
-        person.setPhone(null);
-        person.setEmail(null);
+        // Given a person to be deleted
+        Person person = new Person("firstNameTest1", "lastNameTest1", null, null, null, null, null);
 
-        // When
+        // When delete method is called
         personRepository.delete(person);
 
-        // Then
+        // Then person is removed from the list
         assertEquals(1, personListMock.size());
         assertEquals("firstNameTest2", personListMock.getFirst().getFirstName());
         assertFalse(personListMock.contains(person));
@@ -159,13 +120,13 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par address
     void getByAddress_shouldReturnListOfPersonByAddress() {
-        // Given
+        // Given an address to search by
         String address = "addressTest1";
 
-        // When
+        // When method is called
         List<Person> personList = personRepository.getByAddress(address);
 
-        // Then
+        // Then return the persons at that address
         assertEquals(1, personList.size());
         assertEquals("addressTest1", personList.getFirst().getAddress());
     }
@@ -173,15 +134,15 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par liste d'addresses
     void getByAddresses_shouldReturnListOfPersonByCollectionAddresses() {
-        // Given
+        // Given a collection of addresses to search by
         Collection<String> addresses = new ArrayList<>();
         addresses.add("addressTest1");
         addresses.add("addressTest2");
 
-        // When
+        // When method is called
         List<Person> personList = personRepository.getByAddresses(addresses);
 
-        // Then
+        // Then return the persons at that address
         assertEquals(2, personList.size());
         assertEquals("addressTest1", personList.get(0).getAddress());
         assertEquals("addressTest2", personList.get(1).getAddress());
@@ -190,13 +151,13 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par Ville
     void getByCity_shouldReturnListOfPersonByCity() {
-        // Given
+        // Given a city to search by
         String city = "cityTest1";
 
-        // When
+        // When method is called
         List<Person> personList = personRepository.getByCity(city);
 
-        // Then
+        // Then return the persons in that city
         assertEquals(1, personList.size());
         assertEquals("cityTest1", personList.getFirst().getCity());
     }
@@ -204,81 +165,81 @@ public class PersonRepositoryTest {
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id connue
     void existsById_shouldBeTrueIfIdExists() {
-        // Given
+        // Given an existing person ID
         String id = "firstNameTest1-lastNameTest1";
 
-        // When / Then
+        // When / Then return true when the ID exists
         assertTrue(personRepository.existsById(id));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id inconnue
     void existsById_shouldBeFalseIfIdNotExists() {
-        // Given
+        // Given an unknown person ID
         String id = "unknownId";
 
-        // When / Then
+        // When / Then return false when the ID not exist
         assertFalse(personRepository.existsById(id));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville connue
     void existsByCity_shouldBeTrueIfCityExists(){
-        // Given
+        // Given an existing city
         String city = "cityTest1";
 
-        // When / Then
+        // When / Then return true when the city exists
         assertTrue(personRepository.existsByCity(city));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByCity_shouldBeFalseIfCityNotExists(){
-        // Given
+        // Given an unknown person ID
         String city = "unknownCityTest1";
 
-        // When / Then
+        // When / Then return false when the city not exist
         assertFalse(personRepository.existsByCity(city));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la recherche de Person par adresse
     void findByAddress_shouldReturnPersonByAddress() {
-        // Given
+        // Given an address to search by
         String address = "addressTest1";
 
-        // When
+        // When method is called
         Optional<Person> person = personRepository.findByAddress(address);
 
-        // Then
+        // Then return the person at that address
         assertTrue(person.isPresent());
         assertEquals("addressTest1", person.get().getAddress());
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville connue
+    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par lastName connu
     void existsByLastName_shouldBeTrueIfLastNameExists(){
-        // Given
+        // Given an existing lastName
         String lastName = "lastNameTest1";
 
-        // When / Then
+        // When / Then return true when lastName exists
         assertTrue(personRepository.existsByLastName(lastName));
     }
 
     @Test
     // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByLastName_shouldBeFalseIfLastNameNotExists(){
-        // Given
+        // Given an unknown lastName
         String lastName = "unknownLastNameTest1";
 
-        // When / Then
+        // When / Then return false when lastName not exist
         assertFalse(personRepository.existsByLastName(lastName));
     }
 
     @Test
     // On va vérifier que la méthode renvoi bien une liste de PersonWithMedicalRecord ainsi que les bons attributs
     void getPersonsWithMedicalRecord_shouldReturnListOfPersonWithMedicalRecord() {
-        // Given
+        // Given a list of person IDs and corresponding mock data (persons and medical records)
         List<String> ids = new ArrayList<>();
         ids.add("firstNameTest1-lastNameTest1");
         ids.add("firstNameTest2-lastNameTest2");
@@ -291,23 +252,13 @@ public class PersonRepositoryTest {
         List<String> medicationList1 = Collections.emptyList();
         List<String> allergiesList1 = Collections.emptyList();
 
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setFirstName("firstNameTest1");
-        medicalRecord1.setLastName("lastNameTest1");
-        medicalRecord1.setBirthdate(birthdate1);
-        medicalRecord1.setMedications(medicationList1);
-        medicalRecord1.setAllergies(allergiesList1);
+        MedicalRecord medicalRecord1 = new MedicalRecord("firstNameTest1", "lastNameTest1", birthdate1, medicationList1, allergiesList1);
 
         LocalDate birthdate2 = LocalDate.parse("09/01/1990", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList2 = List.of("medicationTest1:100mg", "medicationTest2:200mg");
         List<String> allergiesList2 = List.of("allergieTest1", "allergieTest2");
 
-        MedicalRecord medicalRecord2 = new MedicalRecord();
-        medicalRecord2.setFirstName("firstNameTest2");
-        medicalRecord2.setLastName("lastNameTest2");
-        medicalRecord2.setBirthdate(birthdate2);
-        medicalRecord2.setMedications(medicationList2);
-        medicalRecord2.setAllergies(allergiesList2);
+        MedicalRecord medicalRecord2 = new MedicalRecord("firstNameTest2", "lastNameTest2", birthdate2, medicationList2, allergiesList2);
 
         List<MedicalRecord> medicalRecordList = new ArrayList<>();
         medicalRecordList.add(medicalRecord1);
@@ -319,13 +270,13 @@ public class PersonRepositoryTest {
 
         when(dataReaderService.getData()).thenReturn(dataWrapper);
 
-        // When
+        // When method is called
         List<PersonWithMedicalRecord> result = personRepository.getPersonsWithMedicalRecord(ids);
 
-        // Then
+        // Then return the correct persons with medical records
         assertNotNull(result);
         assertEquals(2, result.size());
-            // Vérification des attributs pour la PersonWithMedicalRecord 1
+            // Checking attributes for PersonWithMedicalRecord 1
         assertEquals("firstNameTest1", result.get(0).person().getFirstName());
         assertEquals("lastNameTest1", result.get(0).person().getLastName());
         assertEquals("addressTest1", result.get(0).person().getAddress());
@@ -338,7 +289,7 @@ public class PersonRepositoryTest {
         assertEquals(birthdate1, result.get(0).medicalRecord().getBirthdate());
         assertEquals(medicationList1, result.get(0).medicalRecord().getMedications());
         assertEquals(allergiesList1, result.get(0).medicalRecord().getAllergies());
-            // Vérification des attributs pour la PersonWithMedicalRecord 2
+            // Checking attributes for PersonWithMedicalRecord 2
         assertEquals("firstNameTest2", result.get(1).person().getFirstName());
         assertEquals("lastNameTest2", result.get(1).person().getLastName());
         assertEquals("addressTest2", result.get(1).person().getAddress());
