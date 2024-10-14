@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,14 +20,20 @@ public class MedicalRecord extends NamedModel {
     private List<String> allergies;
 
 
-    // NOTE Constructeur avec tous les champs mais pourquoi ? L'annotation lombok ne fonctionne pas ?
-    // NOTE C'est à cause du super.
     public MedicalRecord(String firstName, String lastName, LocalDate birthdate, List<String> medications, List<String> allergies) {
         super(firstName, lastName);
         this.birthdate = birthdate;
         this.medications = medications;
         this.allergies = allergies;
     }
+
+    public MedicalRecord(MedicalRecordRequest request) {
+        super(request.getFirstName(), request.getLastName());
+        this.birthdate = request.getBirthdate();
+        this.medications = request.getMedications();
+        this.allergies = request.getAllergies();
+    }
+
 
 
     public Integer getAge(){
@@ -37,9 +44,6 @@ public class MedicalRecord extends NamedModel {
         return getAge() <= 18;
     }
 
-    public boolean isMajor(){
-        return !isMinor();
-    }
 
     public MedicalRecord update(MedicalRecord update){
         if(update.getBirthdate() != null) {

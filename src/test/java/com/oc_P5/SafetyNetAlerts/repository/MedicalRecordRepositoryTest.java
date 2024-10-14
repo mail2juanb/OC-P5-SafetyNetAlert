@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 
 //@ExtendWith(SpringExtension.class)
-// NOTE j'ai remis MockitoExtension ça marche aussi. J'ai pas compris pourquoi tu avais changé
+// NOTE J'ai remis MockitoExtension ça marche aussi. J'ai pas compris pourquoi tu avais changé
 @ExtendWith(MockitoExtension.class)
 public class MedicalRecordRepositoryTest {
 
@@ -39,24 +39,12 @@ public class MedicalRecordRepositoryTest {
         LocalDate birthdate1 = LocalDate.parse("09/01/2024", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList1 = Collections.emptyList();
         List<String> allergiesList1 = Collections.emptyList();
-
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setFirstName("firstNameTest1");
-        medicalRecord1.setLastName("lastNameTest1");
-        medicalRecord1.setBirthdate(birthdate1);
-        medicalRecord1.setMedications(medicationList1);
-        medicalRecord1.setAllergies(allergiesList1);
+        MedicalRecord medicalRecord1 = new MedicalRecord("firstNameTest1", "lastNameTest1", birthdate1, medicationList1, allergiesList1);
 
         LocalDate birthdate2 = LocalDate.parse("09/01/1990", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList2 = List.of("medicationTest1:100mg", "medicationTest2:200mg");
         List<String> allergiesList2 = List.of("allergieTest1", "allergieTest2");
-
-        MedicalRecord medicalRecord2 = new MedicalRecord();
-        medicalRecord2.setFirstName("firstNameTest2");
-        medicalRecord2.setLastName("lastNameTest2");
-        medicalRecord2.setBirthdate(birthdate2);
-        medicalRecord2.setMedications(medicationList2);
-        medicalRecord2.setAllergies(allergiesList2);
+        MedicalRecord medicalRecord2 = new MedicalRecord("firstNameTest2", "lastNameTest2", birthdate2, medicationList2, allergiesList2);
 
         medicalRecordListMock = new ArrayList<>();
         medicalRecordListMock.add(medicalRecord1);
@@ -72,10 +60,10 @@ public class MedicalRecordRepositoryTest {
     @Test
     // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfMedicalRecords() {
-        // When
+        // When the method is called on the repository
         List<MedicalRecord> medicalRecordList = medicalRecordRepository.getAll();
 
-        // Then
+        // Then verify that the returned list contains the expected values
         assertEquals(2, medicalRecordList.size());
         assertEquals("firstNameTest1", medicalRecordList.get(0).getFirstName());
         assertEquals("firstNameTest2", medicalRecordList.get(1).getFirstName());
@@ -84,22 +72,16 @@ public class MedicalRecordRepositoryTest {
     @Test
     // On va vérifier ici que la méthode ajoute correctement un MedicalRecord
     void saveMedicalRecord_shouldSave() {
-        // Given
+        // Given a new MedicalRecord to be added
         LocalDate birthdate = LocalDate.parse("09/01/1999", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList = List.of("medicationTestAdd1:999mg", "medicationTestAdd2:999mg");
         List<String> allergiesList = List.of("allergieTestAdd1", "allergieTestAdd2");
+        MedicalRecord medicalRecord = new MedicalRecord("firstNameTest3", "lastNameTest3", birthdate, medicationList, allergiesList);
 
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setFirstName("firstNameTest3");
-        medicalRecord.setLastName("lastNameTest3");
-        medicalRecord.setBirthdate(birthdate);
-        medicalRecord.setMedications(medicationList);
-        medicalRecord.setAllergies(allergiesList);
-
-        // When
+        // When the record is saved using the repository
         medicalRecordRepository.save(medicalRecord);
 
-        // Then
+        // Then verify that the record is correctly added to the list
         assertEquals(3, medicalRecordListMock.size());
         assertEquals("firstNameTest1", medicalRecordListMock.get(0).getFirstName());
         assertEquals("firstNameTest2", medicalRecordListMock.get(1).getFirstName());
@@ -113,22 +95,17 @@ public class MedicalRecordRepositoryTest {
     @Test
     // On va vérifier ici que la méthode met à jour correctement un MedicalRecord
     void updateMedicalRecord_shouldUpdate() {
-        // Given
+        // Given an existing MedicalRecord with updated details
         LocalDate birthdate = LocalDate.parse("09/01/2024", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList = List.of("medicationTestUpdate1:999mg", "medicationTestUpdate2:999mg");
         List<String> allergiesList = List.of("allergieTestUpdate1", "allergieTestUpdate2");
 
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setFirstName("firstNameTest1");
-        medicalRecord.setLastName("lastNameTest1");
-        medicalRecord.setBirthdate(birthdate);
-        medicalRecord.setMedications(medicationList);
-        medicalRecord.setAllergies(allergiesList);
+        MedicalRecord medicalRecord = new MedicalRecord("firstNameTest1", "lastNameTest1", birthdate, medicationList, allergiesList);
 
-        // When
+        // When the record is updated in the repository
         medicalRecordRepository.update(medicalRecord);
 
-        // Then
+        // Then verify that the record has been updated in the list
         assertEquals(2, medicalRecordListMock.size());
         assertEquals(medicalRecord.getFirstName(), medicalRecordListMock.getFirst().getFirstName());
         assertEquals(medicalRecord.getLastName(), medicalRecordListMock.getFirst().getLastName());
@@ -141,36 +118,41 @@ public class MedicalRecordRepositoryTest {
     @Test
     // On va vérifier ici que la méthode supprime correctement un MedicalRecord
     void deleteMedicalRecord_shouldDelete() {
-        // Given
+        // Given a MedicalRecord to be deleted
         MedicalRecord medicalRecord = medicalRecordListMock.getFirst();
 
-        // When
+        // When the record is deleted from the repository
         medicalRecordRepository.delete(medicalRecord);
 
-        // Then
+        // Then verify that the record is removed from the list
         assertEquals(1, medicalRecordListMock.size());
         assertFalse(medicalRecordListMock.contains(medicalRecord));
     }
 
     @Test
-    // On va vérifier ici que la méthode vérifie bien l'existence de la String id - True
+    // On va vérifier ici que la méthode vérifie bien l'existence du String id - True
     void existsById_shouldReturnBooleanWithIdExists(){
-        // Given
+        // Given an existing MedicalRecord id
         String id = medicalRecordListMock.getFirst().getId();
 
-        // When / Then
-        assertTrue(medicalRecordRepository.existsById(id));
+        // When the repository checks if the id exists
+        boolean exists = medicalRecordRepository.existsById(id);
+
+        // Then verify that the method returns true
+        assertTrue(exists);
     }
 
     @Test
     // On va vérifier ici que la méthode vérifie bien l'existence de la String id - False
     void existsById_shouldReturnBooleanWithIdNotExists(){
-        // Given
+        // Given a non-existing MedicalRecord id
         String id = "idNotExists";
 
-        // When / Then
-        assertFalse(medicalRecordRepository.existsById(id));
-    }
+        // When the repository checks if the id exists
+        boolean exists = medicalRecordRepository.existsById(id);
 
+        // Then verify that the method returns false
+        assertFalse(exists);
+    }
 
 }

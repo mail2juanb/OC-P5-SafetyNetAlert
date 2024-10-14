@@ -1,18 +1,23 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
+import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -28,62 +33,82 @@ public class MedicalRecordControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
-    void getMedicalRecords_shouldReturnListOfMedicalRecord() {
-        // Given
-        List<MedicalRecord> medicalRecordList = new ArrayList<>();
-        when(medicalRecordService.getMedicalRecords()).thenReturn(medicalRecordList);
-
-        // When
-        List<MedicalRecord> result = medicalRecordController.getMedicalRecords();
-
-        // Then
-        verify(medicalRecordService, times(1)).getMedicalRecords();
-        assertEquals(medicalRecordList, result);
-    }
-
-    @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void addMedicalRecord_shouldReturnResponseEntity() {
-        // Given
-        MedicalRecord medicalRecord = new MedicalRecord();
-        doNothing().when(medicalRecordService).addMedicalRecord(medicalRecord);
+        // Given MedicalRecord to add
+        final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        final List<String> medicationList = Collections.emptyList();
+        final List<String> allergiesList = Collections.emptyList();
+        final MedicalRecordRequest medicalRecordRequest = new MedicalRecordRequest("addFirstName", "addLastName", birthdate, medicationList, allergiesList);
+        final MedicalRecord medicalRecordExpect = new MedicalRecord("addFirstName", "addLastName", birthdate, medicationList, allergiesList);
 
-        // When
-        ResponseEntity<String> response = medicalRecordController.addMedicalRecord(medicalRecord);
+        doNothing().when(medicalRecordService).addMedicalRecord(any());
 
-        // Then
-        verify(medicalRecordService, times(1)).addMedicalRecord(medicalRecord);
+        // When MedicalRecord is post
+        ResponseEntity<String> response = medicalRecordController.addMedicalRecord(medicalRecordRequest);
+
+        // Then MedicalRecord is sent to service with correct values
+        ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
+        verify(medicalRecordService).addMedicalRecord(medicalRecordArgumentCaptor.capture());
+        assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(medicalRecordExpect.getFirstName());
+        assertThat(medicalRecordArgumentCaptor.getValue().getLastName()).isEqualTo(medicalRecordExpect.getLastName());
+        assertThat(medicalRecordArgumentCaptor.getValue().getBirthdate()).isEqualTo(medicalRecordExpect.getBirthdate());
+        assertThat(medicalRecordArgumentCaptor.getValue().getMedications()).isEqualTo(medicalRecordExpect.getMedications());
+        assertThat(medicalRecordArgumentCaptor.getValue().getAllergies()).isEqualTo(medicalRecordExpect.getAllergies());
+
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
+
 
     @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void updateMedicalRecord_shouldReturnResponseEntity() {
-        // Given
-        MedicalRecord medicalRecord = new MedicalRecord();
-        doNothing().when(medicalRecordService).updateMedicalRecord(medicalRecord);
+        // Given a MedicalRecord to update
+        final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        final List<String> medicationList = Collections.emptyList();
+        final List<String> allergiesList = Collections.emptyList();
+        final MedicalRecordRequest medicalRecordRequest = new MedicalRecordRequest("updateFirstName", "updateLastName", birthdate, medicationList, allergiesList);
+        final MedicalRecord expectedMedicalRecord = new MedicalRecord("updateFirstName", "updateLastName", birthdate, medicationList, allergiesList);
 
-        // When
-        ResponseEntity<Void> response = medicalRecordController.updateMedicalRecord(medicalRecord);
+        doNothing().when(medicalRecordService).updateMedicalRecord(any());
 
-        // Then
-        verify(medicalRecordService, times(1)).updateMedicalRecord(medicalRecord);
+        // When MedicalRecord is updated
+        ResponseEntity<Void> response = medicalRecordController.updateMedicalRecord(medicalRecordRequest);
+
+        // Then MedicalRecord is sent to the service
+        ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
+        verify(medicalRecordService).updateMedicalRecord(medicalRecordArgumentCaptor.capture());
+        assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());
+        assertThat(medicalRecordArgumentCaptor.getValue().getLastName()).isEqualTo(expectedMedicalRecord.getLastName());
+        assertThat(medicalRecordArgumentCaptor.getValue().getBirthdate()).isEqualTo(expectedMedicalRecord.getBirthdate());
+        assertThat(medicalRecordArgumentCaptor.getValue().getMedications()).isEqualTo(expectedMedicalRecord.getMedications());
+        assertThat(medicalRecordArgumentCaptor.getValue().getAllergies()).isEqualTo(expectedMedicalRecord.getAllergies());
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
 
     @Test
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void deleteMedicalRecord_shouldReturnResponseEntity() {
-        // Given
-        MedicalRecord medicalRecord = new MedicalRecord();
-        doNothing().when(medicalRecordService).deleteMedicalRecord(medicalRecord);
+        // Given a MedicalRecord to delete
+        final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");
+        final List<String> allergiesList = Collections.emptyList();
+        final MedicalRecordRequest deleteMedicalRecordRequest = new MedicalRecordRequest("firstName", "lastName", birthdate, medicationList, allergiesList);
+        final MedicalRecord expectedMedicalRecord = new MedicalRecord("firstName", "lastName", birthdate, medicationList, allergiesList);
 
-        // When
-        ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecord(medicalRecord);
+        doNothing().when(medicalRecordService).deleteMedicalRecord(any());
 
-        // Then
-        verify(medicalRecordService, times(1)).deleteMedicalRecord(medicalRecord);
+        // When MedicalRecord is deleted
+        ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecord(deleteMedicalRecordRequest);
+
+        // Then MedicalRecord is sent to the service
+        ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
+        verify(medicalRecordService).deleteMedicalRecord(medicalRecordArgumentCaptor.capture());
+        assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());
+        assertThat(medicalRecordArgumentCaptor.getValue().getLastName()).isEqualTo(expectedMedicalRecord.getLastName());
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

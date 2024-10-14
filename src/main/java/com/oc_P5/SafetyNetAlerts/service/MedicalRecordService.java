@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface MedicalRecordService {
 
-    List<MedicalRecord> getMedicalRecords();
-
     void addMedicalRecord(MedicalRecord medicalRecord);
 
     void updateMedicalRecord(MedicalRecord medicalRecord);
