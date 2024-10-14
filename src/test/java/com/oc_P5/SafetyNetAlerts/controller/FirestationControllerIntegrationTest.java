@@ -141,7 +141,7 @@ public class FirestationControllerIntegrationTest {
 
         // When Firestation posted
         ResultActions response = mockMvc.perform(
-                MockMvcRequestBuilders.post(uriPath)
+                MockMvcRequestBuilders.put(uriPath)
                         .content(objectMapper.writeValueAsString(updateFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 

@@ -3,7 +3,6 @@ package com.oc_P5.SafetyNetAlerts.controller;
 import com.oc_P5.SafetyNetAlerts.controller.requests.AddFirestationRequest;
 import com.oc_P5.SafetyNetAlerts.controller.requests.UpdateFirestationRequest;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
-import com.oc_P5.SafetyNetAlerts.exceptions.ApiExceptionHandler;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
