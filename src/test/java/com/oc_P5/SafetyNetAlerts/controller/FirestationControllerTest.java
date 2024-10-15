@@ -1,7 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
-import com.oc_P5.SafetyNetAlerts.controller.requests.AddFirestationRequest;
-import com.oc_P5.SafetyNetAlerts.controller.requests.UpdateFirestationRequest;
+import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
@@ -70,7 +69,7 @@ public class FirestationControllerTest {
     void addFirestation_shouldReturnResponseEntity() {
 
         // Given a Firestation to add
-        final AddFirestationRequest addFirestationRequest = new AddFirestationRequest("addAddress", 9);
+        final FirestationRequest addFirestationRequest = new FirestationRequest("addAddress", 9);
         final Firestation expectedFirestation = new Firestation("addAddress", 9);
         doNothing().when(firestationService).addFirestation(any());
 
@@ -89,7 +88,7 @@ public class FirestationControllerTest {
     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void updateFirestation_shouldReturnResponseEntity() {
         // Given a Firestation to update
-        final UpdateFirestationRequest updateFirestationRequest = new UpdateFirestationRequest("addressTest1", 9);
+        final FirestationRequest updateFirestationRequest = new FirestationRequest("addressTest1", 9);
         final Firestation expectedFirestation = new Firestation("addressTest1", 9);
         doNothing().when(firestationService).updateFirestation(any());
 

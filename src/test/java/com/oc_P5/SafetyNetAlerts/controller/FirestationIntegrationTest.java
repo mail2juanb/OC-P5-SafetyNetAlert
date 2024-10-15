@@ -1,8 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oc_P5.SafetyNetAlerts.controller.requests.AddFirestationRequest;
-import com.oc_P5.SafetyNetAlerts.controller.requests.UpdateFirestationRequest;
+import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FirestationControllerIntegrationTest {
+public class FirestationIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,8 +36,13 @@ public class FirestationControllerIntegrationTest {
 
 
 
+    // NOTE PERSONS_BY_STATION
+    //          response 200 ---> Persons successfully retrieved
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void getPersonsByStation_shouldReturnResponseEntity() throws Exception {
+    void getPersonsByStation_shouldReturnHttpStatus200() throws Exception {
 
         // Given a station
         final Integer station_number = 2;
@@ -54,10 +58,27 @@ public class FirestationControllerIntegrationTest {
 
     }
 
+    @Test
+    void getPersonsByStation_shouldReturnHttpStatus404() throws Exception {
+
+        // Given a station
+        final Integer station_number = 10;
+        final String uriPath = "/firestation";
+
+        // When method called
+        ResultActions response = mockMvc.perform(get(uriPath)
+                .param("station_number", String.valueOf(station_number))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then the firestation is sent to the service
+        response.andExpect(status().isNotFound());
+
+    }
+
 
     @ParameterizedTest
     @MethodSource("provideInvalidStationRequest")
-    void getPersonsByStation_shouldThrowException(Integer station_number) throws Exception {
+    void getPersonsByStation_shouldReturnHttpStatus400(Integer station_number) throws Exception {
 
         // Given uriPath
         final String uriPath = "/firestation";
@@ -73,11 +94,16 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    // NOTE ADD / POST
+    //          response 201 ---> Firestation successfully added
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 409 ---> Conflict: Firestation already exists
+
     @Test
-    void addFirestation_shouldReturnResponseEntity() throws Exception {
+    void addFirestation_shouldReturnHttpStatus201() throws Exception {
 
         // Given a firestation to add
-        final AddFirestationRequest addFirestationRequest = new AddFirestationRequest("addAddress", 9);
+        final FirestationRequest addFirestationRequest = new FirestationRequest("addAddress", 9);
 
         final String uriPath = "/firestation";
 
@@ -93,9 +119,29 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    @Test
+    void addFirestation_shouldReturnHttpStatus409() throws Exception {
+
+        // Given a firestation to add
+        final FirestationRequest addFirestationRequest = new FirestationRequest("834 Binoc Ave", 3);
+
+        final String uriPath = "/firestation";
+
+        // When the firestation is post
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.post(uriPath)
+                        .content(objectMapper.writeValueAsString(addFirestationRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then the firestation is sent to the service
+        response.andExpect(status().isConflict());
+
+    }
+
+
     @ParameterizedTest
-    @MethodSource("provideInvalidAddFirestationRequest")
-    void addFirestation_shouldThrowException(AddFirestationRequest addFirestationRequest) throws Exception {
+    @MethodSource("provideInvalidFirestationRequest")
+    void addFirestation_shouldReturnHttpStatus400(FirestationRequest addFirestationRequest) throws Exception {
 
         // Given postAddress
         final String uriPath = "/firestation";
@@ -112,11 +158,16 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    // NOTE UPDATE / PUT
+    //          response 200 ---> Firestation successfully updated
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void updateFirestation_shouldReturnResponseEntity() throws Exception {
+    void updateFirestation_shouldReturnHttpStatus200() throws Exception {
 
         // Given a firestation to update
-        final UpdateFirestationRequest updateFirestationRequest = new UpdateFirestationRequest("1509 Culver St", 9);
+        final FirestationRequest updateFirestationRequest = new FirestationRequest("112 Steppes Pl", 9);
 
         final String uriPath = "/firestation";
 
@@ -132,9 +183,29 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    @Test
+    void updateFirestation_shouldReturnHttpStatus404() throws Exception {
+
+        // Given a firestation to update
+        final FirestationRequest updateFirestationRequest = new FirestationRequest("unknownAddress", 9);
+
+        final String uriPath = "/firestation";
+
+        // When the firestation is put
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.put(uriPath)
+                        .content(objectMapper.writeValueAsString(updateFirestationRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then the firestation is sent to the service
+        response.andExpect(status().isNotFound());
+
+    }
+
+
     @ParameterizedTest
-    @MethodSource("provideInvalidUpdateFirestationRequest")
-    void updateFirestation_shouldThrowException(UpdateFirestationRequest updateFirestationRequest) throws Exception {
+    @MethodSource("provideInvalidFirestationRequest")
+    void updateFirestation_shouldReturnHttpStatus400(FirestationRequest updateFirestationRequest) throws Exception {
 
         // Given postAddress
         final String uriPath = "/firestation";
@@ -151,8 +222,13 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    // NOTE REMOVE / DELETE by address
+    //          response 200 ---> Firestation successfully deleted
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void deleteFirestationByAddress_shouldReturnResponseEntity() throws Exception {
+    void deleteFirestationByAddress_shouldReturnReturnHttpStatus200() throws Exception {
 
         // Given an address to delete Firestation
         final String address = "1509 Culver St";
@@ -169,9 +245,27 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    @Test
+    void deleteFirestationByAddress_shouldReturnReturnHttpStatus404() throws Exception {
+
+        // Given an address to delete Firestation
+        final String address = "unknownAddress";
+        final String uriPath = "/firestation/address";
+
+        // When Firestation deleted
+        ResultActions response = mockMvc.perform(delete(uriPath)
+                .param("address", address)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then the firestation is sent to the service
+        response.andExpect(status().isNotFound());
+
+    }
+
+
     @ParameterizedTest
     @MethodSource("provideInvalidAddressRequest")
-    void deleteFirestationByAddress_shouldThrowException(String address) throws Exception {
+    void deleteFirestationByAddress_shouldReturnHttpStatus400(String address) throws Exception {
 
         // Given uriPath
         final String uriPath = "/firestation/address";
@@ -187,8 +281,13 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    // NOTE REMOVE / DELETE by station
+    //          response 200 ---> Firestations successfully deleted
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void deleteFirestationByStation_shouldReturnResponseEntity() throws Exception {
+    void deleteFirestationByStation_shouldReturnReturnHttpStatus200() throws Exception {
 
         // Given a station to delete Firestation
         final Integer station_number = 1;
@@ -205,9 +304,27 @@ public class FirestationControllerIntegrationTest {
     }
 
 
+    @Test
+    void deleteFirestationByStation_shouldReturnReturnHttpStatus404() throws Exception {
+
+        // Given a station to delete Firestation
+        final Integer station_number = 9;
+        final String deleteStation = "/firestation/station";
+
+        // When the Firestation deleted
+        ResultActions response = mockMvc.perform(delete(deleteStation)
+                .param("station_number", String.valueOf(station_number))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then the firestation is sent to the service
+        response.andExpect(status().isNotFound());
+
+    }
+
+
     @ParameterizedTest
     @MethodSource("provideInvalidStationRequest")
-    void deleteFirestationByStation_shouldThrowException(Integer station_number) throws Exception {
+    void deleteFirestationByStation_shouldReturnHttpStatus400(Integer station_number) throws Exception {
 
         // Given uriPath
         final String uriPath = "/firestation/station";
@@ -224,31 +341,19 @@ public class FirestationControllerIntegrationTest {
 
 
 
-    // Fournit des valeurs de AddFirestationRequest, y compris null
-    static Stream<AddFirestationRequest> provideInvalidAddFirestationRequest() {
-        AddFirestationRequest firestation1 = new AddFirestationRequest("", 1);
-        AddFirestationRequest firestation2 = new AddFirestationRequest(" ", 1);
-        AddFirestationRequest firestation3 = new AddFirestationRequest(null, 1);
-        AddFirestationRequest firestation4 = new AddFirestationRequest("address", null);
-        AddFirestationRequest firestation5 = new AddFirestationRequest("address", 0);
-        AddFirestationRequest firestation6 = new AddFirestationRequest("address", -1);
+    // Returns invalid FirestationRequest values
+    static Stream<FirestationRequest> provideInvalidFirestationRequest() {
+        FirestationRequest firestation1 = new FirestationRequest("", 1);
+        FirestationRequest firestation2 = new FirestationRequest(" ", 1);
+        FirestationRequest firestation3 = new FirestationRequest(null, 1);
+        FirestationRequest firestation4 = new FirestationRequest("address", null);
+        FirestationRequest firestation5 = new FirestationRequest("address", 0);
+        FirestationRequest firestation6 = new FirestationRequest("address", -1);
 
         return Stream.of(firestation1, firestation2, firestation3, firestation4, firestation5, firestation6);
     }
 
-    // Fournit des valeurs de UpdateFirestationRequest, y compris null
-    static Stream<UpdateFirestationRequest> provideInvalidUpdateFirestationRequest() {
-        UpdateFirestationRequest firestation1 = new UpdateFirestationRequest("", 1);
-        UpdateFirestationRequest firestation2 = new UpdateFirestationRequest(" ", 1);
-        UpdateFirestationRequest firestation3 = new UpdateFirestationRequest(null, 1);
-        UpdateFirestationRequest firestation4 = new UpdateFirestationRequest("address", null);
-        UpdateFirestationRequest firestation5 = new UpdateFirestationRequest("address", 0);
-        UpdateFirestationRequest firestation6 = new UpdateFirestationRequest("address", -1);
-
-        return Stream.of(firestation1, firestation2, firestation3, firestation4, firestation5, firestation6);
-    }
-
-    // Fournit des valeurs d'address, y compris null
+    // Returns invalid address values
     static Stream<String> provideInvalidAddressRequest() {
         String address1 = "";
         String address2 = " ";
@@ -257,7 +362,7 @@ public class FirestationControllerIntegrationTest {
         return Stream.of(address1, address2, address3);
     }
 
-    // Fournit des valeurs de station, y compris null
+    // Returns invalid station values
     static Stream<Integer> provideInvalidStationRequest() {
         Integer station1 = null;
         Integer station2 = -2;
@@ -265,6 +370,5 @@ public class FirestationControllerIntegrationTest {
 
         return Stream.of(station1, station2, station3);
     }
-
 
 }

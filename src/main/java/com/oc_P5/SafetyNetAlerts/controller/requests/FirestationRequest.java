@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Value;
 
 @Value
-public class AddFirestationRequest {
+public class FirestationRequest {
 
     @NotBlank(message = "address shouldn't be null or blank")
     String address;
