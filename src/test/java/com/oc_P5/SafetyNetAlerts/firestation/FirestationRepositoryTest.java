@@ -1,6 +1,7 @@
-package com.oc_P5.SafetyNetAlerts.repository;
+package com.oc_P5.SafetyNetAlerts.firestation;
 
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
+import com.oc_P5.SafetyNetAlerts.repository.FirestationRepositoryImpl;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataWrapperList;
 import org.junit.jupiter.api.BeforeEach;

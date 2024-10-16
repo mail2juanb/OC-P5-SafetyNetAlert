@@ -1,4 +1,4 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.firestation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;

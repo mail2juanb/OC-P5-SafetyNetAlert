@@ -1,4 +1,4 @@
-package com.oc_P5.SafetyNetAlerts.service;
+package com.oc_P5.SafetyNetAlerts.firestation;
 
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
@@ -9,6 +9,7 @@ import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
+import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

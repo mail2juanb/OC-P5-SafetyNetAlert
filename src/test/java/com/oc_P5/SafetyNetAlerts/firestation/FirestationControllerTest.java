@@ -1,5 +1,6 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.firestation;
 
+import com.oc_P5.SafetyNetAlerts.controller.FirestationController;
 import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
