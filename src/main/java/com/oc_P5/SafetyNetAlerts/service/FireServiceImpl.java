@@ -3,13 +3,11 @@ package com.oc_P5.SafetyNetAlerts.service;
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonByAddress;
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.*;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,18 +24,10 @@ public class FireServiceImpl implements FireService {
 
     @Override
     public FirePersonsResponse getFirePersonsByAddress(String address) {
-
-        // NOTE Vérifier si l'adresse est null ou vide
-        if (StringUtils.isBlank(address)) {
-            throw new NullOrEmptyObjectException("Address cannot be null or empty");
-        }
-
-        // NOTE Vérifier que l'adresse existe dans la liste des Firestation
         if(!firestationRepository.existsByAddress(address)) {
             throw new NotFoundException("There is no Firestation at this address = " + address);
         }
 
-        // NOTE Vérifier que l'adresse existe dans la liste des Person
         Optional<Person> personOptional = personRepository.findByAddress(address);
         if (personOptional.isEmpty()) {
             throw new NotFoundException("There is no Person at this address = " + address);

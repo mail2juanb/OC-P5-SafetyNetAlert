@@ -36,7 +36,7 @@ public class FirestationIntegrationTest {
 
 
 
-    // NOTE PERSONS_BY_STATION
+    // NOTE Responses possibilities
     //          response 200 ---> Persons successfully retrieved
     //          response 400 ---> Invalid request: missing or incorrect parameters
     //          response 404 ---> Unable to find resources related to the request
