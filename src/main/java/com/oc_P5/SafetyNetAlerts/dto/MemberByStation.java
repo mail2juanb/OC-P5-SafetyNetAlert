@@ -10,6 +10,7 @@ import java.util.List;
 public class MemberByStation {
 
     String lastName;
+    String address;
     String phone;
     int age;
     List<String> medications;
@@ -17,6 +18,7 @@ public class MemberByStation {
 
     public MemberByStation(Person person, MedicalRecord medicalRecord) {
         this.lastName = person.getLastName();
+        this.address = person.getAddress();
         this.phone = person.getPhone();
         this.age = medicalRecord.getAge();
         this.medications = medicalRecord.getMedications();

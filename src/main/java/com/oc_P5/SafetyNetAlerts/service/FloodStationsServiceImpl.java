@@ -1,7 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -25,11 +23,7 @@ public class FloodStationsServiceImpl implements FloodStationsService {
 
     @Override
     public List<MemberByStation> getMembersByStation(List<Integer> station_Numbers) {
-
-        // NOTE Vérifier si station_Numbers est vide ou que l'un des éléments est null
-        if(isEmptyListOfInteger(station_Numbers)) {
-            throw new NullOrEmptyObjectException("station_Numbers List can not be empty");
-        }
+        // NOTE : Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
 
         // NOTE Récupère la liste des address correspondant à la liste de stationNumbers
         List<String> addressList = firestationRepository.getAll()
@@ -55,23 +49,16 @@ public class FloodStationsServiceImpl implements FloodStationsService {
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(idList);
 
         // NOTE Mapper la liste dans l'objet MembersByStation
-        List<MemberByStation> memberByStationList = personWithMedicalRecordList
+        return personWithMedicalRecordList
                 .stream()
                 .map(FloodStationsServiceImpl::mapToMemberByStation)
                 .toList();
-
-        return memberByStationList;
     }
 
 
 
     private static MemberByStation mapToMemberByStation(PersonWithMedicalRecord personMedic) {
         return new MemberByStation(personMedic.person(), personMedic.medicalRecord());
-    }
-
-
-    private boolean isEmptyListOfInteger(List<Integer> numberList) {
-        return (numberList.isEmpty()) || numberList.stream().anyMatch(Objects::isNull);
     }
 
 }

@@ -1,17 +1,17 @@
-package com.oc_P5.SafetyNetAlerts.service;
+package com.oc_P5.SafetyNetAlerts.floodStations;
 
 import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
+import com.oc_P5.SafetyNetAlerts.service.FloodStationsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,13 +20,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,74 +35,62 @@ public class FloodStationsServiceTest {
     private PersonRepository personRepository;
 
     @InjectMocks
-    FloodStationsServiceImpl floodStationsService;
+    private FloodStationsServiceImpl floodStationsService;
 
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidStation_Numbers")
-    // On va vérifier ici que la méthode lève une NullOrEmptyObjectException lorsque la liste de station-Number est vide.
-    void getMembersByStation_shouldReturnNullOrEmptyObjectExceptionWithEmptyStation(List<Integer> station_Numbers) {
-        // When / Then
-        NullOrEmptyObjectException thrown = assertThrows(NullOrEmptyObjectException.class, () -> floodStationsService.getMembersByStation(station_Numbers));
-        assertThat(thrown.getMessage()).satisfies(message -> assertThat(message).containsAnyOf("null", "empty"));
-    }
+    @Captor
+    private ArgumentCaptor<List<String>> addressListArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<List<String>> idListArgumentCaptor;
+
+
 
     @Test
     // On va vérifier ici que la méthode retourne la liste de MembersByStation à partir d'une liste de Station valide
     void getMembersByStation_shouldReturnMembersByStation() {
-        // Given
+        // Given a list of station_number
         List<Integer> station_Numbers = new ArrayList<>();
         station_Numbers.add(1);
 
+        // Given the address list corresponding
         List<String> addressList = new ArrayList<>();
         addressList.add("addressTest1");
 
-        Firestation firestation1 = new Firestation();
-        firestation1.setAddress("addressTest1");
-        firestation1.setStation(1);
-
+        // Given a list of Firestation
+        Firestation firestation1 = new Firestation("addressTest1", 1);
         List<Firestation> firestationList = new ArrayList<>();
         firestationList.add(firestation1);
 
-        Person person1 = new Person();
-        person1.setFirstName("firstNameTest1");
-        person1.setLastName("lastNameTest1");
-        person1.setAddress("addressTest1");
-        person1.setCity("cityTest1");
-        person1.setZip(95220);
-        person1.setPhone("123-456-7890");
-        person1.setEmail("emailTest1");
-
+        // Given a list of Person
+        Person person1 = new Person("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 95220, "123-456-7890", "emailTest1");
         List<Person> personList = new ArrayList<>();
         personList.add(person1);
 
+        // Given a MedicalRecord
         LocalDate birthdate1 = LocalDate.parse("09/01/1990", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList1 = List.of("medicationTest1:100mg", "medicationTest2:200mg");
         List<String> allergiesList1 = List.of("allergieTest1", "allergieTest2");
+        MedicalRecord medicalRecord1 = new MedicalRecord("firstNameTest1", "lastNameTest1", birthdate1, medicationList1, allergiesList1);
 
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setFirstName("firstNameTest1");
-        medicalRecord1.setLastName("lastNameTest1");
-        medicalRecord1.setBirthdate(birthdate1);
-        medicalRecord1.setMedications(medicationList1);
-        medicalRecord1.setAllergies(allergiesList1);
-
+        // Given list of PersonWithMedicalRecord
         PersonWithMedicalRecord personMedic1 = new PersonWithMedicalRecord(person1, medicalRecord1);
-
         List<PersonWithMedicalRecord> personWithMedicalRecordList = new ArrayList<>();
         personWithMedicalRecordList.add(personMedic1);
 
+        // Given an id list
         List<String> idList = new ArrayList<>();
         idList.add("firstNameTest1-lastNameTest1");
+
 
         when(firestationRepository.getAll()).thenReturn(firestationList);
         when(personRepository.getByAddresses(addressList)).thenReturn(personList);
         when(personRepository.getPersonsWithMedicalRecord(idList)).thenReturn(personWithMedicalRecordList);
 
-        // When
+        // When call method on service
         List<MemberByStation> result = floodStationsService.getMembersByStation(station_Numbers);
 
-        // Then
+        // Then verify that the object returned contains expected values
         assertThat(result).isNotNull();
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getLastName()).isEqualTo(person1.getLastName());
@@ -119,11 +103,13 @@ public class FloodStationsServiceTest {
         verify(firestationRepository, times(1)).getAll();
         verify(personRepository, times(1)).getByAddresses(addressList);
         verify(personRepository, times(1)).getPersonsWithMedicalRecord(idList);
+
+        verify(personRepository).getByAddresses(addressListArgumentCaptor.capture());
+        assertThat(addressListArgumentCaptor.getValue()).isEqualTo(addressList);
+
+        verify(personRepository).getPersonsWithMedicalRecord(idListArgumentCaptor.capture());
+        assertThat(idListArgumentCaptor.getValue()).isEqualTo(idList);
+
     }
 
-
-    // Fournit des valeurs de station_Numbers, y compris null
-    static Stream<List<Integer>> provideInvalidStation_Numbers() {
-        return Stream.of(Collections.emptyList(), Arrays.asList(1, null, 2, 9));
-    }
 }
