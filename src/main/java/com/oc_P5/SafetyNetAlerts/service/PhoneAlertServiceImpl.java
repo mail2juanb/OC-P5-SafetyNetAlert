@@ -1,7 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
@@ -22,9 +21,6 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
 
     @Override
     public List<String> getPhonesByStation(Integer stationNumber) {
-        if(stationNumber == null)
-            throw new NullOrEmptyObjectException("Station can not be null");
-
         if(!firestationRepository.existsByStation(stationNumber)) {
             throw new NotFoundException("station " + stationNumber + " does not exists");
         }
@@ -38,7 +34,6 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
 
         return personsByAddress
                 .stream()
-                .filter(person -> person.getPhone() != null && !person.getPhone().isEmpty())
                 .map(Person::getPhone)
                 .toList();
     }
