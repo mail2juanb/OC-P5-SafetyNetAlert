@@ -1,14 +1,12 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.ChildrenByAddress;
-import com.oc_P5.SafetyNetAlerts.exceptions.NullOrEmptyObjectException;
 import com.oc_P5.SafetyNetAlerts.model.NamedModel;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +20,7 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
     @Override
     public List<ChildrenByAddress> getChildByAddress(String address) {
-        // NOTE Vérifier si l'adresse est null ou vide
-        if (StringUtils.isBlank(address)) {
-            throw new NullOrEmptyObjectException("Address cannot be null or empty");
-        }
-
-        // NOTE Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
+        // NOTE : Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
 
         // NOTE Récupère la liste de l'id des personnes à l'adresse demandée
         List<String> idList = personRepository.getByAddress(address)
