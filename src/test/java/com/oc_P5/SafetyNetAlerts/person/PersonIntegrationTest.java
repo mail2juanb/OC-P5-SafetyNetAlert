@@ -1,4 +1,4 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.person;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.PersonRequest;
@@ -32,14 +32,19 @@ public class PersonIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String uriPath = "/person";
+
+
+    // NOTE Responses possibilities
+    //          response 201 ---> Person successfully created
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 409 ---> Conflict: Ressource already exists
 
     @Test
-    void addPerson_shouldReturnResponseEntity() throws Exception {
+    void addPerson_shouldReturnHttpStatus201() throws Exception {
 
-        // Given a person to add
+        // Given an unknown person to add
         final PersonRequest addPersonRequest = new PersonRequest("firstName", "lastName", "address", "city", 1111, "1234-5678-90", "email@email");
-
-        final String uriPath = "/person";
 
         // When the person is post
         ResultActions response = mockMvc.perform(
@@ -48,16 +53,30 @@ public class PersonIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        // Then the person is sent to the service
+        // Then response isCreated - 201
         response.andExpect(status().isCreated());
+    }
+
+    @Test
+    void addPerson_shouldReturnHttpStatus409() throws Exception {
+
+        // Given a known person to add
+        final PersonRequest addPersonRequest = new PersonRequest("Foster", "Shepard", "address", "city", 1111, "1234-5678-90", "email@email");
+
+        // When the person is post
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.post(uriPath)
+                        .content(objectMapper.writeValueAsString(addPersonRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // Then response isConflict - 409
+        response.andExpect(status().isConflict());
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidPersonRequest")
-    void addPerson_shouldThrowException(PersonRequest addPersonRequest) throws Exception {
-
-        // Given a person to add
-        final String uriPath = "/person";
+    void addPerson_shouldReturnHttpStatus400(PersonRequest addPersonRequest) throws Exception {
 
         // When the person is post
         ResultActions response = mockMvc.perform(
@@ -65,18 +84,22 @@ public class PersonIntegrationTest {
                         .content(objectMapper.writeValueAsString(addPersonRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the person is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
+
+    // NOTE Responses possibilities
+    //          response 200 ---> Persons successfully updated
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void updatePerson_shouldReturnResponseEntity() throws Exception {
+    void updatePerson_shouldReturnHttpStatus200() throws Exception {
 
-        // Given a person to update
+        // Given a known person to update
         final PersonRequest updatePersonRequest = new PersonRequest("Tessa", "Carman", "address", "city", 1111, "1234-5678-90", "email@email");
-
-        final String uriPath = "/person";
 
         // When the person is put
         ResultActions response = mockMvc.perform(
@@ -84,36 +107,54 @@ public class PersonIntegrationTest {
                         .content(objectMapper.writeValueAsString(updatePersonRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the person is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidPersonRequest")
-    void updatePerson_shouldThrowException(PersonRequest updatePersonRequest) throws Exception {
+    @Test
+    void updatePerson_shouldReturnHttpStatus404() throws Exception {
 
-        // Given path
-        final String uriPath = "/person";
+        // Given an unknown person to update
+        final PersonRequest updatePersonRequest = new PersonRequest("unknownFirstName", "unknownLastName", "address", "city", 1111, "1234-5678-90", "email@email");
 
-        // When person posted
+        // When the person is put
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.put(uriPath)
                         .content(objectMapper.writeValueAsString(updatePersonRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the person is sent to the service
+        // Then response isNotFound - 404
+        response.andExpect(status().isNotFound());
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidPersonRequest")
+    void updatePerson_shouldReturnHttpStatus400(PersonRequest updatePersonRequest) throws Exception {
+
+        // When person put
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.put(uriPath)
+                        .content(objectMapper.writeValueAsString(updatePersonRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
+
+    // NOTE Responses possibilities
+    //          response 200 ---> Persons successfully deleted
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void deletePerson_shouldReturnResponseEntity() throws Exception {
+    void deletePerson_shouldReturnHttpStatus200() throws Exception {
 
-        // Given a person to delete
+        // Given a known person to delete
         final PersonRequest deletePersonRequest = new PersonRequest("John", "Boyd", null, null, null, null, null);
-
-        final String uriPath = "/person";
 
         // When the person is deleted
         ResultActions response = mockMvc.perform(
@@ -121,17 +162,31 @@ public class PersonIntegrationTest {
                         .content(objectMapper.writeValueAsString(deletePersonRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the person is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
+
+    }
+
+    @Test
+    void deletePerson_shouldReturnHttpStatus404() throws Exception {
+
+        // Given an unknown person to delete
+        final PersonRequest deletePersonRequest = new PersonRequest("unknownFirstName", "unknownLastName", null, null, null, null, null);
+
+        // When the person is deleted
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.delete(uriPath)
+                        .content(objectMapper.writeValueAsString(deletePersonRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isNotFound - 404
+        response.andExpect(status().isNotFound());
 
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidPersonRequest")
-    void deletePerson_shouldThrowException(PersonRequest deletePersonRequest) throws Exception {
-
-        // Given path
-        final String uriPath = "/person";
+    void deletePerson_shouldReturnHttpStatus400(PersonRequest deletePersonRequest) throws Exception {
 
         // When person posted
         ResultActions response = mockMvc.perform(
@@ -139,7 +194,7 @@ public class PersonIntegrationTest {
                         .content(objectMapper.writeValueAsString(deletePersonRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the person is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }

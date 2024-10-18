@@ -1,8 +1,9 @@
-package com.oc_P5.SafetyNetAlerts.repository;
+package com.oc_P5.SafetyNetAlerts.person;
 
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
+import com.oc_P5.SafetyNetAlerts.repository.PersonRepositoryImpl;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataWrapperList;
 import org.junit.jupiter.api.BeforeEach;

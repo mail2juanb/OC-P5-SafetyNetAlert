@@ -1,9 +1,10 @@
-package com.oc_P5.SafetyNetAlerts.service;
+package com.oc_P5.SafetyNetAlerts.person;
 
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepositoryImpl;
+import com.oc_P5.SafetyNetAlerts.service.PersonServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,20 +46,18 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que lorsqu'une Person est ajoutée, elle est correctement sauvegardée avec les bons attributs.
     void addPerson_ShouldAddPersonWhenNotExist() {
-        // Given
+        // Given an unknown Person to add
         Person person = new Person("addFirstName", "addLastName", "addAddress", "addCity", 9999, "123-456-9999", "addEmail");
 
         when(personRepository.existsById(person.getId())).thenReturn(false);
 
-        // When
+        // When call method on service
         personService.addPerson(person);
 
-        // Then
+        // Then verify that the object sent is correctly distributed
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
         verify(personRepository).save(personArgumentCaptor.capture());
-
-        Person savedPerson = personArgumentCaptor.getValue();
-        assertThat(savedPerson).isEqualTo(person);
+        assertThat(personArgumentCaptor.getValue()).isEqualTo(person);
 
         verify(personRepository, times(1)).existsById(person.getId());
         verify(personRepository, times(1)).save(person);
@@ -67,12 +66,12 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que la méthode lève une ConflictException lorsque la Person existe déjà
     void addPerson_shouldReturnConflictExceptionWhenExists() {
-        // Given
+        // Given a known Person to add
         Person person = personListMock.getFirst();
 
         when(personRepository.existsById(person.getId())).thenReturn(true);
 
-        // When / Then
+        // When / Then a NotFoundException is thrown
         ConflictException thrown = assertThrows(ConflictException.class, () -> personService.addPerson(person));
         assertThat(thrown.getMessage()).contains(person.getFirstName());
         assertThat(thrown.getMessage()).contains(person.getLastName());
@@ -84,15 +83,15 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que la Person est mise à jour avec une Person valide
     void updatePerson_shouldUpdatePersonWhenExists() {
-        // Given
+        // Given a known Person to update
         Person person = new Person("firstNameTest1", "lastNameTest1", "newAddressTest1", "newCityTest1", 1111, "123-456-7891", "emailTest1");
 
         when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
 
-        // When
+        // When call method on service
         personService.updatePerson(person);
 
-        // Then
+        // Then verify that the object sent is correctly distributed
         verify(personRepository, times(1)).findById(person.getId());
         verify(personRepository, times(1)).update(person);
 
@@ -112,12 +111,12 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que la méthode lève une NotFoundException lorsque la Person n'existe pas
     void updatePerson_shouldReturnNotFoundExceptionWhenNotExist() {
-        // Given
+        // Given an unknown Person to update
         Person person = new Person("notExistFirstName", "notExistLastName", "notExistAddress", "notExistCity", 1111, "123-456-7891", "emailTest1");
 
         when(personRepository.findById(person.getId())).thenReturn(Optional.empty());
 
-        // When / Then
+        // When / Then a NotFoundException is thrown
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> personService.updatePerson(person));
         assertThat(thrown.getMessage()).contains(person.getId());
 
@@ -128,15 +127,15 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que le MedicalRecord est supprimé avec une Person valide
     void deleteMedicalRecord_shouldDeleteMedicalRecord() {
-        // Given
+        // Given a known Person to delete
         Person person = new Person("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 1111, "123-456-7891", "emailTest1");
 
         when(personRepository.existsById(person.getId())).thenReturn(true);
 
-        // When
+        // When call method on service
         personService.deletePerson(person);
 
-        // Then
+        // Then verify that the object sent is correctly distributed
         verify(personRepository, times(1)).existsById(person.getId());
         verify(personRepository, times(1)).delete(person);
 
@@ -149,12 +148,12 @@ public class PersonServiceTest {
     @Test
     // On va vérifier ici que la méthode lève une NotFoundException lorsque la Person n'existe pas
     void deletePerson_shouldReturnNotFoundExceptionWhenNotExist() {
-        // Given
+        // Given an unknown Person to delete
         Person person = new Person("unknownFirstName", "unknownLastName", "unknownAddress", "cityTest1", 1111, "123-456-7891", "emailTest1");
 
         when(personRepository.existsById(person.getId())).thenReturn(false);
 
-        // When / Then
+        // When / Then a NotFoundException is thrown
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> personService.deletePerson(person));
         assertThat(thrown.getMessage()).contains(person.getId());
 

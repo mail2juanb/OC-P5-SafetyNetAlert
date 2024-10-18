@@ -1,5 +1,6 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.person;
 
+import com.oc_P5.SafetyNetAlerts.controller.PersonController;
 import com.oc_P5.SafetyNetAlerts.controller.requests.PersonRequest;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.service.PersonServiceImpl;
