@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,18 +32,20 @@ public class CommunityEmailControllerTest {
     @Test
     // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getCommunityEmailByCity_shouldReturnListOfString() {
-        // Given
-        String city = "cityTest1";
+        // Given a city
+        final String city = "cityTest1";
 
-        // When
+        // When method is called
         ResponseEntity<List<String>> response = communityEmailController.getCommunityEmailByCity(city);
 
-        // Then
+        // Then city is sent to service and check HttpStatus.OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(communityEmailService, times(1)).getCommunityEmailByCity(city);
 
         ArgumentCaptor<String> cityArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(communityEmailService).getCommunityEmailByCity(cityArgumentCaptor.capture());
         assertThat(cityArgumentCaptor.getValue()).isEqualTo(city);
+
     }
 
 }

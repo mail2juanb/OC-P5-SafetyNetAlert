@@ -31,6 +31,8 @@ public class CommunityEmailIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String uriPath = "/communityEmail";
+
 
     // NOTE Responses possibilities
     //          response 200 ---> Email list successfully retrieved
@@ -42,14 +44,13 @@ public class CommunityEmailIntegrationTest {
 
         // Given a city
         final String city = "Culver";
-        final String uriPath = "/communityEmail";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("city", city)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the city is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -60,14 +61,13 @@ public class CommunityEmailIntegrationTest {
 
         // Given a city
         final String city = "unknownCity";
-        final String uriPath = "/communityEmail";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("city", city)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the city is sent to the service
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -77,20 +77,15 @@ public class CommunityEmailIntegrationTest {
     @MethodSource("provideInvalidCityRequest")
     void getCommunityEmailByCity_shouldReturnHttpStatus400(String city) throws Exception {
 
-        // Given uriPath
-        final String uriPath = "/communityEmail";
-
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("city", city)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
-
-
 
 
     // Returns invalid city values
@@ -101,6 +96,5 @@ public class CommunityEmailIntegrationTest {
 
         return Stream.of(address1, address2, address3);
     }
-
 
 }

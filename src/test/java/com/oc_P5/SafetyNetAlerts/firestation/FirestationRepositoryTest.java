@@ -31,7 +31,6 @@ public class FirestationRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        // NOTE Initialisation des mocks fait par l'annotation @ExtendWith(MockitoExtension.class)
 
         // NOTE Test data creation
         Firestation firestation1 = new Firestation("addressTest1", 1);
@@ -48,6 +47,7 @@ public class FirestationRepositoryTest {
 
         //Configure le comportement du mock
         when(dataReaderService.getData()).thenReturn(dataWrapperList);
+
     }
 
 

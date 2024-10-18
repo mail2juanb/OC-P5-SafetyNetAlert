@@ -37,27 +37,26 @@ public class FirestationControllerTest {
     @Test
     // On va vérifier ici que la méthode du service est bien appelée ainsi que les bons arguments
     void getPersonsByStation_shouldReturnPersonsByStation() {
-        // Given
+        // Given a station_number
         final Integer station_number = 1;
 
-        Person person = new Person();
-        person.setFirstName("firstName");
-        person.setLastName("lastName");
-        person.setAddress("address");
-        person.setPhone("phone");
-
-        List<Person> personList = new ArrayList<>();
+        // Given a list of Person
+        final Person person = new Person("firstName", "lastName", "address", "city", 1111, "phone", "email");
+        final List<Person> personList = new ArrayList<>();
         personList.add(person);
 
+        // Given number of Minors
         final Integer nbrOfMinors = 0;
 
-        PersonsByStation personsByStation = new PersonsByStation(personList, nbrOfMinors);
+        // Given a PersonsByStation
+        final PersonsByStation personsByStation = new PersonsByStation(personList, nbrOfMinors);
+
         when(firestationService.getPersonsByStation(station_number)).thenReturn(personsByStation);
 
         // When method is called
         ResponseEntity<PersonsByStation> result = firestationController.getPersonsByStation(station_number);
 
-        // Then station is sent to service
+        // Then station is sent to service and check HttpStatus.OK
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(firestationService).getPersonsByStation(stationArgumentCaptor.capture());
         assertThat(stationArgumentCaptor.getValue()).isEqualTo(station_number);
@@ -77,7 +76,7 @@ public class FirestationControllerTest {
         // When Firestation is post
         ResponseEntity<String> response = firestationController.addFirestation(addFirestationRequest);
 
-        // Then Firestation is sent to the service
+        // Then Firestation is sent to the service and check HttpStatus.CREATED
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
         verify(firestationService).addFirestation(firestationArgumentCaptor.capture());
         assertThat(firestationArgumentCaptor.getValue()).isEqualTo(expectedFirestation);
@@ -96,7 +95,7 @@ public class FirestationControllerTest {
         // When Firestation is updated
         ResponseEntity<Void> response = firestationController.updateFirestation(updateFirestationRequest);
 
-        // Then Firestation is sent to the service
+        // Then Firestation is sent to the service  and check HttpStatus.OK
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
         verify(firestationService).updateFirestation(firestationArgumentCaptor.capture());
         assertThat(firestationArgumentCaptor.getValue()).isEqualTo(expectedFirestation);
@@ -114,7 +113,7 @@ public class FirestationControllerTest {
         // When Firestation is deleted
         ResponseEntity<Void> response = firestationController.deleteFirestationByAddress(address);
 
-        // Then address is sent to the service
+        // Then address is sent to the service and check HttpStatus.OK
         ArgumentCaptor<String> addressArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(firestationService).deleteFirestationByAddress(addressArgumentCaptor.capture());
         assertThat(addressArgumentCaptor.getValue()).isEqualTo(address);
@@ -132,7 +131,7 @@ public class FirestationControllerTest {
         // When Firestation is deleted
         ResponseEntity<Void> response = firestationController.deleteFirestationByStation(station_number);
 
-        // Then station is sent to the service
+        // Then station is sent to the service and check HttpStatus.OK
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(firestationService).deleteFirestationByStation(stationArgumentCaptor.capture());
         assertThat(stationArgumentCaptor.getValue()).isEqualTo(station_number);

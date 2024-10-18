@@ -31,7 +31,7 @@ public class FloodStationsControllerTest {
     // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getMembersByStation_shouldReturnListOfMemberByStation() {
         // Given a list of station_number
-        List<Integer> station_Numbers = new ArrayList<>();
+        final List<Integer> station_Numbers = new ArrayList<>();
         station_Numbers.add(1);
 
         // When method is called

@@ -31,6 +31,7 @@ public class FireIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    final String uriPath = "/fire";
 
 
     // NOTE Responses possibilities
@@ -42,8 +43,7 @@ public class FireIntegrationTest {
     void getFirePersonsByAddress_shouldReturnHttpStatus200() throws Exception {
 
         // Given an address
-        final String address = "1509 Culver St";
-        final String uriPath = "/fire";
+        final String address = "112 Steppes Pl";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
@@ -61,7 +61,6 @@ public class FireIntegrationTest {
 
         // Given an unknown address
         final String address = "unknown address";
-        final String uriPath = "/fire";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
@@ -77,9 +76,6 @@ public class FireIntegrationTest {
     @ParameterizedTest
     @MethodSource("provideInvalidAddressRequest")
     void getFirePersonsByAddress_shouldReturnHttpStatus400(String address) throws Exception {
-
-        // Given uriPath
-        final String uriPath = "/firestation";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)

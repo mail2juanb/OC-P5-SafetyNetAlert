@@ -58,7 +58,7 @@ public class FloodStationsIntegrationTest {
                         .toArray(String[]::new)) // Convert to array of string
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the list of station_Number is sent to the service and status isOk
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -75,7 +75,7 @@ public class FloodStationsIntegrationTest {
                         .toArray(String[]::new)) // Convert to array of string
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the list of station_Number is sent to the service and status isBadRequest
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }

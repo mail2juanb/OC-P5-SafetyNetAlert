@@ -34,6 +34,8 @@ public class FirestationIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String uriPath = "/firestation";
+
 
 
     // NOTE Responses possibilities
@@ -46,14 +48,13 @@ public class FirestationIntegrationTest {
 
         // Given a station
         final Integer station_number = 2;
-        final String uriPath = "/firestation";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("station_number", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -63,14 +64,13 @@ public class FirestationIntegrationTest {
 
         // Given a station
         final Integer station_number = 10;
-        final String uriPath = "/firestation";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("station_number", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -80,21 +80,18 @@ public class FirestationIntegrationTest {
     @MethodSource("provideInvalidStationRequest")
     void getPersonsByStation_shouldReturnHttpStatus400(Integer station_number) throws Exception {
 
-        // Given uriPath
-        final String uriPath = "/firestation";
-
         // When Firestation posted
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("station_number", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
 
-    // NOTE ADD / POST
+    // NOTE Responses possibilities
     //          response 201 ---> Firestation successfully added
     //          response 400 ---> Invalid request: missing or incorrect parameters
     //          response 409 ---> Conflict: Firestation already exists
@@ -105,15 +102,13 @@ public class FirestationIntegrationTest {
         // Given a firestation to add
         final FirestationRequest addFirestationRequest = new FirestationRequest("addAddress", 9);
 
-        final String uriPath = "/firestation";
-
         // When the firestation is post
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.post(uriPath)
                         .content(objectMapper.writeValueAsString(addFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isCreated - 201
         response.andExpect(status().isCreated());
 
     }
@@ -125,15 +120,13 @@ public class FirestationIntegrationTest {
         // Given a firestation to add
         final FirestationRequest addFirestationRequest = new FirestationRequest("834 Binoc Ave", 3);
 
-        final String uriPath = "/firestation";
-
         // When the firestation is post
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.post(uriPath)
                         .content(objectMapper.writeValueAsString(addFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isConflict - 409
         response.andExpect(status().isConflict());
 
     }
@@ -143,22 +136,19 @@ public class FirestationIntegrationTest {
     @MethodSource("provideInvalidFirestationRequest")
     void addFirestation_shouldReturnHttpStatus400(FirestationRequest addFirestationRequest) throws Exception {
 
-        // Given postAddress
-        final String uriPath = "/firestation";
-
         // When the firestation is post
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.post(uriPath)
                         .content(objectMapper.writeValueAsString(addFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
 
-    // NOTE UPDATE / PUT
+    // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully updated
     //          response 400 ---> Invalid request: missing or incorrect parameters
     //          response 404 ---> Unable to find resources related to the request
@@ -169,15 +159,13 @@ public class FirestationIntegrationTest {
         // Given a firestation to update
         final FirestationRequest updateFirestationRequest = new FirestationRequest("112 Steppes Pl", 9);
 
-        final String uriPath = "/firestation";
-
         // When the firestation is put
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.put(uriPath)
                         .content(objectMapper.writeValueAsString(updateFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -189,15 +177,13 @@ public class FirestationIntegrationTest {
         // Given a firestation to update
         final FirestationRequest updateFirestationRequest = new FirestationRequest("unknownAddress", 9);
 
-        final String uriPath = "/firestation";
-
         // When the firestation is put
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.put(uriPath)
                         .content(objectMapper.writeValueAsString(updateFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -207,22 +193,19 @@ public class FirestationIntegrationTest {
     @MethodSource("provideInvalidFirestationRequest")
     void updateFirestation_shouldReturnHttpStatus400(FirestationRequest updateFirestationRequest) throws Exception {
 
-        // Given postAddress
-        final String uriPath = "/firestation";
-
         // When Firestation posted
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.put(uriPath)
                         .content(objectMapper.writeValueAsString(updateFirestationRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
 
-    // NOTE REMOVE / DELETE by address
+    // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
     //          response 404 ---> Unable to find resources related to the request
@@ -239,7 +222,7 @@ public class FirestationIntegrationTest {
                 .param("address", address)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -257,7 +240,7 @@ public class FirestationIntegrationTest {
                 .param("address", address)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -275,13 +258,13 @@ public class FirestationIntegrationTest {
                 .param("address", address)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
 
-    // NOTE REMOVE / DELETE by station
+    // NOTE Responses possibilities
     //          response 200 ---> Firestations successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
     //          response 404 ---> Unable to find resources related to the request
@@ -298,7 +281,7 @@ public class FirestationIntegrationTest {
                         .param("station_number", String.valueOf(station_number))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -316,7 +299,7 @@ public class FirestationIntegrationTest {
                 .param("station_number", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -334,7 +317,7 @@ public class FirestationIntegrationTest {
                 .param("station_number", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }

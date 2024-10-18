@@ -51,7 +51,7 @@ public class PhoneAlertIntegrationTest {
                 .param("firestation_number", String.valueOf(firestation_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation_number is sent to the service and status isOk
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
@@ -68,7 +68,7 @@ public class PhoneAlertIntegrationTest {
                 .param("firestation_number", String.valueOf(firestation_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation_number is sent to the service and status isNotFound
+        // Then response isNotFound - 404
         response.andExpect(status().isNotFound());
 
     }
@@ -83,7 +83,7 @@ public class PhoneAlertIntegrationTest {
                 .param("firestation_number", String.valueOf(firestation_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the firestation_number is sent to the service and status isBadRequest
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
