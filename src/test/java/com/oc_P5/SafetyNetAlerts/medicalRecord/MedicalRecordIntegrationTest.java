@@ -1,4 +1,4 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.medicalRecord;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
@@ -35,17 +35,22 @@ public class MedicalRecordIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private final String uriPath = "/medicalRecord";
+
+
+    // NOTE Responses possibilities
+    //          response 200 ---> MedicalRecord successfully created
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 409 ---> Conflict: MedicalRecord already exists
 
     @Test
-    void addMedicalRecord_shouldReturnResponseEntity() throws Exception {
+    void addMedicalRecord_shouldReturnHttpStatus201() throws Exception {
 
-        // Given a medicalRecord to add
+        // Given an unknown medicalRecord to add
         final LocalDate birthdate = LocalDate.now().minusYears(1).minusMonths(1).minusDays(1);
         final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");
         final List<String> allergiesList = Collections.emptyList();
         final MedicalRecordRequest addMedicalRecordRequest = new MedicalRecordRequest("firstName", "lastName", birthdate, medicationList, allergiesList);
-
-        final String uriPath = "/medicalRecord";
 
         // When the medicalRecord is post
         ResultActions response = mockMvc.perform(
@@ -54,16 +59,33 @@ public class MedicalRecordIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        // Then the medicalRecord is sent to the service
+        // Then response isCreated - 201
         response.andExpect(status().isCreated());
+    }
+
+    @Test
+    void addMedicalRecord_shouldReturnHttpStatus409() throws Exception {
+
+        // Given a known medicalRecord to add
+        final LocalDate birthdate = LocalDate.now().minusYears(1).minusMonths(1).minusDays(1);
+        final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");
+        final List<String> allergiesList = Collections.emptyList();
+        final MedicalRecordRequest addMedicalRecordRequest = new MedicalRecordRequest("Jonanathan", "Marrack", birthdate, medicationList, allergiesList);
+
+        // When the medicalRecord is post
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.post(uriPath)
+                        .content(objectMapper.writeValueAsString(addMedicalRecordRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // Then response isConflict - 409
+        response.andExpect(status().isConflict());
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidMedicalRecordRequest")
-    void addMedicalRecord_shouldThrowException(MedicalRecordRequest addMedicalRecordRequest) throws Exception {
-
-        // Given a medicalRecord to add
-        final String uriPath = "/firestation";
+    void addMedicalRecord_shouldReturnHttpStatus400(MedicalRecordRequest addMedicalRecordRequest) throws Exception {
 
         // When the medicalRecord is post
         ResultActions response = mockMvc.perform(
@@ -71,21 +93,25 @@ public class MedicalRecordIntegrationTest {
                         .content(objectMapper.writeValueAsString(addMedicalRecordRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the medicalRecord is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
-    @Test
-    void updateMedicalRecord_shouldReturnResponseEntity() throws Exception {
 
-        // Given a medicalRecord to update
+    // NOTE Responses possibilities
+    //          response 200 ---> MedicalRecord successfully updated
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
+    @Test
+    void updateMedicalRecord_shouldReturnHttpStatus200() throws Exception {
+
+        // Given a known medicalRecord to update
         final LocalDate birthdate = LocalDate.now().minusYears(1).minusMonths(1).minusDays(1);
         final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");
         final List<String> allergiesList = Collections.emptyList();
         final MedicalRecordRequest updateMedicalRecordRequest = new MedicalRecordRequest("Felicia", "Boyd", birthdate, medicationList, allergiesList);
-
-        final String uriPath = "/medicalRecord";
 
         // When the medicalRecord is put
         ResultActions response = mockMvc.perform(
@@ -93,17 +119,34 @@ public class MedicalRecordIntegrationTest {
                         .content(objectMapper.writeValueAsString(updateMedicalRecordRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the medicalRecord is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
+
+    }
+
+    @Test
+    void updateMedicalRecord_shouldReturnHttpStatus404() throws Exception {
+
+        // Given an unknown medicalRecord to update
+        final LocalDate birthdate = LocalDate.now().minusYears(1).minusMonths(1).minusDays(1);
+        final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");
+        final List<String> allergiesList = Collections.emptyList();
+        final MedicalRecordRequest updateMedicalRecordRequest = new MedicalRecordRequest("unknownFirstName", "unknownLastName", birthdate, medicationList, allergiesList);
+
+        // When the medicalRecord is put
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.put(uriPath)
+                        .content(objectMapper.writeValueAsString(updateMedicalRecordRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isNotFound - 404
+        response.andExpect(status().isNotFound());
 
     }
 
     @ParameterizedTest
     @MethodSource("provideInvalidMedicalRecordRequest")
-    void updateMedicalRecord_shouldThrowException(MedicalRecordRequest updateMedicalRecordRequest) throws Exception {
-
-        // Given putAddress
-        final String uriPath = "/medicalRecord";
+    void updateMedicalRecord_shouldReturnHttpStatus400(MedicalRecordRequest updateMedicalRecordRequest) throws Exception {
 
         // When MedicalRecord posted
         ResultActions response = mockMvc.perform(
@@ -111,18 +154,22 @@ public class MedicalRecordIntegrationTest {
                         .content(objectMapper.writeValueAsString(updateMedicalRecordRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the medicalRecord is sent to the service
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }
 
+
+    // NOTE Responses possibilities
+    //          response 200 ---> Firestation successfully deleted
+    //          response 400 ---> Invalid request: missing or incorrect parameters
+    //          response 404 ---> Unable to find resources related to the request
+
     @Test
-    void deleteMedicalRecord_shouldReturnResponseEntity() throws Exception {
+    void deleteMedicalRecord_shouldReturnHttpStatus200() throws Exception {
 
-        // Given a medicalRecord to delete
+        // Given a known medicalRecord to delete
         final MedicalRecordRequest deleteMedicalRecordRequest = new MedicalRecordRequest("John", "Boyd", null, null, null);
-
-        final String uriPath = "/medicalRecord";
 
         // When the medicalRecord is deleted
         ResultActions response = mockMvc.perform(
@@ -130,25 +177,39 @@ public class MedicalRecordIntegrationTest {
                         .content(objectMapper.writeValueAsString(deleteMedicalRecordRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the medicalRecord is sent to the service
+        // Then response isOk - 200
         response.andExpect(status().isOk());
 
     }
 
-    @ParameterizedTest
-    @MethodSource("provideInvalidMedicalRecordRequest")
-    void deleteMedicalRecord_shouldThrowException(MedicalRecordRequest deleteMedicalRecordRequest) throws Exception {
+    @Test
+    void deleteMedicalRecord_shouldReturnHttpStatus404() throws Exception {
 
-        // Given putAddress
-        final String uriPath = "/medicalRecord";
+        // Given an unknown medicalRecord to delete
+        final MedicalRecordRequest deleteMedicalRecordRequest = new MedicalRecordRequest("unknownFirstName", "unknownLastName", null, null, null);
 
-        // When MedicalRecord posted
+        // When the medicalRecord is deleted
         ResultActions response = mockMvc.perform(
                 MockMvcRequestBuilders.delete(uriPath)
                         .content(objectMapper.writeValueAsString(deleteMedicalRecordRequest))
                         .contentType(MediaType.APPLICATION_JSON));
 
-        // Then the medicalRecord is sent to the service
+        // Then response isNotFound - 404
+        response.andExpect(status().isNotFound());
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidMedicalRecordRequest")
+    void deleteMedicalRecord_shouldReturnHttpStatus400(MedicalRecordRequest deleteMedicalRecordRequest) throws Exception {
+
+        // When MedicalRecord deleted
+        ResultActions response = mockMvc.perform(
+                MockMvcRequestBuilders.delete(uriPath)
+                        .content(objectMapper.writeValueAsString(deleteMedicalRecordRequest))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isBadRequest - 400
         response.andExpect(status().isBadRequest());
 
     }

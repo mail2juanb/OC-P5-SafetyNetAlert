@@ -1,6 +1,7 @@
-package com.oc_P5.SafetyNetAlerts.repository;
+package com.oc_P5.SafetyNetAlerts.medicalRecord;
 
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
+import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepositoryImpl;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataReader;
 import com.oc_P5.SafetyNetAlerts.service.data_reader.DataWrapperList;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
-//@ExtendWith(SpringExtension.class)
-// NOTE J'ai remis MockitoExtension ça marche aussi. J'ai pas compris pourquoi tu avais changé
 @ExtendWith(MockitoExtension.class)
 public class MedicalRecordRepositoryTest {
 
@@ -34,8 +33,8 @@ public class MedicalRecordRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialisation des mocks fait par l'annotation @ExtendWith(SpringExtension.class)
-        // Creation des données de test - String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
+
+        // NOTE Test data creation
         LocalDate birthdate1 = LocalDate.parse("09/01/2024", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         List<String> medicationList1 = Collections.emptyList();
         List<String> allergiesList1 = Collections.emptyList();
@@ -53,7 +52,6 @@ public class MedicalRecordRepositoryTest {
         DataWrapperList dataWrapperList = new DataWrapperList();
         dataWrapperList.setMedicalRecords(medicalRecordListMock);
 
-        // Configure le mock pour MedicalRecordRepository
         when(dataReaderService.getData()).thenReturn(dataWrapperList);
     }
 

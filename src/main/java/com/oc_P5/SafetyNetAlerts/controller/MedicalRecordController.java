@@ -1,6 +1,7 @@
 package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
+import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
@@ -24,7 +25,7 @@ public class MedicalRecordController {
      * POST http://localhost:8080/medicalRecord
      * @param addMedicalRecordRequest un object MedicalRecord contenant : String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
      * @return ResponseEntity<String>(HttpStatus.CREATED)
-     * @throws NotFoundException si le numéro de station est invalide
+     * @throws ConflictException si le MedicalRecord existe déjà
      */
 
     @Operation(summary = "Add a MedicalRecord")
@@ -44,6 +45,7 @@ public class MedicalRecordController {
      * PUT http://localhost:8080/medicalRecord
      * @param updateMedicalRecordRequest un object MedicalRecord contenant : String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
      * @return ResponseEntity<>(HttpStatus.OK)
+     * @throws NotFoundException si le MedicalRecord est introuvable
      */
 
     @Operation(summary = "Update a MedicalRecord")
@@ -62,6 +64,7 @@ public class MedicalRecordController {
      * DELETE http://localhost:8080/medicalRecord
      * @param deleteMedicalRecordRequest un object MedicalRecord contenant : String *firstName*, String *lastName*, LocalDate birthdate, List<String> medications, List<String> allergies (* : required)
      * @return ResponseEntity<>(HttpStatus.OK)
+     * @throws NotFoundException si le MedicalRecord est introuvable
      */
 
     @Operation(summary = "Delete a MedicalRecord")

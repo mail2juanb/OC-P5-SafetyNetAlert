@@ -1,5 +1,6 @@
-package com.oc_P5.SafetyNetAlerts.controller;
+package com.oc_P5.SafetyNetAlerts.medicalRecord;
 
+import com.oc_P5.SafetyNetAlerts.controller.MedicalRecordController;
 import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
@@ -47,7 +48,7 @@ public class MedicalRecordControllerTest {
         // When MedicalRecord is post
         ResponseEntity<String> response = medicalRecordController.addMedicalRecord(medicalRecordRequest);
 
-        // Then MedicalRecord is sent to service with correct values
+        // Then MedicalRecord is sent to service with correct values and check HttpStatus.CREATED
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
         verify(medicalRecordService).addMedicalRecord(medicalRecordArgumentCaptor.capture());
         assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(medicalRecordExpect.getFirstName());
@@ -75,7 +76,7 @@ public class MedicalRecordControllerTest {
         // When MedicalRecord is updated
         ResponseEntity<Void> response = medicalRecordController.updateMedicalRecord(medicalRecordRequest);
 
-        // Then MedicalRecord is sent to the service
+        // Then MedicalRecord is sent to the service and check HttpStatus.OK
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
         verify(medicalRecordService).updateMedicalRecord(medicalRecordArgumentCaptor.capture());
         assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());
@@ -103,7 +104,7 @@ public class MedicalRecordControllerTest {
         // When MedicalRecord is deleted
         ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecord(deleteMedicalRecordRequest);
 
-        // Then MedicalRecord is sent to the service
+        // Then MedicalRecord is sent to the service and check HttpStatus.OK
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
         verify(medicalRecordService).deleteMedicalRecord(medicalRecordArgumentCaptor.capture());
         assertThat(medicalRecordArgumentCaptor.getValue().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());

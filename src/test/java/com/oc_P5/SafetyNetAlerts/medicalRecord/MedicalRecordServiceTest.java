@@ -1,9 +1,10 @@
-package com.oc_P5.SafetyNetAlerts.service;
+package com.oc_P5.SafetyNetAlerts.medicalRecord;
 
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
+import com.oc_P5.SafetyNetAlerts.service.MedicalRecordServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,9 +59,9 @@ public class MedicalRecordServiceTest {
     // On va vérifier ici que lorsqu'un MedicalRecord est ajoutée, il est correctement sauvegardée avec les bons attributs.
     void addMedicalRecord_shouldAddMedicalRecordWhenNotExists() {
         // Given a MedicalRecord to add
-        MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setFirstName("firstNameNew");
-        medicalRecord.setLastName("lastNameNew");
+        MedicalRecord medicalRecord = new MedicalRecord("firstNameNew", "lastNameNew", null, null, null);
+        medicalRecord.setFirstName("");
+        medicalRecord.setLastName("");
 
         when(medicalRecordRepository.existsById(medicalRecord.getId())).thenReturn(false);
 
