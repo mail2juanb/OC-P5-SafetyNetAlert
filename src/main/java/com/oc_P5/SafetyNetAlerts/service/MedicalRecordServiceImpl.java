@@ -28,8 +28,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     @Override
     public void updateMedicalRecord(MedicalRecord medicalRecord) {
         MedicalRecord updatedMedicalRecord = medicalRecordRepository.findById(medicalRecord.getId())
-                .orElseThrow(() -> new NotFoundException("MedicalRecord doesn't exist with id = " + medicalRecord.getId()))
-                .update(medicalRecord);
+                .orElseThrow(() -> new NotFoundException("MedicalRecord doesn't exist with id = " + medicalRecord.getId()));
         medicalRecordRepository.update(updatedMedicalRecord);
     }
 

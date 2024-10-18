@@ -44,17 +44,4 @@ public class MedicalRecord extends NamedModel {
         return getAge() <= 18;
     }
 
-
-    public MedicalRecord update(MedicalRecord update){
-        if(update.getBirthdate() != null) {
-            setBirthdate(update.getBirthdate());
-        }
-        if(update.getMedications() != null) {
-            setMedications(update.getMedications());
-        }
-        if(update.getAllergies() != null) {
-            setAllergies(update.getAllergies());
-        }
-        return this;
-    }
 }

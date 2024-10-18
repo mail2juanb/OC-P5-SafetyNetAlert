@@ -38,24 +38,4 @@ public class Person extends NamedModel {
         this.email = request.getEmail();
     }
 
-
-    public Person update(Person update) {
-        if(update.getAddress() != null && !update.getAddress().isEmpty()) {
-            setAddress(update.getAddress());
-        }
-        if(update.getCity() != null && !update.getCity().isEmpty()) {
-            setCity(update.getCity());
-        }
-        if(update.getZip() != null) {
-            setZip(update.getZip());
-        }
-        if(update.getPhone() != null && !update.getPhone().isEmpty()) {
-            setPhone(update.getPhone());
-        }
-        if(update.getEmail() != null && update.getEmail().isEmpty()) {
-            setEmail(update.getEmail());
-        }
-        return this;
-    }
-
 }
