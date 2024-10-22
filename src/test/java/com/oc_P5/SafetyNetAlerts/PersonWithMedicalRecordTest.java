@@ -25,7 +25,6 @@ public class PersonWithMedicalRecordTest {
         person.setFirstName("John");
         person.setLastName("Doe");
 
-        //LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         LocalDate birthdate = LocalDate.now().minusYears(2);
         MedicalRecord medicalRecord = new MedicalRecord("John", "Doe", birthdate, List.of("Medication1"), List.of("Allergy1"));
 
@@ -33,22 +32,22 @@ public class PersonWithMedicalRecordTest {
     }
 
     @Test
-    void testGetFirstName() {
+    void getFirstName_shouldReturnFirstName() {
         assertEquals("John", personWithMedicalRecord.getFirstName());
     }
 
     @Test
-    void testGetLastName() {
+    void getLastName_shouldReturnLastName() {
         assertEquals("Doe", personWithMedicalRecord.getLastName());
     }
 
     @Test
-    void testIsMinor() {
-        assertTrue(personWithMedicalRecord.isMinor()); // Changez la valeur de retour en fonction de l'âge
+    void isMinor_shouldReturnBoolean() {
+        assertTrue(personWithMedicalRecord.isMinor());
     }
 
     @Test
-    void testGetAge() {
-        assertEquals(2, personWithMedicalRecord.getAge()); // Remplacez par la logique appropriée pour calculer l'âge
+    void getAge_shouldReturnInteger() {
+        assertEquals(2, personWithMedicalRecord.getAge());
     }
 }
