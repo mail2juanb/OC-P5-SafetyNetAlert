@@ -51,25 +51,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Map<String , Object> errorFields = new HashMap<>();
 
-        // Gérer les erreurs de validation des @RequestBody
+        // Handling @RequestBody validation errors
         if (exception instanceof MethodArgumentNotValidException methodArgumentNotValidException){
             methodArgumentNotValidException.getBindingResult().getAllErrors()
                     .forEach(e -> errorFields.put( ((FieldError) e).getField(), e.getDefaultMessage()) );
         }
 
-        // Gérer les erreurs de validation des @RequestParam
+        // Handling @RequestParam validation errors
         if (exception instanceof HandlerMethodValidationException handlerMethodValidationException) {
 
-            // Récupérer tous les résultats de validation
+            // Get all validation results
             List<ParameterValidationResult> validationResults = handlerMethodValidationException.getAllValidationResults();
 
-            // Extraire les noms de paramètres
+            // Extracts parameter names
             List<String> parameterNames = validationResults.stream()
                     .map(result -> result.getMethodParameter().getParameterName())
                     .distinct() // Pour éviter les doublons
                     .toList();
 
-            // Gérer les erreurs de validation
+            // Handling validation errors
             handlerMethodValidationException.getAllErrors().forEach(e -> {
                 if (e instanceof FieldError fieldError) {
                     errorFields.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -78,13 +78,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                     String key = parameterNames.isEmpty() ? "unknown" : parameterNames.get(0);
                     errorFields.put(key, resolvable.getDefaultMessage());
                 } else {
-                    // Logger si nécessaire
                     log.warn("Unexpected error type: " + e.getClass().getSimpleName());
                 }
             });
         }
 
-        // Construire la réponse d'erreur
+        // Build error response
         ErrorResponse response = ErrorResponse.builder(exception, status, exception.getMessage())
                 .property("errorFields" , errorFields)
                 .property("timestamp", Instant.now())
