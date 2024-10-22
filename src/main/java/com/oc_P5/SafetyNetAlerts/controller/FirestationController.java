@@ -3,7 +3,6 @@ package com.oc_P5.SafetyNetAlerts.controller;
 import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;
 import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
 import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
-import com.oc_P5.SafetyNetAlerts.exceptions.ErrorResponseModel;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.service.FirestationServiceImpl;
@@ -50,12 +49,8 @@ public class FirestationController {
             @ApiResponse(responseCode = "200", description = "Persons successfully retrieved",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = PersonsByStation.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))}),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))})
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
     })
 
     @GetMapping("/firestation")
@@ -76,25 +71,20 @@ public class FirestationController {
      * PUT http://localhost:8080/firestation
      * Mettre à jour le numéro de la caserne de pompiers d'une adresse spécifiée
      * @param updateFirestationRequest un object FirestationRequest contenant : station_number, firestation
-     * @return ResponseEntity<Void>(HttpStatus.OK)
+     * @return ResponseEntity<?>(HttpStatus.OK)
      * @throws NotFoundException si la caserne de pompiers n'existe pas
      *
      */
 
     @Operation(summary = "Update a Firestation")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Firestation successfully updated",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))}),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))})
+            @ApiResponse(responseCode = "200", description = "Firestation successfully updated", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
     })
 
     @PutMapping("/firestation")
-    public ResponseEntity<Void> updateFirestation(@Valid @RequestBody FirestationRequest updateFirestationRequest) {
+    public ResponseEntity<?> updateFirestation(@Valid @RequestBody FirestationRequest updateFirestationRequest) {
 
         final Firestation firestation = new Firestation(updateFirestationRequest.getAddress(), updateFirestationRequest.getStation_number());
 
@@ -109,24 +99,19 @@ public class FirestationController {
      * POST http://localhost:8080/firestation
      * Ajout d'un mapping caserne/adresse
      * @param addFirestationRequest un object FirestationRequest contenant : station_number, firestation
-     * @return ResponseEntity<String>(HttpStatus.CREATED)
+     * @return ResponseEntity<?>(HttpStatus.CREATED)
      * @throws ConflictException si la caserne de pompiers existe déjà
      */
 
     @Operation(summary = "Add a Firestation")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Firestation successfully added",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))}),
-            @ApiResponse(responseCode = "409", description = "Conflict: Firestation already exists",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))})
+            @ApiResponse(responseCode = "201", description = "Firestation successfully added", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict: Firestation already exists", content = @Content)
     })
 
     @PostMapping("/firestation")
-    public ResponseEntity<String> addFirestation(@Valid @RequestBody FirestationRequest addFirestationRequest) {
+    public ResponseEntity<?> addFirestation(@Valid @RequestBody FirestationRequest addFirestationRequest) {
 
         final Firestation firestation = new Firestation(addFirestationRequest.getAddress(), addFirestationRequest.getStation_number());
 
@@ -141,24 +126,19 @@ public class FirestationController {
      * DELETE http://localhost:8080/firestation/address?address=<address>
      * Supprimer la station de pompiers associée à l'adresse spécifiée.
      * @param address L'adresse de la station de pompiers à supprimer
-     * @return ResponseEntity<Void>(HttpStatus.OK)
+     * @return ResponseEntity<?>(HttpStatus.OK)
      * @throws NotFoundException si l'adresse de la station de pompiers n'existe pas
      */
 
     @Operation(summary = "Delete Firestation by address")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Firestation successfully deleted",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))}),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))})
+            @ApiResponse(responseCode = "200", description = "Firestation successfully deleted", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
     })
 
     @DeleteMapping("/firestation/address")
-    public ResponseEntity<Void> deleteFirestationByAddress(
+    public ResponseEntity<?> deleteFirestationByAddress(
             @Valid @RequestParam ("address")
             @NotBlank(message = "address cannot be null or blank")
             String address) {
@@ -174,24 +154,19 @@ public class FirestationController {
      * DELETE http://localhost:8080/firestation/station?station_number=<station_number>
      * Supprimer le ou les stations de pompiers associées au station_number spécifié.
      * @param station_number Numéro du ou des stations de pompiers à supprimer
-     * @return ResponseEntity<Void>(HttpStatus.OK)
+     * @return ResponseEntity<?>(HttpStatus.OK)
      * @throws NotFoundException si aucune station de pompiers n'est trouvée pour le numéro de station spécifié
      */
 
     @Operation(summary = "Delete Firestations by station")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Firestations successfully deleted",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))}),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseModel.class))})
+            @ApiResponse(responseCode = "200", description = "Firestations successfully deleted", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
     })
 
     @DeleteMapping("/firestation/station")
-    public ResponseEntity<Void> deleteFirestationByStation(
+    public ResponseEntity<?> deleteFirestationByStation(
             @Valid @RequestParam ("station_number")
             @NotNull(message = "station_number cannot be null")
             @Positive(message = "station_number must be positive")

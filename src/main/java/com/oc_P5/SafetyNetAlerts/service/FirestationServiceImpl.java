@@ -31,21 +31,17 @@ public class FirestationServiceImpl implements FirestationService {
     @Override
     public PersonsByStation getPersonsByStation(Integer station_number) {
 
-        // NOTE Vérification de l'existence du station_Number
         if(!firestationRepository.existsByStation(station_number)) {
             throw new NotFoundException("station_number doesn't exist with station_number = " + station_number);
         }
 
-        // NOTE Récupère la liste du ou des address correspondant au station_number
         Set<String> stationAddresses = firestationRepository.getByStation(station_number)
                 .stream()
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
 
-        // NOTE Récupère les Person concernées
         List<Person> personsByAddress = personRepository.getByAddresses(stationAddresses);
 
-        // NOTE Compte le nombre de mineurs (<= 18)
         Integer nbrOfMinor = personsByAddress
                 .stream()
                 .map(NamedModel::getId)

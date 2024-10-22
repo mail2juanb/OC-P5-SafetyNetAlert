@@ -2,6 +2,8 @@ package com.oc_P5.SafetyNetAlerts.firestation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.FirestationRequest;
+import com.oc_P5.SafetyNetAlerts.model.Firestation;
+import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +40,9 @@ public class FirestationIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private FirestationRepository repository;
+
     private final String uriPath = "/firestation";
 
 
@@ -47,7 +56,7 @@ public class FirestationIntegrationTest {
     void getPersonsByStation_shouldReturnHttpStatus200() throws Exception {
 
         // Given a station
-        final Integer station_number = 2;
+        final Integer station_number = 4;
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
@@ -57,6 +66,16 @@ public class FirestationIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that all addresses are present in the response
+        String strResponse = response.andReturn().getResponse().getContentAsString();
+        List<String> stationAddressList = repository.getByStation(station_number)
+                .stream()
+                .map(Firestation::getAddress)
+                .toList();
+
+        for (String address : stationAddressList) {
+            assertThat(strResponse).contains(address);
+        }
     }
 
     @Test
@@ -100,7 +119,9 @@ public class FirestationIntegrationTest {
     void addFirestation_shouldReturnHttpStatus201() throws Exception {
 
         // Given a firestation to add
-        final FirestationRequest addFirestationRequest = new FirestationRequest("addAddress", 9);
+        final String address = "addAddress";
+        final int stationNumber = 89;
+        final FirestationRequest addFirestationRequest = new FirestationRequest(address, stationNumber);
 
         // When the firestation is post
         ResultActions response = mockMvc.perform(
@@ -110,6 +131,14 @@ public class FirestationIntegrationTest {
 
         // Then response isCreated - 201
         response.andExpect(status().isCreated());
+
+        // Then check that Firestation saved
+        final List<Firestation> savedStation = repository.getByStation(stationNumber);
+
+        assertThat(savedStation)
+                .hasSize(1)
+                .extracting("address")
+                .contains(address);
 
     }
 
@@ -158,6 +187,7 @@ public class FirestationIntegrationTest {
 
         // Given a firestation to update
         final FirestationRequest updateFirestationRequest = new FirestationRequest("112 Steppes Pl", 9);
+        final Firestation updatedFirestation = new Firestation("112 Steppes Pl", 9);
 
         // When the firestation is put
         ResultActions response = mockMvc.perform(
@@ -168,6 +198,8 @@ public class FirestationIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that Firestation updated
+        assertTrue(repository.getAll().contains(updatedFirestation));
     }
 
 
@@ -225,6 +257,10 @@ public class FirestationIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that Firestation deleted
+        assertFalse(repository.getAll().stream()
+                .anyMatch(f -> f.getAddress().equals(address)));
+
     }
 
 
@@ -278,11 +314,15 @@ public class FirestationIntegrationTest {
 
         // When the Firestation deleted
         ResultActions response = mockMvc.perform(delete(deleteStation)
-                        .param("station_number", String.valueOf(station_number))
-                        .contentType(MediaType.APPLICATION_JSON));
+                .param("station_number", String.valueOf(station_number))
+                .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200
         response.andExpect(status().isOk());
+
+        // Then check that Firestation deleted
+        assertFalse(repository.getAll().stream()
+                .anyMatch(f -> f.getStation().equals(station_number)));
 
     }
 

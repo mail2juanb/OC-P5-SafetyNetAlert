@@ -35,7 +35,6 @@ public class FirestationControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est bien appelée ainsi que les bons arguments
     void getPersonsByStation_shouldReturnPersonsByStation() {
         // Given a station_number
         final Integer station_number = 1;
@@ -65,7 +64,6 @@ public class FirestationControllerTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void addFirestation_shouldReturnResponseEntity() {
 
         // Given a Firestation to add
@@ -74,7 +72,7 @@ public class FirestationControllerTest {
         doNothing().when(firestationService).addFirestation(any());
 
         // When Firestation is post
-        ResponseEntity<String> response = firestationController.addFirestation(addFirestationRequest);
+        ResponseEntity<?> response = firestationController.addFirestation(addFirestationRequest);
 
         // Then Firestation is sent to the service and check HttpStatus.CREATED
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
@@ -85,7 +83,6 @@ public class FirestationControllerTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void updateFirestation_shouldReturnResponseEntity() {
         // Given a Firestation to update
         final FirestationRequest updateFirestationRequest = new FirestationRequest("addressTest1", 9);
@@ -93,7 +90,7 @@ public class FirestationControllerTest {
         doNothing().when(firestationService).updateFirestation(any());
 
         // When Firestation is updated
-        ResponseEntity<Void> response = firestationController.updateFirestation(updateFirestationRequest);
+        ResponseEntity<?> response = firestationController.updateFirestation(updateFirestationRequest);
 
         // Then Firestation is sent to the service  and check HttpStatus.OK
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
@@ -104,14 +101,13 @@ public class FirestationControllerTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void deleteFirestationByAddress_shouldReturnResponseEntity() {
         // Given an address of Firestation to delete
         final String address = "addressTest1";
         doNothing().when(firestationService).deleteFirestationByAddress(address);
 
         // When Firestation is deleted
-        ResponseEntity<Void> response = firestationController.deleteFirestationByAddress(address);
+        ResponseEntity<?> response = firestationController.deleteFirestationByAddress(address);
 
         // Then address is sent to the service and check HttpStatus.OK
         ArgumentCaptor<String> addressArgumentCaptor = ArgumentCaptor.forClass(String.class);
@@ -122,14 +118,13 @@ public class FirestationControllerTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void deleteFirestationByStation_shouldReturnResponseEntity() {
         // Given a station of Firestation to delete
         final Integer station_number = 1;
         doNothing().when(firestationService).deleteFirestationByStation(station_number);
 
         // When Firestation is deleted
-        ResponseEntity<Void> response = firestationController.deleteFirestationByStation(station_number);
+        ResponseEntity<?> response = firestationController.deleteFirestationByStation(station_number);
 
         // Then station is sent to the service and check HttpStatus.OK
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
