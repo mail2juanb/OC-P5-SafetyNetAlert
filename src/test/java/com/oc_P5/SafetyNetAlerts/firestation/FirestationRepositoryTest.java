@@ -45,14 +45,12 @@ public class FirestationRepositoryTest {
         DataWrapperList dataWrapperList = new DataWrapperList();
         dataWrapperList.setFireStations(firestationListMock);
 
-        //Configure le comportement du mock
         when(dataReaderService.getData()).thenReturn(dataWrapperList);
 
     }
 
 
     @Test
-    // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfFirestations() {
         // When call method on repository
         List<Firestation> firestationList = firestationRepository.getAll();
@@ -66,7 +64,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address et par station_number connue
     void findByAddressByStation_shouldReturnFirestation() {
         // Given a known Firestation
         Firestation firestation = new Firestation("addressTest1", 1);
@@ -81,7 +78,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address et par station_number inconnue
     void findByAddressByStation_shouldReturnFirestationEmpty() {
         // Given an unknown Firestation
         Firestation firestation = new Firestation("addressNotExists", 20);
@@ -94,7 +90,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation connue
     void existsByAddressByStation_shouldReturnTrue() {
         // Given a known Firestation
         Firestation firestation = new Firestation("addressTest1", 1);
@@ -107,7 +102,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour une Firestation inconnue
     void existsByAddressByStation_shouldReturnFalse() {
         // Given an unknown Firestation
         Firestation firestation = new Firestation("addressNotExists", 20);
@@ -120,7 +114,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address connue
     void findByAddress_shouldReturnFirestation() {
         // Given a known address
         String address = "addressTest1";
@@ -134,7 +127,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation par address inconnue
     void findByAddress_shouldReturnFirestationEmpty() {
         // Given an unknown address
         String address = "addressNotExists";
@@ -147,7 +139,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse avec une address connue
     void existsByAddress_shouldReturnTrue() {
         // Given a known address
         String address = "addressTest1";
@@ -160,7 +151,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse avec une address inconnue
     void existsByAddress_shouldReturnFalse() {
         // Given an unknown address
         String address = "addressNotExists";
@@ -173,7 +163,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation avec une station connue
     void findByStation_shouldReturnFirestation() {
         // Given a known station
         Integer station_number = 1;
@@ -187,7 +176,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Firestation avec une station inconnue
     void findByStation_shouldReturnFirestationEmpty() {
         // Given an unknown station
         Integer station_number = 999;
@@ -200,7 +188,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse avec une station connue
     void existsByStation_shouldReturnTrue() {
         // Given a known station
         Integer station_number = 1;
@@ -213,7 +200,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse avec une station inconnue
     void existsByStation_shouldReturnFalse() {
         // Given an unknown station
         Integer station_number = 999;
@@ -226,7 +212,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation
     void updateFirestation_shouldUpdate() {
         // Given a Firestation to update
         Firestation firestation = new Firestation("addressTest1", 199);
@@ -242,7 +227,6 @@ public class FirestationRepositoryTest {
 
 
     @Test
-    // On va vérifier ici le bon fonctionnement de l'ajout d'une Firestation
     void saveFirestation_shouldSave() {
         // Given a Firestation to save
         Firestation firestation = new Firestation("addressTest10", 10);
@@ -258,7 +242,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la suppression d'une Firestation avec une address
     void deleteByAddress_shouldRemoveFirestation() {
         // Given an address to delete
         String address = "addressTest2";
@@ -272,7 +255,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la suppression d'une ou plusieurs Firestations avec un numéro de station connu
     void deleteByStation_shouldDeleteFirestations() {
         // Given a station_number to delete
         Integer station_number = 1;
@@ -286,7 +268,6 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Firestation par station
     void getByStation_shouldReturnListOfFirestation() {
         // Given a station_number
         Integer station_number = 1;
@@ -298,6 +279,5 @@ public class FirestationRepositoryTest {
         assertEquals(2, resultFirestationList.size());
         assertTrue(resultFirestationList.stream().allMatch(firestation -> firestation.getStation().equals(station_number)));
     }
-
 
 }

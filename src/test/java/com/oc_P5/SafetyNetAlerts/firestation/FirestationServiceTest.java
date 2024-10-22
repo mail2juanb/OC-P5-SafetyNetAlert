@@ -84,7 +84,6 @@ public class FirestationServiceTest {
 
 
     @Test
-    // On va vérifier ici la liste des PersonsByStation avec une station valide
     void getPersonsByStation_shouldReturnPersonsByStation() {
         // Given a station_number
         final Integer station_number = 1;
@@ -145,7 +144,6 @@ public class FirestationServiceTest {
 
 
     @Test
-    // On va vérifier ici la levée d'une NotFoundException lors de la récupération de la liste des PersonsByStation, lorsque la station n'existe pas
     void getPersonsByStation_shouldThrowNotFoundExceptionWhenStationNotExist() {
         // Given an unknown station
         final Integer station_number = 99;
@@ -162,7 +160,6 @@ public class FirestationServiceTest {
 
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la mise à jour d'une Firestation avec une Firestation existante
     void updateFirestation_shouldUpdateFirestationWhenExists() {
         // Given a known Firestation to update
         final Firestation firestation = new Firestation("addressTest1", 10);
@@ -189,7 +186,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la levée d'une NotFoundException lorsque l'on met à jour le mapping d'une Firestation inexistante
     void updateFirestation_shouldThrowNotFoundExceptionWhenNotExists() {
         // Given an unknown Firestation to update
         final Firestation firestation = new Firestation("unknownAddressTest30", 30);
@@ -205,7 +201,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici que lorsqu'une nouvelle caserne est ajoutée, elle est correctement sauvegardée avec les bons attributs.
     void addFirestation_shouldAddFirestationWhenNotExists() {
         // Given an unknown Firestation to save
         final Firestation firestation = new Firestation("addressTest13", 1);
@@ -232,7 +227,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une ConflictException lorsque la Firestation existe déjà
     void addFirestation_shouldThrowConflictExceptionWhenExists() {
         // Given a known Firestation to save
         final Firestation firestation = new Firestation("addressTest1", 14);
@@ -248,7 +242,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici la suppression d'une Firestation existante avec une address connue
     void deleteFirestationByAddress_shouldRemoveFirestationWhenAddressExists() {
         // Given a known address to delete Firestation
         final String address = "addressTest1";
@@ -270,7 +263,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException avec une address inconnue
     void deleteFirestationByAddress_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
         // Given an unknown address
         final String address = "unknownAddressTest30";
@@ -284,7 +276,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici la suppression d'une Firestation existante avec une station connue
     void deleteFirestationByStation_shouldRemoveFirestationWhenStationExists() {
         // Given a known station to delete Firestation
         final Integer station_number = 1;
@@ -306,7 +297,6 @@ public class FirestationServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException avec une station inconnue
     void deleteFirestationByStation_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
         // Given an unknown station
         final Integer station_number = 89;

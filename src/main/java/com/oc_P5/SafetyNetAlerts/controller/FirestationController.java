@@ -32,16 +32,16 @@ public class FirestationController {
 
 
     /**
-     * GET http://localhost:8080/firestation?station_number=<station_number>
-     * Cette url doit retourner une liste des personnes couvertes par la caserne de pompiers
-     * correspondante. Donc, si le numéro de station = 1, elle doit renvoyer les habitants couverts par la station numéro 1.
-     * La liste doit inclure les informations spécifiques suivantes : prénom, nom, adresse, numéro de téléphone.
-     * De plus, elle doit fournir un décompte du nombre d'adultes et du
-     * nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone desservie.
-     * @param station_number Numéro de la caserne de pompiers
-     * @return ResponseEntity<PersonsByStation>(HttpStatus.OK)
-     * Une réponse contenant une liste de PersonsByStation et le décompte des adultes et des enfants.
-     * @throws NotFoundException si le numéro de station est introuvable
+     * GET /firestation?stationNumber
+     * This url should return a list of people covered by the corresponding fire station.
+     * So, if station number = 1, it should return the residents covered by station number 1.
+     * The list must include the following specific information: first name, last name, address, telephone number.
+     * In addition, it must provide a count of the number of adults and children number of children
+     * (any individual aged 18 or under) in the area served.
+     *
+     * @param station_number Firestation number (Integer validated with @NotNull and @Positive)
+     * @return ResponseEntity<PersonsByStation> (HttpStatus.OK)
+     * @throws NotFoundException if the station number cannot be found
      */
 
     @Operation(summary = "Retrieve persons covered by a Firestation")
@@ -68,11 +68,14 @@ public class FirestationController {
 
 
     /**
-     * PUT http://localhost:8080/firestation
-     * Mettre à jour le numéro de la caserne de pompiers d'une adresse spécifiée
-     * @param updateFirestationRequest un object FirestationRequest contenant : station_number, firestation
+     * PUT /firestation
+     * Update an address's firestation number
+     *
+     * @param updateFirestationRequest FirestationRequest validated with :
+     *                                 String address @NotBlank,
+     *                                 Integer station_number @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * @throws NotFoundException si la caserne de pompiers n'existe pas
+     * @throws NotFoundException if firestation doesn't exist
      *
      */
 
@@ -96,11 +99,14 @@ public class FirestationController {
 
 
     /**
-     * POST http://localhost:8080/firestation
-     * Ajout d'un mapping caserne/adresse
-     * @param addFirestationRequest un object FirestationRequest contenant : station_number, firestation
+     * POST /firestation
+     * Add firestation
+     *
+     * @param addFirestationRequest FirestationRequest validated with :
+     *                                 String address @NotBlank,
+     *                                 Integer station_number @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.CREATED)
-     * @throws ConflictException si la caserne de pompiers existe déjà
+     * @throws ConflictException if firestation already exists
      */
 
     @Operation(summary = "Add a Firestation")
@@ -123,11 +129,12 @@ public class FirestationController {
 
 
     /**
-     * DELETE http://localhost:8080/firestation/address?address=<address>
-     * Supprimer la station de pompiers associée à l'adresse spécifiée.
-     * @param address L'adresse de la station de pompiers à supprimer
+     * DELETE /firestation/address?address
+     * Delete firestation associated with the specified address.
+     *
+     * @param address address validated with String address @NotBlank
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * @throws NotFoundException si l'adresse de la station de pompiers n'existe pas
+     * @throws NotFoundException if firestation address does not exist
      */
 
     @Operation(summary = "Delete Firestation by address")
@@ -151,11 +158,12 @@ public class FirestationController {
 
 
     /**
-     * DELETE http://localhost:8080/firestation/station?station_number=<station_number>
-     * Supprimer le ou les stations de pompiers associées au station_number spécifié.
-     * @param station_number Numéro du ou des stations de pompiers à supprimer
+     * DELETE /firestation/station?station_number
+     * Delete firestation(s) associated with specified station_number.
+     *
+     * @param station_number station number validated with Integer station_number @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * @throws NotFoundException si aucune station de pompiers n'est trouvée pour le numéro de station spécifié
+     * @throws NotFoundException if no firestation founded for specified station_number
      */
 
     @Operation(summary = "Delete Firestations by station")

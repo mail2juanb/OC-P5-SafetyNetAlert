@@ -68,7 +68,7 @@ public class FirestationIntegrationTest {
 
         // Then check that all addresses are present in the response
         String strResponse = response.andReturn().getResponse().getContentAsString();
-        List<String> stationAddressList = repository.getByStation(station_number)
+        final List<String> stationAddressList = repository.getByStation(station_number)
                 .stream()
                 .map(Firestation::getAddress)
                 .toList();
