@@ -35,7 +35,6 @@ public class ChildAlertServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode retourne bien une liste de ChildrenByAddress ainsi que les attributs nécessaires avec une address valide.
     void getChildByAddress_shouldReturnListOfChildrenByAddress() {
         // Given a known address
         String address = "addressTest1";
@@ -93,7 +92,6 @@ public class ChildAlertServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne bien une liste vide avec une address non existante.
     void getChildByAddress_shouldReturnEmptyListWhenAddressNotFound() {
         // Given an unknown address
         String address = "unknownAddress";

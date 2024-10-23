@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,10 +41,10 @@ public class ChildAlertIntegrationTest {
     //          response 400 ---> Invalid request: missing or incorrect parameters
 
     @Test
-    void getChildByAddress_shouldReturnHttpStatus200() throws Exception {
+    void getChildByAddress_shouldReturnHttpStatus200WithKnownAddress() throws Exception {
 
         // Given an address
-        final String address = "address";
+        final String address = "1509 Culver St";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
@@ -52,6 +53,30 @@ public class ChildAlertIntegrationTest {
 
         // Then response isOk - 200
         response.andExpect(status().isOk());
+
+        // Then check that datas in response are correct
+        final String expectedStringList = "[{\"firstName\":\"Tenley\",\"lastName\":\"Boyd\",\"age\":12,\"familyMembers\":[{\"firstName\":\"John\",\"lastName\":\"Boyd\"},{\"firstName\":\"Jacob\",\"lastName\":\"Boyd\"},{\"firstName\":\"Roger\",\"lastName\":\"Boyd\"},{\"firstName\":\"Felicia\",\"lastName\":\"Boyd\"}]},{\"firstName\":\"Roger\",\"lastName\":\"Boyd\",\"age\":7,\"familyMembers\":[{\"firstName\":\"John\",\"lastName\":\"Boyd\"},{\"firstName\":\"Jacob\",\"lastName\":\"Boyd\"},{\"firstName\":\"Tenley\",\"lastName\":\"Boyd\"},{\"firstName\":\"Felicia\",\"lastName\":\"Boyd\"}]}]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedStringList);
+
+    }
+
+    @Test
+    void getChildByAddress_shouldReturnHttpStatus200WithUnknownAddress() throws Exception {
+
+        // Given an address
+        final String address = "unknownAddress";
+
+        // When method called
+        ResultActions response = mockMvc.perform(get(uriPath)
+                .param("address", address)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isOk - 200
+        response.andExpect(status().isOk());
+
+        // Then check that datas in response are correct
+        final String expectedStringList = "[]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedStringList);
 
     }
 

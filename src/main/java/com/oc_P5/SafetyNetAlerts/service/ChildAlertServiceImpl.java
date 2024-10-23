@@ -20,15 +20,13 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
     @Override
     public List<ChildrenByAddress> getChildByAddress(String address) {
-        // NOTE : Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
+        // NOTE : No verification of the existence of people at the requested address, as the list returned may be empty.
 
-        // NOTE Récupère la liste de l'id des personnes à l'adresse demandée
         List<String> idList = personRepository.getByAddress(address)
                 .stream()
                 .map(NamedModel::getId)
                 .toList();
 
-        // NOTE Récupère la liste des PersonWithMedicalRecord avec la idList
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(idList);
 
         return personWithMedicalRecordList

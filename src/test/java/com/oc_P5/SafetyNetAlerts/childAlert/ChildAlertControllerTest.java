@@ -30,7 +30,6 @@ public class ChildAlertControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getChildByAddress_shouldReturnListOfChildrenByAddress() {
         // Given a known address
         final String address = "addressTest1";
