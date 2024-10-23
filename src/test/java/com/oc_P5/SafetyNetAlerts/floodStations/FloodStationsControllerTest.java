@@ -28,7 +28,6 @@ public class FloodStationsControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getMembersByStation_shouldReturnListOfMemberByStation() {
         // Given a list of station_number
         final List<Integer> station_Numbers = new ArrayList<>();

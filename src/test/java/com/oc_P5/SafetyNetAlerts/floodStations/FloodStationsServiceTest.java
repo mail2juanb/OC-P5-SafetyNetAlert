@@ -47,7 +47,6 @@ public class FloodStationsServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode retourne la liste de MembersByStation à partir d'une liste de Station valide
     void getMembersByStation_shouldReturnMembersByStation() {
         // Given a list of station_number
         List<Integer> station_Numbers = new ArrayList<>();

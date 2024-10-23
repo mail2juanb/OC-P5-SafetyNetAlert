@@ -2,6 +2,11 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 import com.oc_P5.SafetyNetAlerts.dto.MemberByStation;
 import com.oc_P5.SafetyNetAlerts.service.FloodStationsServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,15 +30,24 @@ public class FloodStationsController {
 
 
     /**
-     * GET http://localhost:8080/flood/stations?stations=List<station_numbers>
-     * Cette url doit retourner une liste de tous les foyers desservis par la caserne. Cette
-     * liste doit regrouper les personnes par adresse. Elle doit aussi inclure le nom, le
-     * numéro de téléphone et l'âge des habitants, et faire figurer leurs antécédents
-     * médicaux (médicaments, posologie et allergies) à côté de chaque nom.
-     * @param station_Numbers List of Integer station_Numbers
-     * @return Liste des foyers desservis par la caserne - lastName, phone, age, medications, allergies
-     * Mise en forme : String lastname, String phone, int age, List<String>medications, List<String>allergies
+     * GET /flood/stations?stations
+     * This url should return a list of all households served by the fire station.
+     * This list must group people by address. It should also include the name, phone number and age,
+     * with medical history (medications, dosage and allergies) next to each name.
+     *
+     * @param station_Numbers List of Integer station_Numbers validated with @NotNull @Size(min=1) and Integers @NotNull @Positive
+     * @return ResponseEntity<List<MemberByStation>> (HttpStatus.OK)
+     *
      */
+
+    @Operation(summary = "Retrieve households served by firestation(s)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Households successfully retrieved",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = MemberByStation[].class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
+    })
+
     @GetMapping("/flood/stations")
     public ResponseEntity<List<MemberByStation>> getMembersByStation(
             @Valid @RequestParam("station_Numbers")

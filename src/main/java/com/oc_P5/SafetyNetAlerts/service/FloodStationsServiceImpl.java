@@ -23,32 +23,27 @@ public class FloodStationsServiceImpl implements FloodStationsService {
 
     @Override
     public List<MemberByStation> getMembersByStation(List<Integer> station_Numbers) {
-        // NOTE : Pas de vérification de l'existence de personnes à l'adresse demandée puisque la liste retournée peut être vide.
+        // NOTE : No check on the existence of station_Numbers, since the returned list may be empty.
 
-        // NOTE Récupère la liste des address correspondant à la liste de stationNumbers
         List<String> addressList = firestationRepository.getAll()
                 .stream()
                 .filter(firestation -> station_Numbers.contains(firestation.getStation()))
                 .map(Firestation::getAddress)
                 .toList();
 
-        // NOTE Récupère la liste des Person desservies grace à la liste des adresses, cette liste est triée par address et par lastName
         List<Person> personList = personRepository.getByAddresses(addressList)
                 .stream()
                 .sorted(Comparator.comparing(Person::getAddress)
                         .thenComparing(Person::getLastName))
                 .toList();
 
-        // NOTE Récupère la liste des id correspondants
         List<String> idList = personList
                 .stream()
                 .map(Person::getId)
                 .toList();
 
-        // NOTE Récupère la liste de PersonWithMedicalRecord avec la idList
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(idList);
 
-        // NOTE Mapper la liste dans l'objet MembersByStation
         return personWithMedicalRecordList
                 .stream()
                 .map(FloodStationsServiceImpl::mapToMemberByStation)

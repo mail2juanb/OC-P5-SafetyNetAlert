@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,6 +62,20 @@ public class FloodStationsIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check datas in response
+        String expectedResponse = "[{\"lastName\":\"Marrack\",\"address\":\"29 15th St\",\"phone\":\"841-874-6513\",\"age\":35,\"medications\":[],\"allergies\":[]}," +
+                "{\"lastName\":\"Duncan\",\"address\":\"644 Gershwin Cir\",\"phone\":\"841-874-6512\",\"age\":24,\"medications\":[],\"allergies\":[\"shellfish\"]}," +
+                "{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7878\",\"age\":36,\"medications\":[\"aznol:60mg\",\"hydrapermazol:900mg\",\"pharmacol:5000mg\",\"terazine:500mg\"],\"allergies\":[\"peanut\",\"shellfish\",\"aznol\"]}," +
+                "{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7512\",\"age\":39,\"medications\":[],\"allergies\":[]}," +
+                "{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7512\",\"age\":7,\"medications\":[],\"allergies\":[]}," +
+                "{\"lastName\":\"Walker\",\"address\":\"908 73rd St\",\"phone\":\"841-874-8547\",\"age\":45,\"medications\":[\"thradox:700mg\"],\"allergies\":[\"illisoxian\"]}," +
+                "{\"lastName\":\"Peters\",\"address\":\"908 73rd St\",\"phone\":\"841-874-7462\",\"age\":42,\"medications\":[],\"allergies\":[]}," +
+                "{\"lastName\":\"Stelzer\",\"address\":\"947 E. Rose Dr\",\"phone\":\"841-874-7784\",\"age\":48,\"medications\":[\"ibupurin:200mg\",\"hydrapermazol:400mg\"],\"allergies\":[\"nillacilan\"]}," +
+                "{\"lastName\":\"Stelzer\",\"address\":\"947 E. Rose Dr\",\"phone\":\"841-874-7784\",\"age\":44,\"medications\":[],\"allergies\":[]}," +
+                "{\"lastName\":\"Stelzer\",\"address\":\"947 E. Rose Dr\",\"phone\":\"841-874-7784\",\"age\":10,\"medications\":[\"noxidian:100mg\",\"pharmacol:2500mg\"],\"allergies\":[]}," +
+                "{\"lastName\":\"Cadigan\",\"address\":\"951 LoneTree Rd\",\"phone\":\"841-874-7458\",\"age\":79,\"medications\":[\"tradoxidine:400mg\"],\"allergies\":[]}]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
+
     }
 
 
@@ -82,7 +97,7 @@ public class FloodStationsIntegrationTest {
 
 
 
-    // Fournit des valeurs de station_Numbers, y compris null
+    // Returns invalid station_Numbers values
     static Stream<List<Integer>> provideInvalidStation_Numbers() {
         return Stream.of(Arrays.asList(-1, null), Arrays.asList(1, null, 2, 9));
     }
