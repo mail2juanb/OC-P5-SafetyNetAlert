@@ -30,7 +30,6 @@ public class CommunityEmailServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode renvoi bien la liste des emails par ville avec une ville connue
     void getCommunityEmailByCity_shouldReturnListOfStringEmail(){
         // Given a valid city and persons living in that city with respective emails
         String city = "cityTest1";

@@ -25,6 +25,7 @@ public class CommunityEmailServiceImpl implements CommunityEmailService {
         return personRepository.getByCity(city)
                 .stream()
                 .map(Person::getEmail)
+                .distinct()
                 .toList();
     }
 

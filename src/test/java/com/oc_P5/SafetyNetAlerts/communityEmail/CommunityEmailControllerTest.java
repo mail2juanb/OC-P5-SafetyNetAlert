@@ -30,7 +30,6 @@ public class CommunityEmailControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getCommunityEmailByCity_shouldReturnListOfString() {
         // Given a city
         final String city = "cityTest1";

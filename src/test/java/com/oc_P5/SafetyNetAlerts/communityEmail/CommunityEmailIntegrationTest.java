@@ -14,10 +14,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
@@ -52,6 +55,14 @@ public class CommunityEmailIntegrationTest {
 
         // Then response isOk - 200
         response.andExpect(status().isOk());
+
+        // Then check that all e-mail are present in the response
+        final List<String> expectedList = List.of("jaboyd@email.com", "drk@email.com", "tenz@email.com",
+                "tcoop@ymail.com", "lily@email.com", "soph@email.com", "ward@email.com", "zarc@email.com", "reg@email.com",
+                "jpeter@email.com", "aly@imail.com", "bstel@email.com", "ssanw@email.com", "clivfd@ymail.com", "gramps@email.com");
+        final String expectedJson = objectMapper.writeValueAsString(expectedList);
+
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedJson);
 
     }
 
