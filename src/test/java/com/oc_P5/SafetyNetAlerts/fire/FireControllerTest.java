@@ -28,7 +28,6 @@ public class FireControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getFirePersonsByAddress_shouldReturnFirePersonsResponse() {
         // Given an address
         String address = "addressTest1";

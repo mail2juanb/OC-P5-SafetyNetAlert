@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,6 +53,10 @@ public class FireIntegrationTest {
 
         // Then response isOK - 200
         response.andExpect(status().isOk());
+
+        // Then check datas in the response
+        String expectedResponse = "{\"firePersonByAdressList\":[{\"lastName\":\"Cooper\",\"phone\":\"841-874-6874\",\"age\":30,\"medications\":[\"hydrapermazol:300mg\",\"dodoxadin:30mg\"],\"allergies\":[\"shellfish\"]},{\"lastName\":\"Peters\",\"phone\":\"841-874-8888\",\"age\":59,\"medications\":[],\"allergies\":[]},{\"lastName\":\"Boyd\",\"phone\":\"841-874-9888\",\"age\":59,\"medications\":[\"aznol:200mg\"],\"allergies\":[\"nillacilan\"]}],\"address\":\"112 Steppes Pl\",\"stationNumber\":3}";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
 
     }
 

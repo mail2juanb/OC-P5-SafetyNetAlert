@@ -7,6 +7,7 @@ import java.util.List;
 
 @Value
 public class FirePersonsResponse {
+
     List<FirePersonByAddress> firePersonByAdressList;
     String address;
     Integer stationNumber;

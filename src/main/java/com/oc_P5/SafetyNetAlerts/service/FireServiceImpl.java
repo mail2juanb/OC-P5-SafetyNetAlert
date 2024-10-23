@@ -33,7 +33,6 @@ public class FireServiceImpl implements FireService {
             throw new NotFoundException("There is no Person at this address = " + address);
         }
 
-        // NOTE Récupère la stationNumber correspondant à l'adresse
         Integer stationNumber = firestationRepository.getAll()
                 .stream()
                 .filter(firestation -> firestation.getAddress().equals(address))
@@ -41,19 +40,15 @@ public class FireServiceImpl implements FireService {
                 .findFirst()
                 .orElseThrow();
 
-        // NOTE Récupére la liste des personnes correspondant à l'adresse
         List<Person> personsByAddress = personRepository.getByAddress(address);
 
-        // NOTE Récupère la liste de l'id des personnes à l'adresse demandée
         List<String> personIds = personsByAddress
                 .stream()
                 .map(NamedModel::getId)
                 .toList();
 
-        // NOTE Récupère la liste de PersonWithMedicalRecord avec les personIds
         List<PersonWithMedicalRecord> personWithMedicalRecordList = personRepository.getPersonsWithMedicalRecord(personIds);
 
-        // NOTE Mapper la liste de PersonWithMedicalRecord dans une liste de FirePersonByAddress
         List<FirePersonByAddress> firePersonByAdressList = personWithMedicalRecordList
                 .stream()
                 .map(FireServiceImpl::mapToFirePersonByAddress)

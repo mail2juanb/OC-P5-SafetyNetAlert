@@ -8,13 +8,14 @@ import java.util.List;
 
 @Value
 public class FirePersonByAddress {
+
     String lastName;
     String phone;
     int age;
     List<String> medications;
     List<String> allergies;
 
-    // Constructeur pour initialiser l'objet FirePersonsByAddress
+
     public FirePersonByAddress(Person person, MedicalRecord medicalRecord) {
         this.lastName = person.getLastName();
         this.phone = person.getPhone();

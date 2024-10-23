@@ -39,7 +39,7 @@ public class FireServiceTest {
     @InjectMocks
     private FireServiceImpl fireService;
 
-    // NOTE Pour typer correctement la liste
+
     @Captor
     ArgumentCaptor<List<String>> personIdsArgumentCaptor;
 
@@ -92,7 +92,6 @@ public class FireServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode retourne correctement les informations des personnes associées à une adresse connue.
     void getFirePersonsByAddress_shouldReturnFirePersonsByAddressWithKnownAddress() {
         // Given a known address with associated persons and firestation
         String address = "addressTest1";
@@ -131,7 +130,6 @@ public class FireServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode retourne une exception si l'adresse n'est pas reconnue dans la liste des Firestation.
     void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForFirestationList() {
         // Given an unknown address
         String address = "unknownAddressTest1";
@@ -149,7 +147,6 @@ public class FireServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne une exception si l'adresse n'est pas reconnue dans la liste des Firestation.
     void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForPersonList() {
         // Given an unknown address
         String address = "unknownAddressTest1";
