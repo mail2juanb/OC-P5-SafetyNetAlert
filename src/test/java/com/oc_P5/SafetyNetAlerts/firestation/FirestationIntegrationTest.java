@@ -19,11 +19,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -187,7 +187,7 @@ public class FirestationIntegrationTest {
 
         // Given a firestation to update
         final FirestationRequest updateFirestationRequest = new FirestationRequest("112 Steppes Pl", 9);
-        final Firestation updatedFirestation = new Firestation("112 Steppes Pl", 9);
+        final Firestation expectedFirestation = new Firestation(updateFirestationRequest);
 
         // When the firestation is put
         ResultActions response = mockMvc.perform(
@@ -199,7 +199,13 @@ public class FirestationIntegrationTest {
         response.andExpect(status().isOk());
 
         // Then check that Firestation updated
-        assertTrue(repository.getAll().contains(updatedFirestation));
+        final Optional<Firestation> updatedFirestation = repository.findByAddress(updateFirestationRequest.getAddress());
+        assertThat(updatedFirestation)
+                .isPresent()
+                .satisfies(firestation -> {
+                    assertThat(firestation.get().getAddress()).isEqualTo(expectedFirestation.getAddress());
+                    assertThat(firestation.get().getStation()).isEqualTo(expectedFirestation.getStation());
+                });
     }
 
 

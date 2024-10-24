@@ -58,11 +58,10 @@ public class FirestationServiceImpl implements FirestationService {
 
     @Override
     public void updateFirestation(Firestation firestation) {
-        Firestation updatedFirestation = firestationRepository.findByAddress(firestation.getAddress())
-                .orElseThrow(()-> new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress()))
-                .update(firestation);
-
-        firestationRepository.update(updatedFirestation);
+        if(!firestationRepository.existsByAddress(firestation.getAddress())) {
+            throw new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress());
+        }
+        firestationRepository.update(firestation);
     }
 
 

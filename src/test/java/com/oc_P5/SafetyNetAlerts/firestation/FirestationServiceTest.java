@@ -164,13 +164,13 @@ public class FirestationServiceTest {
         // Given a known Firestation to update
         final Firestation firestation = new Firestation("addressTest1", 10);
 
-        when(firestationRepository.findByAddress(firestation.getAddress())).thenReturn(Optional.of(firestationListMock.getFirst()));
+        when(firestationRepository.existsByAddress(firestation.getAddress())).thenReturn(true);
 
         // When call method on service
         firestationService.updateFirestation(firestation);
 
         // Then verify that the object sent is correctly distributed
-        verify(firestationRepository, times(1)).findByAddress(firestation.getAddress());
+        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
         verify(firestationRepository, times(1)).update(any(Firestation.class));
 
         ArgumentCaptor<Firestation> firestationArgumentCaptor = ArgumentCaptor.forClass(Firestation.class);
@@ -190,13 +190,13 @@ public class FirestationServiceTest {
         // Given an unknown Firestation to update
         final Firestation firestation = new Firestation("unknownAddressTest30", 30);
 
-        when(firestationRepository.findByAddress(firestation.getAddress())).thenReturn(Optional.empty());
+        when(firestationRepository.existsByAddress(firestation.getAddress())).thenReturn(false);
 
         // When / Then a NotFoundException is thrown
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.updateFirestation(firestation));
         assertThat(thrown.getMessage()).contains(firestation.getAddress());
 
-        verify(firestationRepository, times(1)).findByAddress(firestation.getAddress());
+        verify(firestationRepository, times(1)).existsByAddress(firestation.getAddress());
         verify(firestationRepository, never()).update(firestation);
     }
 
