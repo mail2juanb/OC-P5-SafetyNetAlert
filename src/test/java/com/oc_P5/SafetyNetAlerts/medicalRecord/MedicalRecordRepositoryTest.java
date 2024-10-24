@@ -56,7 +56,6 @@ public class MedicalRecordRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfMedicalRecords() {
         // When the method is called on the repository
         List<MedicalRecord> medicalRecordList = medicalRecordRepository.getAll();
@@ -68,7 +67,6 @@ public class MedicalRecordRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode ajoute correctement un MedicalRecord
     void saveMedicalRecord_shouldSave() {
         // Given a new MedicalRecord to be added
         LocalDate birthdate = LocalDate.parse("09/01/1999", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -91,7 +89,6 @@ public class MedicalRecordRepositoryTest {
 
 
     @Test
-    // On va vérifier ici que la méthode met à jour correctement un MedicalRecord
     void updateMedicalRecord_shouldUpdate() {
         // Given an existing MedicalRecord with updated details
         LocalDate birthdate = LocalDate.parse("09/01/2024", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -114,7 +111,6 @@ public class MedicalRecordRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode supprime correctement un MedicalRecord
     void deleteMedicalRecord_shouldDelete() {
         // Given a MedicalRecord to be deleted
         MedicalRecord medicalRecord = medicalRecordListMock.getFirst();
@@ -128,7 +124,6 @@ public class MedicalRecordRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode vérifie bien l'existence du String id - True
     void existsById_shouldReturnBooleanWithIdExists(){
         // Given an existing MedicalRecord id
         String id = medicalRecordListMock.getFirst().getId();
@@ -141,7 +136,6 @@ public class MedicalRecordRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode vérifie bien l'existence de la String id - False
     void existsById_shouldReturnBooleanWithIdNotExists(){
         // Given a non-existing MedicalRecord id
         String id = "idNotExists";

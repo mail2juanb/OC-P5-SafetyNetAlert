@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,7 +55,6 @@ public class MedicalRecordServiceTest {
 
 
     @Test
-    // On va vérifier ici que lorsqu'un MedicalRecord est ajoutée, il est correctement sauvegardée avec les bons attributs.
     void addMedicalRecord_shouldAddMedicalRecordWhenNotExists() {
         // Given a MedicalRecord to add
         MedicalRecord medicalRecord = new MedicalRecord("firstNameNew", "lastNameNew", null, null, null);
@@ -80,7 +78,6 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une ConflictException lorsque le medicalRecord existe déjà
     void addMedicalRecord_shouldReturnConflictExceptionWhenExists() {
         // Given an existing MedicalRecord
         MedicalRecord medicalRecord = medicalRecordListMock.getFirst();
@@ -98,7 +95,6 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
-    // On va vérifier ici que le MedicalRecord est mis à jour avec un MedicalRecord valide
     void updateMedicalRecord_shouldUpdateMedicalRecordWhenExists() {
         // Given an existing MedicalRecord with updated details
         LocalDate birthdate = LocalDate.parse("09/01/1995", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -110,13 +106,13 @@ public class MedicalRecordServiceTest {
         medicalRecord.setMedications(medicationList);
         medicalRecord.setAllergies(allergiesList);
 
-        when(medicalRecordRepository.findById(medicalRecord.getId())).thenReturn(Optional.of(medicalRecordListMock.getFirst()));
+        when(medicalRecordRepository.existsById(medicalRecord.getId())).thenReturn(true);
 
         // When MedicalRecord is updated
         medicalRecordService.updateMedicalRecord(medicalRecord);
 
         // Then the repository check if the MedicalRecord exists and update the MedicalRecord
-        verify(medicalRecordRepository, times(1)).findById(medicalRecord.getId());
+        verify(medicalRecordRepository, times(1)).existsById(medicalRecord.getId());
         verify(medicalRecordRepository, times(1)).update(medicalRecordListMock.getFirst());
 
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
@@ -126,14 +122,13 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException lorsque le medicalRecord n'existe pas
     void updateMedicalRecord_shouldReturnNotFoundExceptionWhenNotExist() {
         // Given a MedicalRecord that doesn't exist
         MedicalRecord medicalRecord = medicalRecordListMock.get(1);
         medicalRecord.setFirstName("unknownFirstName");
         medicalRecord.setLastName("unknownLastName");
 
-        when(medicalRecordRepository.findById(medicalRecord.getId())).thenReturn(Optional.empty());
+        when(medicalRecordRepository.existsById(medicalRecord.getId())).thenReturn(false);
 
         // When trying to update the MedicalRecord
         NotFoundException thrown = assertThrows(NotFoundException.class, () -> medicalRecordService.updateMedicalRecord(medicalRecord));
@@ -141,12 +136,11 @@ public class MedicalRecordServiceTest {
         // Then a NotFoundException should be thrown and no update should occur
         assertThat(thrown.getMessage()).contains(medicalRecord.getId());
 
-        verify(medicalRecordRepository, times(1)).findById(medicalRecord.getId());
+        verify(medicalRecordRepository, times(1)).existsById(medicalRecord.getId());
         verify(medicalRecordRepository, never()).update(any(MedicalRecord.class));
     }
 
     @Test
-    // On va vérifier ici que le MedicalRecord est supprimé avec un MedicalRecord valide
     void deleteMedicalRecord_shouldDeleteMedicalRecord() {
         // Given an existing MedicalRecord to be deleted
         MedicalRecord medicalRecord = medicalRecordListMock.getFirst();
@@ -167,7 +161,6 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException lorsque le medicalRecord n'existe pas
     void deleteMedicalRecord_shouldReturnNotFoundExceptionWhenNotExist() {
         // Given a MedicalRecord that doesn't exist
         MedicalRecord medicalRecord = medicalRecordListMock.get(1);

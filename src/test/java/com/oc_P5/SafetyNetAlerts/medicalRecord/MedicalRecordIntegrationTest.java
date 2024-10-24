@@ -2,6 +2,8 @@ package com.oc_P5.SafetyNetAlerts.medicalRecord;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.MedicalRecordRequest;
+import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
+import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +21,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -34,6 +39,10 @@ public class MedicalRecordIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MedicalRecordRepository repository;
+
 
     private final String uriPath = "/medicalRecord";
 
@@ -61,6 +70,20 @@ public class MedicalRecordIntegrationTest {
 
         // Then response isCreated - 201
         response.andExpect(status().isCreated());
+
+        // Then check that MedicalRecord is saved
+        final MedicalRecord expectedMedicalRecord = new MedicalRecord(addMedicalRecordRequest);
+        final Optional<MedicalRecord> savedMedicalRecord = repository.findById(expectedMedicalRecord.getId());
+        assertThat(savedMedicalRecord)
+                .isPresent()
+                .satisfies(medicalRecord -> {
+                    assertThat(medicalRecord.get().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());
+                    assertThat(medicalRecord.get().getLastName()).isEqualTo(expectedMedicalRecord.getLastName());
+                    assertThat(medicalRecord.get().getBirthdate()).isEqualTo(expectedMedicalRecord.getBirthdate());
+                    assertThat(medicalRecord.get().getMedications()).isEqualTo(expectedMedicalRecord.getMedications());
+                    assertThat(medicalRecord.get().getAllergies()).isEqualTo(expectedMedicalRecord.getAllergies());
+                });
+
     }
 
     @Test
@@ -122,6 +145,20 @@ public class MedicalRecordIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that MedicalRecord is updated
+        final MedicalRecord expectedMedicalRecord = new MedicalRecord(updateMedicalRecordRequest);
+        final Optional<MedicalRecord> updatedMedicalRecord = repository.findById(expectedMedicalRecord.getId());
+
+        assertThat(updatedMedicalRecord)
+                .isPresent()
+                .satisfies(medicalRecord -> {
+                    assertThat(medicalRecord.get().getFirstName()).isEqualTo(expectedMedicalRecord.getFirstName());
+                    assertThat(medicalRecord.get().getLastName()).isEqualTo(expectedMedicalRecord.getLastName());
+                    assertThat(medicalRecord.get().getBirthdate()).isEqualTo(expectedMedicalRecord.getBirthdate());
+                    assertThat(medicalRecord.get().getMedications()).isEqualTo(expectedMedicalRecord.getMedications());
+                    assertThat(medicalRecord.get().getAllergies()).isEqualTo(expectedMedicalRecord.getAllergies());
+                });
+
     }
 
     @Test
@@ -180,6 +217,11 @@ public class MedicalRecordIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that MedicalRecord is deleted
+        final String deletedId = new MedicalRecord(deleteMedicalRecordRequest).getId();
+        assertFalse(repository.getAll().stream()
+                .anyMatch(medicalRecord -> medicalRecord.getId().equals(deletedId)));
+
     }
 
     @Test
@@ -216,7 +258,7 @@ public class MedicalRecordIntegrationTest {
 
 
 
-    // Fournit des valeurs de MedicalRecordRequest, y compris null
+    // Returns invalid MedicalRecordRequest values
     static Stream<MedicalRecordRequest> provideInvalidMedicalRecordRequest() {
         final LocalDate birthdateFutur = LocalDate.now().plusYears(1);
         final List<String> medicationList = List.of("medication1 : 100mg", "medication2 : 200mg");

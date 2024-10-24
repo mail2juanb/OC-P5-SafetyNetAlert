@@ -34,7 +34,6 @@ public class MedicalRecordControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void addMedicalRecord_shouldReturnResponseEntity() {
         // Given MedicalRecord to add
         final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -46,7 +45,7 @@ public class MedicalRecordControllerTest {
         doNothing().when(medicalRecordService).addMedicalRecord(any());
 
         // When MedicalRecord is post
-        ResponseEntity<String> response = medicalRecordController.addMedicalRecord(medicalRecordRequest);
+        ResponseEntity<?> response = medicalRecordController.addMedicalRecord(medicalRecordRequest);
 
         // Then MedicalRecord is sent to service with correct values and check HttpStatus.CREATED
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
@@ -62,7 +61,6 @@ public class MedicalRecordControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void updateMedicalRecord_shouldReturnResponseEntity() {
         // Given a MedicalRecord to update
         final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -74,7 +72,7 @@ public class MedicalRecordControllerTest {
         doNothing().when(medicalRecordService).updateMedicalRecord(any());
 
         // When MedicalRecord is updated
-        ResponseEntity<Void> response = medicalRecordController.updateMedicalRecord(medicalRecordRequest);
+        ResponseEntity<?> response = medicalRecordController.updateMedicalRecord(medicalRecordRequest);
 
         // Then MedicalRecord is sent to the service and check HttpStatus.OK
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
@@ -90,7 +88,6 @@ public class MedicalRecordControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void deleteMedicalRecord_shouldReturnResponseEntity() {
         // Given a MedicalRecord to delete
         final LocalDate birthdate = LocalDate.parse("09/01/2021", DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -102,7 +99,7 @@ public class MedicalRecordControllerTest {
         doNothing().when(medicalRecordService).deleteMedicalRecord(any());
 
         // When MedicalRecord is deleted
-        ResponseEntity<Void> response = medicalRecordController.deleteMedicalRecord(deleteMedicalRecordRequest);
+        ResponseEntity<?> response = medicalRecordController.deleteMedicalRecord(deleteMedicalRecordRequest);
 
         // Then MedicalRecord is sent to the service and check HttpStatus.OK
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
