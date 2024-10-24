@@ -29,7 +29,6 @@ public class PersonControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void addPerson_shouldReturnResponseEntity() {
         // Given request and expected person object
         final PersonRequest addPersonRequest = new PersonRequest("newFirstNameTest1", "newLastNameTest1", "addressTest1", "cityTest1", 1111, "123-456-7891", "email@Test1");
@@ -38,7 +37,7 @@ public class PersonControllerTest {
         doNothing().when(personService).addPerson(any());
 
         // When Person is post
-        ResponseEntity<String> response = personController.addPerson(addPersonRequest);
+        ResponseEntity<?> response = personController.addPerson(addPersonRequest);
 
         // Then verify that the service method was called with the expected person data and check the response status
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
@@ -54,7 +53,6 @@ public class PersonControllerTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void updatePerson_shouldReturnResponseEntity() {
         // Given request and expected person object
         PersonRequest updatePersonRequest = new PersonRequest("firstNameTest1", "lastNameTest1", "updateAddressTest1", "updateCityTest1", 1111, "123-456-7891", "emailTest1");
@@ -63,7 +61,7 @@ public class PersonControllerTest {
         doNothing().when(personService).updatePerson(any());
 
         // When Person is updated
-        ResponseEntity<Void> response = personController.updatePerson(updatePersonRequest);
+        ResponseEntity<?> response = personController.updatePerson(updatePersonRequest);
 
         // Then verify that the service method was called with the expected person data and check the response status
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
@@ -79,7 +77,6 @@ public class PersonControllerTest {
     }
 
     @Test
-     // On va vérifier ici que la méthode du service est déclenchée et que le code de réponse est correct
     void deletePerson_shouldReturnResponseEntity() {
         // Given request and expected person object
         PersonRequest deletePersonRequest = new PersonRequest("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 1111, "123-456-7891", "emailTest1");
@@ -87,7 +84,7 @@ public class PersonControllerTest {
         doNothing().when(personService).deletePerson(any());
 
         // When Person is deleted
-        ResponseEntity<Void> response = personController.deleteFirestation(deletePersonRequest);
+        ResponseEntity<?> response = personController.deleteFirestation(deletePersonRequest);
 
         // Then verify that the service method was called with the expected person data and check the response status
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);

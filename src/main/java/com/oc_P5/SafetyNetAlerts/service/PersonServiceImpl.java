@@ -28,9 +28,10 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void updatePerson(Person person) {
-        Person updatedPerson = personRepository.findById(person.getId())
-                .orElseThrow(() -> new NotFoundException("Person doesn't exist with id : " + person.getId()));
-        personRepository.update(updatedPerson);
+        if(!personRepository.existsById(person.getId())){
+            throw new NotFoundException("Person doesn't exist with id : " + person.getId());
+        }
+        personRepository.update(person);
     }
 
     @Override

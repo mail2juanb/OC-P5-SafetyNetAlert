@@ -5,6 +5,10 @@ import com.oc_P5.SafetyNetAlerts.exceptions.ConflictException;
 import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.service.PersonServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +27,30 @@ public class PersonController {
 
 
     /**
-     * POST http://localhost:8080/person
-     * Ajouter une nouvelle personne
-     * @param addPersonRequest un object Person contenant : firstName, lastName, address, city, zip, phone, email
-     * @return ResponseEntity<>(HttpStatus.CREATED)
-     * @throws ConflictException si la Person existe déjà
+     * POST /person
+     * Add a Person
+     *
+     * @param addPersonRequest MedicalRecordRequest validated with :
+     *                         String firstName @NotBlank
+     *                         String lastName @NotBlank
+     *                         String address
+     *                         String city
+     *                         Integer zip @Positive
+     *                         String phone
+     *                         String email @Email
+     * @return ResponseEntity<?> (HttpStatus.CREATED)
+     * @throws ConflictException if the Person already exists
      */
+
+    @Operation(summary = "Add a Person")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Person successfully added", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict: Person already exists", content = @Content)
+    })
+
     @PostMapping("/person")
-    public ResponseEntity<String> addPerson(@Valid @RequestBody PersonRequest addPersonRequest) {
+    public ResponseEntity<?> addPerson(@Valid @RequestBody PersonRequest addPersonRequest) {
 
         final Person person = new Person(addPersonRequest);
 
@@ -42,16 +62,31 @@ public class PersonController {
 
 
     /**
-     * PUT http://localhost:8080/person
-     * Mettre à jour une personne existante (pour le moment, supposons que le
-     * prénom et le nom de famille ne changent pas, mais que les autres champs
-     * peuvent être modifiés)
-     * @param updatePersonRequest un object Person contenant : firstName, lastName, address, city, zip, phone, email
-     * @return ResponseEntity<>(HttpStatus.OK)
+     * PUT /person
+     * Update an existing person (for the moment, let's assume that the first and last name don't change,
+     * but other fields can be can be modified)
+     *
+     * @param updatePersonRequest MedicalRecordRequest validated with :
+     *                            String firstName @NotBlank
+     *                            String lastName @NotBlank
+     *                            String address
+     *                            String city
+     *                            Integer zip @Positive
+     *                            String phone
+     *                            String email @Email
+     * @return ResponseEntity<?> (HttpStatus.OK)
      * @throws NotFoundException si la personne est introuvable
      */
+
+    @Operation(summary = "Update a Person")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Person successfully updated", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+    })
+
     @PutMapping("/person")
-    public ResponseEntity<Void> updatePerson(@Valid @RequestBody PersonRequest updatePersonRequest) {
+    public ResponseEntity<?> updatePerson(@Valid @RequestBody PersonRequest updatePersonRequest) {
 
         final Person person = new Person(updatePersonRequest);
 
@@ -63,15 +98,30 @@ public class PersonController {
 
 
     /**
-     * DELETE http://localhost:8080/person
-     * Supprimer une personne (utilisez une combinaison de prénom et de nom
-     * comme identificateur unique)
-     * @param deletePersonRequest un object Person contenant : firstName, lastName, address, city, zip, phone, email
-     * @return ResponseEntity<>(HttpStatus.OK)
-     * @throws NotFoundException si la personne est introuvable
+     * DELETE /person
+     * Delete a person (use a combination of first and last name as a unique identifier)
+     *
+     * @param deletePersonRequest MedicalRecordRequest validated with :
+     *                            String firstName @NotBlank
+     *                            String lastName @NotBlank
+     *                            String address
+     *                            String city
+     *                            Integer zip @Positive
+     *                            String phone
+     *                            String email @Email
+     * @return ResponseEntity<?> (HttpStatus.OK)
+     * @throws NotFoundException if the person cannot be found
      */
+
+    @Operation(summary = "Delete a Person")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Person successfully deleted", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+    })
+
     @DeleteMapping("/person")
-    public ResponseEntity<Void> deleteFirestation(@Valid @RequestBody PersonRequest deletePersonRequest) {
+    public ResponseEntity<?> deleteFirestation(@Valid @RequestBody PersonRequest deletePersonRequest) {
 
         final Person person = new Person(deletePersonRequest);
 

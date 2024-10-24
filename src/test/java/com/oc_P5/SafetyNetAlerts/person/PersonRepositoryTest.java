@@ -49,7 +49,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode retourne bien les données mock
     void getAll_shouldReturnListOfPerson() {
         // When method is called
         List<Person> personList = personRepository.getAll();
@@ -61,7 +60,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode ajoute correctement une Person
     void savePerson_shouldSave() {
         // Given a new person to be added
         Person person = new Person("firstNameTest3", "lastNameTest3", "addressTest3", "cityTest3", 3, "phoneTest3", "email@Test3");
@@ -84,7 +82,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode met à jour correctement une Person
     void updatePerson_shouldUpdate() {
         // Given a person with updated details
         Person person = new Person("firstNameTest1", "lastNameTest1", "addressTest1_Updated", "cityTest1_Updated", 10, "phoneTest1_updated", "email@Test1_updated");
@@ -104,7 +101,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici que la méthode supprime correctement une Person
     void delete_shouldDelete() {
         // Given a person to be deleted
         Person person = new Person("firstNameTest1", "lastNameTest1", null, null, null, null, null);
@@ -119,7 +115,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par address
     void getByAddress_shouldReturnListOfPersonByAddress() {
         // Given an address to search by
         String address = "addressTest1";
@@ -133,7 +128,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par liste d'addresses
     void getByAddresses_shouldReturnListOfPersonByCollectionAddresses() {
         // Given a collection of addresses to search by
         Collection<String> addresses = new ArrayList<>();
@@ -150,7 +144,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la récupération de la liste des Person par Ville
     void getByCity_shouldReturnListOfPersonByCity() {
         // Given a city to search by
         String city = "cityTest1";
@@ -164,7 +157,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id connue
     void existsById_shouldBeTrueIfIdExists() {
         // Given an existing person ID
         String id = "firstNameTest1-lastNameTest1";
@@ -174,7 +166,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par id inconnue
     void existsById_shouldBeFalseIfIdNotExists() {
         // Given an unknown person ID
         String id = "unknownId";
@@ -184,7 +175,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville connue
     void existsByCity_shouldBeTrueIfCityExists(){
         // Given an existing city
         String city = "cityTest1";
@@ -194,7 +184,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByCity_shouldBeFalseIfCityNotExists(){
         // Given an unknown person ID
         String city = "unknownCityTest1";
@@ -204,7 +193,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la recherche de Person par adresse
     void findByAddress_shouldReturnPersonByAddress() {
         // Given an address to search by
         String address = "addressTest1";
@@ -218,7 +206,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par lastName connu
     void existsByLastName_shouldBeTrueIfLastNameExists(){
         // Given an existing lastName
         String lastName = "lastNameTest1";
@@ -228,7 +215,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier ici le bon fonctionnement de la réponse pour trouver une Person par ville inconnue
     void existsByLastName_shouldBeFalseIfLastNameNotExists(){
         // Given an unknown lastName
         String lastName = "unknownLastNameTest1";
@@ -238,7 +224,6 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    // On va vérifier que la méthode renvoi bien une liste de PersonWithMedicalRecord ainsi que les bons attributs
     void getPersonsWithMedicalRecord_shouldReturnListOfPersonWithMedicalRecord() {
         // Given a list of person IDs and corresponding mock data (persons and medical records)
         List<String> ids = new ArrayList<>();

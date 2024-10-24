@@ -2,6 +2,8 @@ package com.oc_P5.SafetyNetAlerts.person;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oc_P5.SafetyNetAlerts.controller.requests.PersonRequest;
+import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -32,6 +37,9 @@ public class PersonIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PersonRepository repository;
+
     private final String uriPath = "/person";
 
 
@@ -45,6 +53,7 @@ public class PersonIntegrationTest {
 
         // Given an unknown person to add
         final PersonRequest addPersonRequest = new PersonRequest("firstName", "lastName", "address", "city", 1111, "1234-5678-90", "email@email");
+        final Person expectedPerson = new Person(addPersonRequest);
 
         // When the person is post
         ResultActions response = mockMvc.perform(
@@ -55,6 +64,21 @@ public class PersonIntegrationTest {
 
         // Then response isCreated - 201
         response.andExpect(status().isCreated());
+
+        // Then check that Person is added
+        final Optional<Person> savedPerson = repository.findById(expectedPerson.getId());
+        assertThat(savedPerson)
+                .isPresent()
+                .satisfies(person -> {
+                    assertThat(person.get().getFirstName()).isEqualTo(expectedPerson.getFirstName());
+                    assertThat(person.get().getLastName()).isEqualTo(expectedPerson.getLastName());
+                    assertThat(person.get().getAddress()).isEqualTo(expectedPerson.getAddress());
+                    assertThat(person.get().getZip()).isEqualTo(expectedPerson.getZip());
+                    assertThat(person.get().getCity()).isEqualTo(expectedPerson.getCity());
+                    assertThat(person.get().getPhone()).isEqualTo(expectedPerson.getPhone());
+                    assertThat(person.get().getEmail()).isEqualTo(expectedPerson.getEmail());
+                });
+
     }
 
     @Test
@@ -100,6 +124,7 @@ public class PersonIntegrationTest {
 
         // Given a known person to update
         final PersonRequest updatePersonRequest = new PersonRequest("Tessa", "Carman", "address", "city", 1111, "1234-5678-90", "email@email");
+        final Person expectedPerson = new Person(updatePersonRequest);
 
         // When the person is put
         ResultActions response = mockMvc.perform(
@@ -109,6 +134,20 @@ public class PersonIntegrationTest {
 
         // Then response isOk - 200
         response.andExpect(status().isOk());
+
+        // Then check that Person is updated
+        final Optional<Person> updatedPerson = repository.findById(expectedPerson.getId());
+        assertThat(updatedPerson)
+                .isPresent()
+                .satisfies(person -> {
+                    assertThat(person.get().getFirstName()).isEqualTo(expectedPerson.getFirstName());
+                    assertThat(person.get().getLastName()).isEqualTo(expectedPerson.getLastName());
+                    assertThat(person.get().getAddress()).isEqualTo(expectedPerson.getAddress());
+                    assertThat(person.get().getCity()).isEqualTo(expectedPerson.getCity());
+                    assertThat(person.get().getZip()).isEqualTo(expectedPerson.getZip());
+                    assertThat(person.get().getPhone()).isEqualTo(expectedPerson.getPhone());
+                    assertThat(person.get().getEmail()).isEqualTo(expectedPerson.getEmail());
+                });
 
     }
 
@@ -165,6 +204,11 @@ public class PersonIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that Person is deleted
+        final String deletedId = new Person(deletePersonRequest).getId();
+        assertFalse(repository.getAll().stream()
+                .anyMatch(person -> person.getId().equals(deletedId)));
+
     }
 
     @Test
@@ -201,7 +245,7 @@ public class PersonIntegrationTest {
 
 
 
-    // Fournit des valeurs de PersonRequest, y compris null
+    // Returns invalid PersonRequest values
     static Stream<PersonRequest> provideInvalidPersonRequest() {
         final PersonRequest personRequest1 = new PersonRequest("", "", "", "", null, "", "");
         final PersonRequest personRequest2 = new PersonRequest(null, null, null, null, null, null, null);
