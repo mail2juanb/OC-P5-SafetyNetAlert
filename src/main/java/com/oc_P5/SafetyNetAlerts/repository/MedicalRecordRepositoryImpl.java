@@ -34,6 +34,13 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
     }
 
     @Override
+    public boolean existsByLastName(String lastName) {
+        return getAll()
+                .stream()
+                .anyMatch(medicalRecord -> medicalRecord.getLastName().equals(lastName));
+    }
+
+    @Override
     public void save(MedicalRecord addMedicalRecord) {
         List<MedicalRecord> medicalRecordList = getAll();
         medicalRecordList.add(addMedicalRecord);

@@ -147,4 +147,29 @@ public class MedicalRecordRepositoryTest {
         assertFalse(exists);
     }
 
+    @Test
+    void existsByLastName_shouldReturnBooleanWithLastNameExists(){
+        // Given a known lastNAme
+        String lastName = medicalRecordListMock.getFirst().getLastName();
+
+        // When the repository checks if the lastName exists
+        boolean exists = medicalRecordRepository.existsByLastName(lastName);
+
+        // Then verify that the method returns true
+        assertTrue(exists);
+    }
+
+    @Test
+    void existsByLastName_shouldReturnBooleanWithLastNameNotExists(){
+        // Given a non-existing MedicalRecord id
+        String lastName = "lastNameNotExists";
+
+        // When the repository checks if the id exists
+        boolean exists = medicalRecordRepository.existsByLastName(lastName);
+
+        // Then verify that the method returns false
+        assertFalse(exists);
+    }
+
+
 }

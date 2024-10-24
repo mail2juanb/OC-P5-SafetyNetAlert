@@ -13,6 +13,8 @@ public interface MedicalRecordRepository {
 
     boolean existsById(String id);
 
+    boolean existsByLastName(String lastName);
+
     void save(MedicalRecord addMedicalRecord);
 
     void update(MedicalRecord updateMedicalRecord);
