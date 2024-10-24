@@ -8,8 +8,8 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-// mise en forme : String lastName,String address, String phone, int age, List<String>medications, List<String>allergies
 public class PersonInfoLastName {
+
     String lastName;
     String address;
     String phone;

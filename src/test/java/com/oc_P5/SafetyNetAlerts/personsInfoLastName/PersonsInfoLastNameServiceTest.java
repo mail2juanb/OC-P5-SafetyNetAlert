@@ -5,6 +5,7 @@ import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
+import com.oc_P5.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import com.oc_P5.SafetyNetAlerts.service.PersonsInfoLastNameServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class PersonsInfoLastNameServiceTest {
     @Mock
     private PersonRepository personRepository;
 
+    @Mock
+    private MedicalRecordRepository medicalRecordRepository;
+
     @InjectMocks
     private PersonsInfoLastNameServiceImpl personsInfoLastNameService;
 
@@ -44,7 +48,6 @@ public class PersonsInfoLastNameServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode retourne une liste de PersonInfoLastName avec un lastName connu
     void getPersonsInfoLastName_shouldReturnListOfPersonInfoLastName(){
         // Given a known lastName
         String lastName = "lastNameTest1";
@@ -77,6 +80,7 @@ public class PersonsInfoLastNameServiceTest {
         personWithMedicalRecordList.add(personWithMedicalRecord2);
 
         when(personRepository.existsByLastName(lastName)).thenReturn(true);
+        when(medicalRecordRepository.existsByLastName(lastName)).thenReturn(true);
         when(personRepository.getAll()).thenReturn(personList);
         when(personRepository.getPersonsWithMedicalRecord(idsList)).thenReturn(personWithMedicalRecordList);
 
@@ -113,8 +117,7 @@ public class PersonsInfoLastNameServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException avec un lastName inconnu
-    void getPersonsInfoLastName_shouldReturnNotFoundExceptionWithUnknownLastName() {
+    void getPersonsInfoLastName_shouldReturnNotFoundExceptionWithUnknownLastNameInPersonRepository() {
         // Given an unknown lastName
         String lastName = "unknownLastName";
 
@@ -125,6 +128,25 @@ public class PersonsInfoLastNameServiceTest {
         assertThat(thrown.getMessage()).contains(lastName);
 
         verify(personRepository, times(1)).existsByLastName(anyString());
+        verify(medicalRecordRepository, never()).existsByLastName(anyString());
+        verify(personRepository, never()).getAll();
+        verify(personRepository, never()).getPersonsWithMedicalRecord(anyList());
+    }
+
+    @Test
+    void getPersonsInfoLastName_shouldReturnNotFoundExceptionWithUnknownLastNameInMedicalRecordRepository() {
+        // Given an unknown lastName
+        String lastName = "unknownLastName";
+
+        when(personRepository.existsByLastName(lastName)).thenReturn(true);
+        when(medicalRecordRepository.existsByLastName(lastName)).thenReturn(false);
+
+        // When / Then method throws a NotFoundException with a message containing the lastName
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> personsInfoLastNameService.getPersonsInfoLastName(lastName));
+        assertThat(thrown.getMessage()).contains(lastName);
+
+        verify(personRepository, times(1)).existsByLastName(anyString());
+        verify(medicalRecordRepository, times(1)).existsByLastName(anyString());
         verify(personRepository, never()).getAll();
         verify(personRepository, never()).getPersonsWithMedicalRecord(anyList());
     }

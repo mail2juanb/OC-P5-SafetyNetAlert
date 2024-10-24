@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,6 +55,10 @@ public class PersonsInfoLastNameIntegrationTest {
 
         // Then response isOk - 200
         response.andExpect(status().isOk());
+
+        // Then check that datas in response are correct
+        final String expectedStringResponse = "[{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7878\",\"age\":36,\"medications\":[\"aznol:60mg\",\"hydrapermazol:900mg\",\"pharmacol:5000mg\",\"terazine:500mg\"],\"allergies\":[\"peanut\",\"shellfish\",\"aznol\"]},{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7512\",\"age\":39,\"medications\":[],\"allergies\":[]},{\"lastName\":\"Zemicks\",\"address\":\"892 Downing Ct\",\"phone\":\"841-874-7512\",\"age\":7,\"medications\":[],\"allergies\":[]}]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedStringResponse);
 
     }
 
