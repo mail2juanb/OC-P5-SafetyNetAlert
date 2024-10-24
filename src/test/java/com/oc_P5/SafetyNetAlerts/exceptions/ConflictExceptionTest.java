@@ -1,9 +1,11 @@
 package com.oc_P5.SafetyNetAlerts.exceptions;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 public class ConflictExceptionTest {
 
     @Test

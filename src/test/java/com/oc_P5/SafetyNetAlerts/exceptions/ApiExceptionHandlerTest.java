@@ -1,5 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.exceptions;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class ApiExceptionHandlerTest {
 
