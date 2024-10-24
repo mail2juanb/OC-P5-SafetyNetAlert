@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext
 public class PhoneAlertIntegrationTest {
 
     @Autowired
@@ -54,6 +57,9 @@ public class PhoneAlertIntegrationTest {
         // Then response isOk - 200
         response.andExpect(status().isOk());
 
+        // Then check that datas in response are correct
+        final String expectedStringList = "[\"841-874-6513\",\"841-874-7878\",\"841-874-7512\",\"841-874-7458\"]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedStringList);
     }
 
 

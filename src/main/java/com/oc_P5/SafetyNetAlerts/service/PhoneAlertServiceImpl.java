@@ -30,11 +30,21 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
                 .map(Firestation::getAddress)
                 .toList();
 
+        List<String> addressesNotFound = firestationsAddresses
+                .stream()
+                .filter(address -> personRepository.getByAddress(address).isEmpty())
+                .toList();
+
+        if(!addressesNotFound.isEmpty()) {
+            throw new NotFoundException("Addresses covered by station : " + stationNumber + ", are not found with addresses : " + addressesNotFound);
+        }
+
         List<Person> personsByAddress = personRepository.getByAddresses(firestationsAddresses);
 
         return personsByAddress
                 .stream()
                 .map(Person::getPhone)
+                .distinct()
                 .toList();
     }
 

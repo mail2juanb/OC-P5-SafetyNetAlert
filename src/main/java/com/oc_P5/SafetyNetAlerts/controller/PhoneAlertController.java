@@ -24,13 +24,13 @@ public class PhoneAlertController {
 
 
     /**
-     * GET http://localhost:8080/phoneAlert?firestation=<firestation_number>
-     * Cette url doit retourner une liste des numéros de téléphone des résidents desservis
-     * par la caserne de pompiers. Nous l'utiliserons pour envoyer des messages texte
-     * d'urgence à des foyers spécifiques.
-     * @param firestation_number numéro de la Station
-     * @return Liste de numéros de téléphone
-     * @throws NotFoundException si le numéro de station est introuvable
+     * GET /phoneAlert?firestation
+     * This url should return a list of telephone numbers of residents served by the fire station.
+     * We'll use it to send emergency text messages to specific households.
+     *
+     * @param firestation_number Integer firestation_number validated with @NotNull @Positive
+     * @return ResponseEntity<List<String>> (HttpStatus.OK)
+     * @throws NotFoundException if the station number cannot be found Or if firestation address doesn't exist in PersonRepository
      */
     @GetMapping("/phoneAlert")
     public ResponseEntity<List<String>> getPhonesByStationNumber(

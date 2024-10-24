@@ -39,7 +39,6 @@ public class PhoneAlertServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode renvoi une liste de phones avec une station valide
     void getPhonesByStation_shouldReturnListOfStringPhonesWithKnownStation() {
         // Given a station
         Integer firestation_number = 1;
@@ -64,18 +63,20 @@ public class PhoneAlertServiceTest {
 
         when(firestationRepository.existsByStation(firestation_number)).thenReturn(true);
         when(firestationRepository.getByStation(firestation_number)).thenReturn(firestationList);
+        when(personRepository.getByAddress(anyString())).thenReturn(personList);
         when(personRepository.getByAddresses(addresses)).thenReturn(personList);
 
         // When call method on service
         List<String> phones = phoneAlertService.getPhonesByStation(firestation_number);
 
         // Then verify that the object returned contains expected values
-        assertEquals(4, phones.size());
+        assertEquals(3, phones.size());
         assertTrue(phones.contains(person1.getPhone()));
         assertTrue(phones.contains(person2.getPhone()));
 
         verify(firestationRepository, times(1)).existsByStation(firestation_number);
         verify(firestationRepository, times(1)).getByStation(firestation_number);
+        verify(personRepository, times(1)).getByAddress(anyString());
         verify(personRepository, times(1)).getByAddresses(addresses);
 
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -90,7 +91,6 @@ public class PhoneAlertServiceTest {
 
 
     @Test
-    // On va vérifier ici que la méthode lève une NotFoundException lorsque le stationNumber est inconnue
     void getPhonesByStation_shouldReturnNotFoundExceptionWithUnknownStation() {
         // Given an unknown firestation_number
         Integer firestation_Number = 99;
@@ -101,6 +101,32 @@ public class PhoneAlertServiceTest {
 
         verify(firestationRepository, times(1)).existsByStation(firestation_Number);
         verify(firestationRepository, never()).getByStation(firestation_Number);
+        verify(personRepository, never()).getByAddresses(anyList());
+    }
+
+
+    @Test
+    void getPhonesByStation_shouldReturnNotFoundExceptionWithNoPersonsCoveredByStation() {
+        // Given a firestation with known station
+        Firestation firestation = new Firestation("unknownAddress", 3);
+        Integer firestation_Number = firestation.getStation();
+
+        // Given firestation list
+        List<Firestation> firestationList = new ArrayList<>();
+        firestationList.add(firestation);
+
+
+        when(firestationRepository.existsByStation(firestation_Number)).thenReturn(true);
+        when(firestationRepository.getByStation(firestation_Number)).thenReturn(firestationList);
+
+
+        // When / Then a NotFoundException is thrown
+        NotFoundException thrown = assertThrows(NotFoundException.class, () -> phoneAlertService.getPhonesByStation(firestation_Number));
+        assertThat(thrown.getMessage()).contains(firestation_Number.toString()).contains(firestation.getAddress());
+
+        verify(firestationRepository, times(1)).existsByStation(firestation_Number);
+        verify(firestationRepository, times(1)).getByStation(firestation_Number);
+        verify(personRepository, times(1)).getByAddress(firestation.getAddress());
         verify(personRepository, never()).getByAddresses(anyList());
     }
 
