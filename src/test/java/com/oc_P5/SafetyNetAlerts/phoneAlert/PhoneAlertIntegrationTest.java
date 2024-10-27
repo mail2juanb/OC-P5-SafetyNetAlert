@@ -50,7 +50,7 @@ public class PhoneAlertIntegrationTest {
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("firestation_number", String.valueOf(stationNumber))
+                .param("stationNumber", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200
@@ -70,7 +70,7 @@ public class PhoneAlertIntegrationTest {
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("firestation_number", String.valueOf(stationNumber))
+                .param("stationNumber", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200

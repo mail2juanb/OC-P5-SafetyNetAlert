@@ -30,21 +30,20 @@ public class PhoneAlertControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est déclenchée ainsi que les arguments envoyés
     void getPhonesByStationNumber_shouldReturnListOfString() {
-        // Given a firestation_number
-        final Integer firestation_number = 1;
+        // Given a stationNumber
+        final Integer stationNumber = 1;
 
         // When method is called
-        ResponseEntity<List<String>> phonesByStationNumber = phoneAlertController.getPhonesByStationNumber(firestation_number);
+        ResponseEntity<List<String>> phonesByStationNumber = phoneAlertController.getPhonesByStationNumber(stationNumber);
 
         // Then station is sent to service and check HttpStatus.OK
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(phoneAlertService).getPhonesByStation(stationArgumentCaptor.capture());
-        assertThat(stationArgumentCaptor.getValue()).isEqualTo(firestation_number);
+        assertThat(stationArgumentCaptor.getValue()).isEqualTo(stationNumber);
 
         assertEquals(HttpStatus.OK, phonesByStationNumber.getStatusCode());
-        verify(phoneAlertService, times(1)).getPhonesByStation(firestation_number);
+        verify(phoneAlertService, times(1)).getPhonesByStation(stationNumber);
     }
 
 }

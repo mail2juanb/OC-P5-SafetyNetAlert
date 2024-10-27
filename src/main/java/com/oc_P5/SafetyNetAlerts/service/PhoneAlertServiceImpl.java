@@ -1,6 +1,5 @@
 package com.oc_P5.SafetyNetAlerts.service;
 
-import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
@@ -21,23 +20,11 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
 
     @Override
     public List<String> getPhonesByStation(Integer stationNumber) {
-        if(!firestationRepository.existsByStation(stationNumber)) {
-            throw new NotFoundException("station " + stationNumber + " does not exists");
-        }
 
         List<String> firestationsAddresses = firestationRepository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .toList();
-
-        List<String> addressesNotFound = firestationsAddresses
-                .stream()
-                .filter(address -> personRepository.getByAddress(address).isEmpty())
-                .toList();
-
-        if(!addressesNotFound.isEmpty()) {
-            throw new NotFoundException("Addresses covered by station : " + stationNumber + ", are not found with addresses : " + addressesNotFound);
-        }
 
         List<Person> personsByAddress = personRepository.getByAddresses(firestationsAddresses);
 
