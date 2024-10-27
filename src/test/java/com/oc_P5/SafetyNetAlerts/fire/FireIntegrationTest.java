@@ -40,12 +40,11 @@ public class FireIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Persons successfully retrieved
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
-    void getFirePersonsByAddress_shouldReturnHttpStatus200() throws Exception {
+    void getFirePersonsByAddress_shouldReturnHttpStatus200WithKnownAddress() throws Exception {
 
-        // Given an address
+        // Given a known address
         final String address = "112 Steppes Pl";
 
         // When method called
@@ -64,18 +63,22 @@ public class FireIntegrationTest {
 
 
     @Test
-    void getFirePersonsByAddress_shouldReturnHttpStatus404() throws Exception {
+    void getFirePersonsByAddress_shouldReturnHttpStatus200WithUnknownAddress() throws Exception {
 
         // Given an unknown address
-        final String address = "unknown address";
+        final String address = "unknownAddress";
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
                 .param("address", address)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
+        // Then response isOK - 200
+        response.andExpect(status().isOk());
+
+        // Then check datas in the response
+        String expectedResponse = "{\"firePersonByAdressList\":[],\"address\":\"unknownAddress\",\"stationNumber\":null}";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
 
     }
 

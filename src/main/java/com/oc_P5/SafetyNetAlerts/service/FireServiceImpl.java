@@ -2,7 +2,6 @@ package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonByAddress;
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
-import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.*;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
@@ -24,21 +23,12 @@ public class FireServiceImpl implements FireService {
 
     @Override
     public FirePersonsResponse getFirePersonsByAddress(String address) {
-        if(!firestationRepository.existsByAddress(address)) {
-            throw new NotFoundException("There is no Firestation at this address = " + address);
-        }
 
-        Optional<Person> personOptional = personRepository.findByAddress(address);
-        if (personOptional.isEmpty()) {
-            throw new NotFoundException("There is no Person at this address = " + address);
-        }
-
-        Integer stationNumber = firestationRepository.getAll()
+        Optional<Integer> stationNumber = firestationRepository.getAll()
                 .stream()
                 .filter(firestation -> firestation.getAddress().equals(address))
                 .map(Firestation::getStation)
-                .findFirst()
-                .orElseThrow();
+                .findFirst();
 
         List<Person> personsByAddress = personRepository.getByAddress(address);
 

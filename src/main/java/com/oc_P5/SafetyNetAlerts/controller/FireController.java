@@ -2,8 +2,6 @@ package com.oc_P5.SafetyNetAlerts.controller;
 
 
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
-import com.oc_P5.SafetyNetAlerts.dto.PersonsByStation;
-import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.service.FireServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,10 +32,10 @@ public class FireController {
      * This url must return the list of inhabitants living at the given address, as well as the
      * number of the firestation serving it. The list must include name, telephone
      * phone number, age and medical history (medication, dosage and allergies) of each allergies).
+     * If no address is found in our file, the application will simply return an empty JSON object.
      *
      * @param address String validated with @NotBlank
      * @return ResponseEntity<FirePersonsResponse> (HttpStatus.OK)
-     * @throws NotFoundException If the address does not correspond to any firestation or Person
      */
 
     @Operation(summary = "List of inhabitants living there")
@@ -45,8 +43,7 @@ public class FireController {
             @ApiResponse(responseCode = "200", description = "List successfully retrieved",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = FirePersonsResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @GetMapping("/fire")

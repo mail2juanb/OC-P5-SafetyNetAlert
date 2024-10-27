@@ -1,7 +1,6 @@
 package com.oc_P5.SafetyNetAlerts.fire;
 
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
-import com.oc_P5.SafetyNetAlerts.exceptions.NotFoundException;
 import com.oc_P5.SafetyNetAlerts.model.Firestation;
 import com.oc_P5.SafetyNetAlerts.model.MedicalRecord;
 import com.oc_P5.SafetyNetAlerts.model.Person;
@@ -50,6 +49,7 @@ public class FireServiceTest {
 
     @BeforeEach
     public void SetUp(){
+
         // Person Test data creation
         Person person1 = new Person("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 1, "phoneTest1", "emailTest1");
         Person person2 = new Person("firstNameTest2", "lastNameTest2", "addressTest1", "cityTest1", 1, "phoneTest2", "emailTest2");
@@ -88,19 +88,19 @@ public class FireServiceTest {
         personWithMedicalRecordListMock = new ArrayList<>();
         personWithMedicalRecordListMock.add(person1WithMedicalRecord);
         personWithMedicalRecordListMock.add(person2WithMedicalRecord);
+
     }
 
 
     @Test
     void getFirePersonsByAddress_shouldReturnFirePersonsByAddressWithKnownAddress() {
+
         // Given a known address with associated persons and firestation
         String address = "addressTest1";
         List<String> personIds = new ArrayList<>();
         personIds.add(personListMock.get(0).getId());
         personIds.add(personListMock.get(1).getId());
 
-        when(firestationRepository.existsByAddress(address)).thenReturn(true);
-        when(personRepository.findByAddress(address)).thenReturn(Optional.of(personListMock.getFirst()));
         when(firestationRepository.getAll()).thenReturn(firestationListMock);
         when(personRepository.getByAddress(address)).thenReturn(personListMock);
         when(personRepository.getPersonsWithMedicalRecord(personIds)).thenReturn(personWithMedicalRecordListMock);
@@ -114,7 +114,7 @@ public class FireServiceTest {
         verify(personRepository, times(1)).getPersonsWithMedicalRecord(personIds);
 
         assertEquals(address, response.getAddress());
-        assertEquals(1, response.getStationNumber());
+        assertEquals(Optional.of(1), response.getStationNumber());
         assertEquals(2, response.getFirePersonByAdressList().size());
         assertEquals("lastNameTest1", response.getFirePersonByAdressList().get(0).getLastName());
         assertEquals("lastNameTest2", response.getFirePersonByAdressList().get(1).getLastName());
@@ -126,42 +126,36 @@ public class FireServiceTest {
         verify(personRepository).getPersonsWithMedicalRecord(personIdsArgumentCaptor.capture());
         List<String> sentPersonIds = personIdsArgumentCaptor.getValue();
         assertThat(sentPersonIds).isEqualTo(personIds);
+
     }
 
 
     @Test
-    void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForFirestationList() {
+    void getFirePersonsByAddress_shouldReturnEmptyListWithUnknownAddress() {
+
         // Given an unknown address
         String address = "unknownAddressTest1";
 
-        when(firestationRepository.existsByAddress(address)).thenReturn(false);
+        when(firestationRepository.getAll()).thenReturn(firestationListMock);
+        when(personRepository.getByAddress(address)).thenReturn(Collections.emptyList());
+        when(personRepository.getPersonsWithMedicalRecord(Collections.emptyList())).thenReturn(Collections.emptyList());
 
-        // When / Then method throws a NotFoundException with a message containing the address
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> fireService.getFirePersonsByAddress(address));
-        assertThat(thrown.getMessage()).contains(address);
+        // When method is called
+        FirePersonsResponse response = fireService.getFirePersonsByAddress(address);
 
-        verify(firestationRepository, times(1)).existsByAddress(address);
-        verify(firestationRepository, never()).getAll();
-        verify(personRepository, never()).getByAddress(address);
-        verify(personRepository, never()).getPersonsWithMedicalRecord(anyList());
-    }
+        // Then repository methods are called correctly, and response contains the expected data
+        verify(firestationRepository, times(1)).getAll();
+        verify(personRepository, times(1)).getByAddress(address);
+        verify(personRepository, times(1)).getPersonsWithMedicalRecord(Collections.emptyList());
 
-    @Test
-    void getFirePersonsByAddress_shouldThrowNotFoundExceptionWithUnknownAddressForPersonList() {
-        // Given an unknown address
-        String address = "unknownAddressTest1";
+        assertEquals(address, response.getAddress());
+        assertTrue(response.getStationNumber().isEmpty());
+        assertTrue(response.getFirePersonByAdressList().isEmpty());
 
-        when(firestationRepository.existsByAddress(address)).thenReturn(true);
-        when(personRepository.findByAddress(address)).thenReturn(Optional.empty());
+        verify(personRepository).getPersonsWithMedicalRecord(personIdsArgumentCaptor.capture());
+        List<String> sentPersonIds = personIdsArgumentCaptor.getValue();
+        assertThat(sentPersonIds).isEmpty();
 
-        // When / Then method throws a NotFoundException with a message containing the address
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> fireService.getFirePersonsByAddress(address));
-        assertThat(thrown.getMessage()).contains(address);
-
-        verify(personRepository, times(1)).findByAddress(address);
-        verify(firestationRepository, never()).getAll();
-        verify(personRepository, never()).getByAddress(address);
-        verify(personRepository, never()).getPersonsWithMedicalRecord(anyList());
     }
 
 }
