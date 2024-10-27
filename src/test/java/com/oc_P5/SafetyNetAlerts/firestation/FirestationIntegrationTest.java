@@ -52,17 +52,16 @@ public class FirestationIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Persons successfully retrieved
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
-    void getPersonsByStation_shouldReturnHttpStatus200() throws Exception {
+    void getPersonsByStation_shouldReturnHttpStatus200WithKnownStation() throws Exception {
 
-        // Given a station
-        final Integer station_number = 4;
+        // Given a stationNumber
+        final Integer stationNumber = 4;
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("station_number", String.valueOf(station_number))
+                .param("stationNumber", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200
@@ -70,7 +69,7 @@ public class FirestationIntegrationTest {
 
         // Then check that all addresses are present in the response
         String strResponse = response.andReturn().getResponse().getContentAsString();
-        final List<String> stationAddressList = repository.getByStation(station_number)
+        final List<String> stationAddressList = repository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .toList();
@@ -81,19 +80,22 @@ public class FirestationIntegrationTest {
     }
 
     @Test
-    void getPersonsByStation_shouldReturnHttpStatus404() throws Exception {
+    void getPersonsByStation_shouldReturnHttpStatus200WithUnknownStation() throws Exception {
 
-        // Given a station
-        final Integer station_number = 10;
+        // Given a stationNumber
+        final Integer stationNumber = 444;
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("station_number", String.valueOf(station_number))
+                .param("stationNumber", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
+        // Then response isOk - 200
+        response.andExpect(status().isOk());
 
+        // Then check datas in the response
+        String expectedResponse = "{\"persons\":[],\"nbrOfMinors\":0,\"nbrOfMajors\":0}";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
     }
 
 
@@ -182,6 +184,7 @@ public class FirestationIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully updated
     //          response 400 ---> Invalid request: missing or incorrect parameters
+    // FIXME: On lève l'exception ou pas ?
     //          response 404 ---> Unable to find resources related to the request
 
     @Test
@@ -210,7 +213,7 @@ public class FirestationIntegrationTest {
                 });
     }
 
-
+// FIXME: On lève l'exception ou pas ?
     @Test
     void updateFirestation_shouldReturnHttpStatus404() throws Exception {
 

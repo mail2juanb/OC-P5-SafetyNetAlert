@@ -29,13 +29,8 @@ public class FirestationServiceImpl implements FirestationService {
 
 
     @Override
-    public PersonsByStation getPersonsByStation(Integer station_number) {
-
-        if(!firestationRepository.existsByStation(station_number)) {
-            throw new NotFoundException("station_number doesn't exist with station_number = " + station_number);
-        }
-
-        Set<String> stationAddresses = firestationRepository.getByStation(station_number)
+    public PersonsByStation getPersonsByStation(Integer stationNumber) {
+        Set<String> stationAddresses = firestationRepository.getByStation(stationNumber)
                 .stream()
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
@@ -58,6 +53,7 @@ public class FirestationServiceImpl implements FirestationService {
 
     @Override
     public void updateFirestation(Firestation firestation) {
+// FIXME: On lève l'exception ou pas ?
         if(!firestationRepository.existsByAddress(firestation.getAddress())) {
             throw new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress());
         }

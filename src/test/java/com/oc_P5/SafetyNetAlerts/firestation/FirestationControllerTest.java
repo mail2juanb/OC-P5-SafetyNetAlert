@@ -36,8 +36,8 @@ public class FirestationControllerTest {
 
     @Test
     void getPersonsByStation_shouldReturnPersonsByStation() {
-        // Given a station_number
-        final Integer station_number = 1;
+        // Given a stationNumber
+        final Integer stationNumber = 1;
 
         // Given a list of Person
         final Person person = new Person("firstName", "lastName", "address", "city", 1111, "phone", "email");
@@ -50,15 +50,15 @@ public class FirestationControllerTest {
         // Given a PersonsByStation
         final PersonsByStation personsByStation = new PersonsByStation(personList, nbrOfMinors);
 
-        when(firestationService.getPersonsByStation(station_number)).thenReturn(personsByStation);
+        when(firestationService.getPersonsByStation(stationNumber)).thenReturn(personsByStation);
 
         // When method is called
-        ResponseEntity<PersonsByStation> result = firestationController.getPersonsByStation(station_number);
+        ResponseEntity<PersonsByStation> result = firestationController.getPersonsByStation(stationNumber);
 
         // Then station is sent to service and check HttpStatus.OK
         ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(firestationService).getPersonsByStation(stationArgumentCaptor.capture());
-        assertThat(stationArgumentCaptor.getValue()).isEqualTo(station_number);
+        assertThat(stationArgumentCaptor.getValue()).isEqualTo(stationNumber);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }

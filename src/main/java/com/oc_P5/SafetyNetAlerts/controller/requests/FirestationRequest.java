@@ -12,6 +12,6 @@ public class FirestationRequest {
     String address;
 
     @NotNull(message = "station shouldn't be null")
-    @Positive(message = "station_number must be positive")
-    Integer station_number;
+    @Positive(message = "stationNumber must be positive")
+    Integer stationNumber;
 }

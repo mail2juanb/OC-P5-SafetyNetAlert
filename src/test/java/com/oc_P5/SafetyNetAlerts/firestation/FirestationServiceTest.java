@@ -84,9 +84,9 @@ public class FirestationServiceTest {
 
 
     @Test
-    void getPersonsByStation_shouldReturnPersonsByStation() {
-        // Given a station_number
-        final Integer station_number = 1;
+    void getPersonsByStation_shouldReturnPersonsByStationWithKnownStation() {
+        // Given a stationNumber
+        final Integer stationNumber = 1;
 
         // Given a list of Firestations
         final List<Firestation> firestationList = new ArrayList<>();
@@ -101,14 +101,13 @@ public class FirestationServiceTest {
         personsListMock.add(personListMock.get(0));
         personsListMock.add(personListMock.get(1));
 
-        when(firestationRepository.existsByStation(station_number)).thenReturn(true);
-        when(firestationRepository.getByStation(station_number)).thenReturn(firestationList);
+        when(firestationRepository.getByStation(stationNumber)).thenReturn(firestationList);
         when(personRepository.getByAddresses(stationAddresses)).thenReturn(personsListMock);
         when(medicalRecordRepository.findById(personsListMock.get(0).getId())).thenReturn(Optional.of(medicalRecordMock.get(0)));
         when(medicalRecordRepository.findById(personsListMock.get(1).getId())).thenReturn(Optional.of(medicalRecordMock.get(1)));
 
         // When call method on service
-        PersonsByStation result = firestationService.getPersonsByStation(station_number);
+        PersonsByStation result = firestationService.getPersonsByStation(stationNumber);
 
         // Then verify that the object returned contains expected values
         assertEquals(2, result.getPersons().size());
@@ -129,8 +128,7 @@ public class FirestationServiceTest {
                         personsListMock.get(1).getAddress(),
                         personsListMock.get(1).getPhone()));
 
-        verify(firestationRepository, times(1)).existsByStation(station_number);
-        verify(firestationRepository, times(1)).getByStation(station_number);
+        verify(firestationRepository, times(1)).getByStation(stationNumber);
         verify(personRepository, times(1)).getByAddresses(anyCollection());
         verify(medicalRecordRepository, times(2)).findById(anyString());
 
@@ -139,23 +137,34 @@ public class FirestationServiceTest {
         Integer capturedStation = stationArgumentCaptor.getValue();
         assertThat(capturedStation)
                 .isNotNull()
-                .isEqualTo(station_number);
+                .isEqualTo(stationNumber);
     }
 
 
     @Test
-    void getPersonsByStation_shouldThrowNotFoundExceptionWhenStationNotExist() {
-        // Given an unknown station
-        final Integer station_number = 99;
+    void getPersonsByStation_shouldReturnEmptyListWithUnknownStation() {
+        // Given a stationNumber
+        final Integer stationNumber = 48;
 
-        // When / Then a NotFoundException is thrown
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.getPersonsByStation(station_number));
-        assertThat(thrown.getMessage()).contains(station_number.toString());
+        when(firestationRepository.getByStation(stationNumber)).thenReturn(Collections.emptyList());
 
-        verify(firestationRepository, times(1)).existsByStation(station_number);
-        verify(firestationRepository, never()).getByStation(station_number);
-        verify(personRepository, never()).getByAddresses(anyCollection());
-        verify(medicalRecordRepository, never()).existsById(anyString());
+        // When call method on service
+        PersonsByStation result = firestationService.getPersonsByStation(stationNumber);
+
+        // Then verify that the object returned contains expected values
+        assertTrue(result.getPersons().isEmpty());
+        assertEquals(0, result.getNbrOfMinors());
+        assertEquals(0, result.nbrOfMajors());
+
+        verify(firestationRepository, times(1)).getByStation(stationNumber);
+        verify(personRepository, times(1)).getByAddresses(anyCollection());
+
+        ArgumentCaptor<Integer> stationArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(firestationRepository).getByStation(stationArgumentCaptor.capture());
+        Integer capturedStation = stationArgumentCaptor.getValue();
+        assertThat(capturedStation)
+                .isNotNull()
+                .isEqualTo(stationNumber);
     }
 
 

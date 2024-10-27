@@ -38,10 +38,10 @@ public class FirestationController {
      * The list must include the following specific information: first name, last name, address, telephone number.
      * In addition, it must provide a count of the number of adults and children number of children
      * (any individual aged 18 or under) in the area served.
+     * If no address is found in our file, the application will simply return an empty JSON object.
      *
-     * @param station_number Firestation number (Integer validated with @NotNull and @Positive)
+     * @param stationNumber Firestation number (Integer validated with @NotNull and @Positive)
      * @return ResponseEntity<PersonsByStation> (HttpStatus.OK)
-     * @throws NotFoundException if the station number cannot be found
      */
 
     @Operation(summary = "Retrieve persons covered by a Firestation")
@@ -49,18 +49,17 @@ public class FirestationController {
             @ApiResponse(responseCode = "200", description = "Persons successfully retrieved",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = PersonsByStation.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @GetMapping("/firestation")
     public ResponseEntity<PersonsByStation> getPersonsByStation(
-            @Valid @RequestParam("station_number")
-            @NotNull(message = "station_number cannot be null")
-            @Positive(message = "station_number must be positive")
-            Integer station_number) {
+            @Valid @RequestParam("stationNumber")
+            @NotNull(message = "stationNumber cannot be null")
+            @Positive(message = "stationNumber must be positive")
+            Integer stationNumber) {
 
-        PersonsByStation personsByStation = firestationService.getPersonsByStation(station_number);
+        PersonsByStation personsByStation = firestationService.getPersonsByStation(stationNumber);
 
         return new ResponseEntity<>(personsByStation, HttpStatus.OK);
     }
@@ -70,11 +69,13 @@ public class FirestationController {
     /**
      * PUT /firestation
      * Update an address's firestation number
+     * If no address is found in our file, the application will simply return an empty JSON object.
      *
      * @param updateFirestationRequest FirestationRequest validated with :
      *                                 String address @NotBlank,
-     *                                 Integer station_number @NotNull @Positive
+     *                                 Integer stationNumber @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
+     * // FIXME : Que faire, on lève une exception ou on renvoi statusOK ?
      * @throws NotFoundException if firestation doesn't exist
      *
      */
@@ -89,7 +90,7 @@ public class FirestationController {
     @PutMapping("/firestation")
     public ResponseEntity<?> updateFirestation(@Valid @RequestBody FirestationRequest updateFirestationRequest) {
 
-        final Firestation firestation = new Firestation(updateFirestationRequest.getAddress(), updateFirestationRequest.getStation_number());
+        final Firestation firestation = new Firestation(updateFirestationRequest.getAddress(), updateFirestationRequest.getStationNumber());
 
         firestationService.updateFirestation(firestation);
 
@@ -119,7 +120,7 @@ public class FirestationController {
     @PostMapping("/firestation")
     public ResponseEntity<?> addFirestation(@Valid @RequestBody FirestationRequest addFirestationRequest) {
 
-        final Firestation firestation = new Firestation(addFirestationRequest.getAddress(), addFirestationRequest.getStation_number());
+        final Firestation firestation = new Firestation(addFirestationRequest.getAddress(), addFirestationRequest.getStationNumber());
 
         firestationService.addFirestation(firestation);
 

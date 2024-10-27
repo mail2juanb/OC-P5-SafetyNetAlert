@@ -14,7 +14,7 @@ public class Firestation {
 
     public Firestation(FirestationRequest request) {
         this.address = request.getAddress();
-        this.station = request.getStation_number();
+        this.station = request.getStationNumber();
     }
 
 }
