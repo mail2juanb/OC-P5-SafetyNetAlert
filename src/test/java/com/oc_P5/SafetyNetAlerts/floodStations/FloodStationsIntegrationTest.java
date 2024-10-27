@@ -47,7 +47,7 @@ public class FloodStationsIntegrationTest {
     //          response 400 ---> Invalid request: missing or incorrect parameters
 
     @Test
-    void getMembersByStation_shouldReturnHttpStatus200() throws Exception {
+    void getMembersByStation_shouldReturnHttpStatus200WithKnownStations() throws Exception {
 
         // Given a list of station
         final List<Integer> station_Numbers = new ArrayList<>();
@@ -76,6 +76,31 @@ public class FloodStationsIntegrationTest {
                 "{\"lastName\":\"Stelzer\",\"address\":\"947 E. Rose Dr\",\"phone\":\"841-874-7784\",\"age\":44,\"medications\":[],\"allergies\":[]}," +
                 "{\"lastName\":\"Stelzer\",\"address\":\"947 E. Rose Dr\",\"phone\":\"841-874-7784\",\"age\":10,\"medications\":[\"noxidian:100mg\",\"pharmacol:2500mg\"],\"allergies\":[]}," +
                 "{\"lastName\":\"Cadigan\",\"address\":\"951 LoneTree Rd\",\"phone\":\"841-874-7458\",\"age\":79,\"medications\":[\"tradoxidine:400mg\"],\"allergies\":[]}]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
+
+    }
+
+
+    @Test
+    void getMembersByStation_shouldReturnHttpStatus200WithUnknownStations() throws Exception {
+
+        // Given a list of station
+        final List<Integer> station_Numbers = new ArrayList<>();
+        station_Numbers.add(44);
+        station_Numbers.add(52);
+
+        // When method called
+        ResultActions response = mockMvc.perform(get(uriPath)
+                .param("station_Numbers", station_Numbers.stream()
+                        .map(String::valueOf) // Convert each Integer to String
+                        .toArray(String[]::new)) // Convert to array of string
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Then response isOk - 200
+        response.andExpect(status().isOk());
+
+        // Then check datas in response
+        String expectedResponse = "[]";
         assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedResponse);
 
     }
