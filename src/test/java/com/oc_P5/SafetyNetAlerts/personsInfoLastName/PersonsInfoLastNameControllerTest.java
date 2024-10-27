@@ -31,7 +31,6 @@ public class PersonsInfoLastNameControllerTest {
 
 
     @Test
-    // On va vérifier ici que la méthode du service est bien appelée ainsi que les bons arguments
     void getPersonsInfoLastName_shouldReturnListOfPersonInfoLastName() {
         // Given a lastName
         final String lastName = "lastNameTest1";

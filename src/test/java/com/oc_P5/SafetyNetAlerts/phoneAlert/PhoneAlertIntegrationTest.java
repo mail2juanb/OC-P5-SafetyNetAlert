@@ -41,17 +41,16 @@ public class PhoneAlertIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Phones successfully retrieved
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
-    void getPhonesByStationNumber_shouldReturnHttpStatus200() throws Exception {
+    void getPhonesByStationNumber_shouldReturnHttpStatus200WithKnownStation() throws Exception {
 
-        // Given a firestation_number
-        final Integer firestation_number = 2;
+        // Given a known stationNumber
+        final Integer stationNumber = 2;
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("firestation_number", String.valueOf(firestation_number))
+                .param("firestation_number", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200
@@ -64,19 +63,22 @@ public class PhoneAlertIntegrationTest {
 
 
     @Test
-    void getPhonesByStationNumber_shouldReturnHttpStatus404() throws Exception {
+    void getPhonesByStationNumber_shouldReturnHttpStatus200WithUnknownStation() throws Exception {
 
-        // Given a firestation_number
-        final Integer firestation_number = 89;
+        // Given an unknown stationNumber
+        final Integer stationNumber = 22;
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("firestation_number", String.valueOf(firestation_number))
+                .param("firestation_number", String.valueOf(stationNumber))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
+        // Then response isOk - 200
+        response.andExpect(status().isOk());
 
+        // Then check that datas in response are correct
+        final String expectedStringList = "[]";
+        assertThat(response.andReturn().getResponse().getContentAsString()).isEqualTo(expectedStringList);
     }
 
 
