@@ -1,6 +1,5 @@
-package com.oc_P5.SafetyNetAlerts.config;
+package com.oc_P5.SafetyNetAlerts.interceptor;
 
-import com.oc_P5.SafetyNetAlerts.interceptor.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Enregistre l'intercepteur pour toutes les requêtes
+        // Registers interceptor for all requests
         registry.addInterceptor(requestInterceptor);
     }
 }
