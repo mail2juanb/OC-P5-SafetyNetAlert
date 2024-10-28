@@ -162,7 +162,7 @@ public class FirestationController {
      * DELETE /firestation/station?station_number
      * Delete firestation(s) associated with specified station_number.
      *
-     * @param station_number station number validated with Integer station_number @NotNull @Positive
+     * @param stationNumber station number validated with Integer station_number @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
      * @throws NotFoundException if no firestation founded for specified station_number
      */
@@ -176,12 +176,12 @@ public class FirestationController {
 
     @DeleteMapping("/firestation/station")
     public ResponseEntity<?> deleteFirestationByStation(
-            @Valid @RequestParam ("station_number")
-            @NotNull(message = "station_number cannot be null")
-            @Positive(message = "station_number must be positive")
-            Integer station_number) {
+            @Valid @RequestParam ("stationNumber")
+            @NotNull(message = "stationNumber cannot be null")
+            @Positive(message = "stationNumber must be positive")
+            Integer stationNumber) {
 
-        firestationService.deleteFirestationByStation(station_number);
+        firestationService.deleteFirestationByStation(stationNumber);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

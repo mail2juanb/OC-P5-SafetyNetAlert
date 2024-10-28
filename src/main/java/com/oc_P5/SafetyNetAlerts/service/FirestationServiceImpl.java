@@ -80,13 +80,12 @@ public class FirestationServiceImpl implements FirestationService {
     }
 
     @Override
-    public void deleteFirestationByStation(Integer station_number) {
-        if(!firestationRepository.existsByStation(station_number)){
-            throw new NotFoundException("Firestation doesn't exist with station = " + station_number.toString());
+    public void deleteFirestationByStation(Integer stationNumber) {
+        if(!firestationRepository.existsByStation(stationNumber)){
+            throw new NotFoundException("Firestation doesn't exist with station = " + stationNumber.toString());
         }
 
-        firestationRepository.deleteByStation(station_number);
+        firestationRepository.deleteByStation(stationNumber);
     }
-
 
 }

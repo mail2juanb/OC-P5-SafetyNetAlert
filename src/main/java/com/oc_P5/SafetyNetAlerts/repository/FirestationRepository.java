@@ -27,8 +27,8 @@ public interface FirestationRepository {
 
     void deleteByAddress(String address);
 
-    void deleteByStation(Integer station_number);
+    void deleteByStation(Integer stationNumber);
 
-    List<Firestation> getByStation(Integer station_number);
+    List<Firestation> getByStation(Integer stationNumber);
 
 }
