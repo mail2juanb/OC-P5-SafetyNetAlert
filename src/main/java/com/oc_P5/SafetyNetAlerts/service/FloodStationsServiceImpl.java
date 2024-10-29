@@ -22,12 +22,12 @@ public class FloodStationsServiceImpl implements FloodStationsService {
     private final FirestationRepository firestationRepository;
 
     @Override
-    public List<MemberByStation> getMembersByStation(List<Integer> station_Numbers) {
+    public List<MemberByStation> getMembersByStation(List<Integer> stationNumbers) {
         // NOTE : No check on the existence of station_Numbers, since the returned list may be empty.
 
         List<String> addressList = firestationRepository.getAll()
                 .stream()
-                .filter(firestation -> station_Numbers.contains(firestation.getStation()))
+                .filter(firestation -> stationNumbers.contains(firestation.getStation()))
                 .map(Firestation::getAddress)
                 .toList();
 

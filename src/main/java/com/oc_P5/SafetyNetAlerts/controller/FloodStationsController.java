@@ -35,7 +35,7 @@ public class FloodStationsController {
      * This list must group people by address. It should also include the name, phone number and age,
      * with medical history (medications, dosage and allergies) next to each name.
      *
-     * @param station_Numbers List of Integer station_Numbers validated with @NotNull @Size(min=1) and Integers @NotNull @Positive
+     * @param stationNumbers List of Integer station_Numbers validated with @NotNull @Size(min=1) and Integers @NotNull @Positive
      * @return ResponseEntity<List<MemberByStation>> (HttpStatus.OK)
      *
      */
@@ -50,14 +50,14 @@ public class FloodStationsController {
 
     @GetMapping("/flood/stations")
     public ResponseEntity<List<MemberByStation>> getMembersByStation(
-            @Valid @RequestParam("station_Numbers")
-            @NotNull(message = "station_Numbers cannot be null")
-            @Size(min = 1, message = "station_Numbers cannot be empty")
-            List<@NotNull(message = "station_Number cannot be null")
-                @Positive(message = "station_Number must be positive")
-                Integer> station_Numbers) {
+            @Valid @RequestParam("stationNumbers")
+            @NotNull(message = "stationNumbers cannot be null")
+            @Size(min = 1, message = "stationNumbers cannot be empty")
+            List<@NotNull(message = "stationNumber cannot be null")
+                @Positive(message = "stationNumber must be positive")
+                Integer> stationNumbers) {
 
-        List<MemberByStation> memberByStationList = floodStationsService.getMembersByStation(station_Numbers);
+        List<MemberByStation> memberByStationList = floodStationsService.getMembersByStation(stationNumbers);
 
         return new ResponseEntity<>(memberByStationList, HttpStatus.OK);
     }
