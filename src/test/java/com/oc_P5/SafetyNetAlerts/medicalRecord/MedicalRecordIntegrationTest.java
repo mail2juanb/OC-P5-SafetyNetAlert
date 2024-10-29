@@ -202,7 +202,6 @@ public class MedicalRecordIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
     void deleteMedicalRecord_shouldReturnHttpStatus200() throws Exception {
@@ -226,22 +225,6 @@ public class MedicalRecordIntegrationTest {
 
     }
 
-    @Test
-    void deleteMedicalRecord_shouldReturnHttpStatus404() throws Exception {
-
-        // Given an unknown medicalRecord to delete
-        final MedicalRecordRequest deleteMedicalRecordRequest = new MedicalRecordRequest("unknownFirstName", "unknownLastName", null, null, null);
-
-        // When the medicalRecord is deleted
-        ResultActions response = mockMvc.perform(
-                MockMvcRequestBuilders.delete(uriPath)
-                        .content(objectMapper.writeValueAsString(deleteMedicalRecordRequest))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
-
-    }
 
     @ParameterizedTest
     @MethodSource("provideInvalidMedicalRecordRequest")

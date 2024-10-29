@@ -145,13 +145,10 @@ public class MedicalRecordServiceTest {
         // Given an existing MedicalRecord to be deleted
         MedicalRecord medicalRecord = medicalRecordListMock.getFirst();
 
-        when(medicalRecordRepository.existsById(medicalRecord.getId())).thenReturn(true);
-
         // When the MedicalRecord is deleted
         medicalRecordService.deleteMedicalRecord(medicalRecord);
 
         // Then the repository should delete the MedicalRecord
-        verify(medicalRecordRepository, times(1)).existsById(medicalRecord.getId());
         verify(medicalRecordRepository, times(1)).delete(medicalRecord);
 
         ArgumentCaptor<MedicalRecord> medicalRecordArgumentCaptor = ArgumentCaptor.forClass(MedicalRecord.class);
@@ -160,23 +157,5 @@ public class MedicalRecordServiceTest {
         assertThat(deletedMedicalRecord).isEqualTo(medicalRecord);
     }
 
-    @Test
-    void deleteMedicalRecord_shouldReturnNotFoundExceptionWhenNotExist() {
-        // Given a MedicalRecord that doesn't exist
-        MedicalRecord medicalRecord = medicalRecordListMock.get(1);
-        medicalRecord.setFirstName("unknownFirstName");
-        medicalRecord.setLastName("unknownLastName");
-
-        when(medicalRecordRepository.existsById(medicalRecord.getId())).thenReturn(false);
-
-        // When trying to delete the MedicalRecord
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> medicalRecordService.deleteMedicalRecord(medicalRecord));
-
-        // Then a NotFoundException should be thrown and no delete should occur
-        assertThat(thrown.getMessage()).contains(medicalRecord.getId());
-
-        verify(medicalRecordRepository, times(1)).existsById(medicalRecord.getId());
-        verify(medicalRecordRepository, never()).delete(any(MedicalRecord.class));
-    }
 
 }

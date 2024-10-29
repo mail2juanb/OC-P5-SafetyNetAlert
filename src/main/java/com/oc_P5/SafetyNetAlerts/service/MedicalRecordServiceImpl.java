@@ -35,9 +35,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Override
     public void deleteMedicalRecord(MedicalRecord medicalRecord) {
-        if(!medicalRecordRepository.existsById(medicalRecord.getId())) {
-            throw new NotFoundException("MedicalRecord doesn't exist with id : " + medicalRecord.getId());
-        }
         medicalRecordRepository.delete(medicalRecord);
     }
 

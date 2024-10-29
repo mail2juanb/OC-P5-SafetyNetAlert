@@ -100,14 +100,12 @@ public class MedicalRecordController {
      *                                   List<String> medications,
      *                                   List<String> allergies
      * @return ResponseEntity<?> (HttpStatus.OK)
-     * @throws NotFoundException if id (firstName-lastName) doesn't exist
      */
 
     @Operation(summary = "Delete a MedicalRecord")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "MedicalRecord successfully deleted", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @DeleteMapping("/medicalRecord")
