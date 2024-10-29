@@ -36,9 +36,6 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void deletePerson(Person person) {
-        if(!personRepository.existsById(person.getId())) {
-            throw new NotFoundException("Person doesn't exists with id : " + person.getId());
-        }
         personRepository.delete(person);
     }
 

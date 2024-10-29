@@ -189,7 +189,6 @@ public class PersonIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Persons successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
     void deletePerson_shouldReturnHttpStatus200() throws Exception {
@@ -213,22 +212,6 @@ public class PersonIntegrationTest {
 
     }
 
-    @Test
-    void deletePerson_shouldReturnHttpStatus404() throws Exception {
-
-        // Given an unknown person to delete
-        final PersonRequest deletePersonRequest = new PersonRequest("unknownFirstName", "unknownLastName", null, null, null, null, null);
-
-        // When the person is deleted
-        ResultActions response = mockMvc.perform(
-                MockMvcRequestBuilders.delete(uriPath)
-                        .content(objectMapper.writeValueAsString(deletePersonRequest))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
-
-    }
 
     @ParameterizedTest
     @MethodSource("provideInvalidPersonRequest")

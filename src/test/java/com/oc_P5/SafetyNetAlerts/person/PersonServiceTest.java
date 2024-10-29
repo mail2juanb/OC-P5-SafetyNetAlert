@@ -124,34 +124,16 @@ public class PersonServiceTest {
         // Given a known Person to delete
         Person person = new Person("firstNameTest1", "lastNameTest1", "addressTest1", "cityTest1", 1111, "123-456-7891", "emailTest1");
 
-        when(personRepository.existsById(person.getId())).thenReturn(true);
-
         // When call method on service
         personService.deletePerson(person);
 
         // Then verify that the object sent is correctly distributed
-        verify(personRepository, times(1)).existsById(person.getId());
         verify(personRepository, times(1)).delete(person);
 
         ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
         verify(personRepository).delete(personArgumentCaptor.capture());
         Person deletedPerson = personArgumentCaptor.getValue();
         assertThat(deletedPerson).isEqualTo(person);
-    }
-
-    @Test
-    void deletePerson_shouldReturnNotFoundExceptionWhenNotExist() {
-        // Given an unknown Person to delete
-        Person person = new Person("unknownFirstName", "unknownLastName", "unknownAddress", "cityTest1", 1111, "123-456-7891", "emailTest1");
-
-        when(personRepository.existsById(person.getId())).thenReturn(false);
-
-        // When / Then a NotFoundException is thrown
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> personService.deletePerson(person));
-        assertThat(thrown.getMessage()).contains(person.getId());
-
-        verify(personRepository, times(1)).existsById(person.getId());
-        verify(personRepository, never()).delete(any(Person.class));
     }
 
 }

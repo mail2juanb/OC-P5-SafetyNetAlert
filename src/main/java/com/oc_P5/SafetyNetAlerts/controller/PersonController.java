@@ -110,14 +110,12 @@ public class PersonController {
      *                            String phone
      *                            String email @Email
      * @return ResponseEntity<?> (HttpStatus.OK)
-     * @throws NotFoundException if the person cannot be found
      */
 
     @Operation(summary = "Delete a Person")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Person successfully deleted", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @DeleteMapping("/person")
