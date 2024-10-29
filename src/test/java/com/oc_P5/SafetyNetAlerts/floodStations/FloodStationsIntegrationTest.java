@@ -50,13 +50,13 @@ public class FloodStationsIntegrationTest {
     void getMembersByStation_shouldReturnHttpStatus200WithKnownStations() throws Exception {
 
         // Given a list of station
-        final List<Integer> station_Numbers = new ArrayList<>();
-        station_Numbers.add(1);
-        station_Numbers.add(2);
+        final List<Integer> stationNumbers = new ArrayList<>();
+        stationNumbers.add(1);
+        stationNumbers.add(2);
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("station_Numbers", station_Numbers.stream()
+                .param("stationNumbers", stationNumbers.stream()
                         .map(String::valueOf) // Convert each Integer to String
                         .toArray(String[]::new)) // Convert to array of string
                 .contentType(MediaType.APPLICATION_JSON));
@@ -85,13 +85,13 @@ public class FloodStationsIntegrationTest {
     void getMembersByStation_shouldReturnHttpStatus200WithUnknownStations() throws Exception {
 
         // Given a list of station
-        final List<Integer> station_Numbers = new ArrayList<>();
-        station_Numbers.add(44);
-        station_Numbers.add(52);
+        final List<Integer> stationNumbers = new ArrayList<>();
+        stationNumbers.add(44);
+        stationNumbers.add(52);
 
         // When method called
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("station_Numbers", station_Numbers.stream()
+                .param("stationNumbers", stationNumbers.stream()
                         .map(String::valueOf) // Convert each Integer to String
                         .toArray(String[]::new)) // Convert to array of string
                 .contentType(MediaType.APPLICATION_JSON));
