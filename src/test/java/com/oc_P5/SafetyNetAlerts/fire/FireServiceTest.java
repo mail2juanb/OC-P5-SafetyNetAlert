@@ -7,7 +7,6 @@ import com.oc_P5.SafetyNetAlerts.model.Person;
 import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
-
 import com.oc_P5.SafetyNetAlerts.service.FireServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,7 +115,7 @@ public class FireServiceTest {
         verify(personRepository, times(1)).getPersonsWithMedicalRecord(personIds);
 
         assertEquals(address, response.getAddress());
-        assertEquals(Optional.of(1), response.getStationNumber());
+        assertEquals(1, response.getStationNumber());
         assertEquals(2, response.getFirePersonByAdressList().size());
         assertEquals("lastNameTest1", response.getFirePersonByAdressList().get(0).getLastName());
         assertEquals("lastNameTest2", response.getFirePersonByAdressList().get(1).getLastName());
@@ -149,7 +150,7 @@ public class FireServiceTest {
         verify(personRepository, times(1)).getPersonsWithMedicalRecord(Collections.emptyList());
 
         assertEquals(address, response.getAddress());
-        assertTrue(response.getStationNumber().isEmpty());
+        assertNull(response.getStationNumber());
         assertTrue(response.getFirePersonByAdressList().isEmpty());
 
         verify(personRepository).getPersonsWithMedicalRecord(personIdsArgumentCaptor.capture());
