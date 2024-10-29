@@ -2,7 +2,10 @@ package com.oc_P5.SafetyNetAlerts.service;
 
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonByAddress;
 import com.oc_P5.SafetyNetAlerts.dto.FirePersonsResponse;
-import com.oc_P5.SafetyNetAlerts.model.*;
+import com.oc_P5.SafetyNetAlerts.model.Firestation;
+import com.oc_P5.SafetyNetAlerts.model.NamedModel;
+import com.oc_P5.SafetyNetAlerts.model.Person;
+import com.oc_P5.SafetyNetAlerts.model.PersonWithMedicalRecord;
 import com.oc_P5.SafetyNetAlerts.repository.FirestationRepository;
 import com.oc_P5.SafetyNetAlerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -24,11 +26,12 @@ public class FireServiceImpl implements FireService {
     @Override
     public FirePersonsResponse getFirePersonsByAddress(String address) {
 
-        Optional<Integer> stationNumber = firestationRepository.getAll()
+        Integer stationNumber = firestationRepository.getAll()
                 .stream()
                 .filter(firestation -> firestation.getAddress().equals(address))
                 .map(Firestation::getStation)
-                .findFirst();
+                .findFirst()
+                .orElse(null);
 
         List<Person> personsByAddress = personRepository.getByAddress(address);
 
