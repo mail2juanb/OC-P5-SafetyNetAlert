@@ -23,7 +23,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -251,11 +252,9 @@ public class FirestationServiceTest {
     }
 
     @Test
-    void deleteFirestationByAddress_shouldRemoveFirestationWhenAddressExists() {
+    void deleteFirestationByAddress_shouldRemoveFirestation() {
         // Given a known address to delete Firestation
         final String address = "addressTest1";
-
-        when(firestationRepository.existsByAddress(address)).thenReturn(true);
 
         // When call method on service
         firestationService.deleteFirestationByAddress(address);
@@ -267,29 +266,14 @@ public class FirestationServiceTest {
         String deletedAddress = addressArgumentCaptor.getValue();
         assertThat(deletedAddress).isEqualTo(address);
 
-        verify(firestationRepository, times(1)).existsByAddress(address);
         verify(firestationRepository, times(1)).deleteByAddress(address);
     }
 
-    @Test
-    void deleteFirestationByAddress_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
-        // Given an unknown address
-        final String address = "unknownAddressTest30";
-
-        // When / Then a NotFoundException is thrown
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationByAddress(address));
-        assertThat(thrown.getMessage()).contains(address);
-
-        verify(firestationRepository, times(1)).existsByAddress(address);
-        verify(firestationRepository, never()).deleteByAddress(address);
-    }
 
     @Test
-    void deleteFirestationByStation_shouldRemoveFirestationWhenStationExists() {
+    void deleteFirestationByStation_shouldRemoveFirestation() {
         // Given a known station to delete Firestation
         final Integer station_number = 1;
-
-        when(firestationRepository.existsByStation(station_number)).thenReturn(true);
 
         // When call method on service
         firestationService.deleteFirestationByStation(station_number);
@@ -301,21 +285,7 @@ public class FirestationServiceTest {
         Integer deletedStation = stationArgumentCaptor.getValue();
         assertThat(deletedStation).isEqualTo(station_number);
 
-        verify(firestationRepository, times(1)).existsByStation(station_number);
         verify(firestationRepository, times(1)).deleteByStation(station_number);
-    }
-
-    @Test
-    void deleteFirestationByStation_shouldThrowNotFoundExceptionWhenFirestationNotExist() {
-        // Given an unknown station
-        final Integer station_number = 89;
-
-        // When / Then a NotFoundException is thrown
-        NotFoundException thrown = assertThrows(NotFoundException.class, () -> firestationService.deleteFirestationByStation(station_number));
-        assertThat(thrown.getMessage()).contains(station_number.toString());
-
-        verify(firestationRepository, times(1)).existsByStation(station_number);
-        verify(firestationRepository, never()).deleteByStation(station_number);
     }
 
 }

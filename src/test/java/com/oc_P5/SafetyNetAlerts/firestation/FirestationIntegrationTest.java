@@ -105,7 +105,7 @@ public class FirestationIntegrationTest {
 
         // When Firestation posted
         ResultActions response = mockMvc.perform(get(uriPath)
-                .param("station_number", String.valueOf(station_number))
+                .param("stationNumber", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isBadRequest - 400
@@ -184,7 +184,6 @@ public class FirestationIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully updated
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    // FIXME: On lève l'exception ou pas ?
     //          response 404 ---> Unable to find resources related to the request
 
     @Test
@@ -211,9 +210,10 @@ public class FirestationIntegrationTest {
                     assertThat(firestation.get().getAddress()).isEqualTo(expectedFirestation.getAddress());
                     assertThat(firestation.get().getStation()).isEqualTo(expectedFirestation.getStation());
                 });
+
     }
 
-// FIXME: On lève l'exception ou pas ?
+
     @Test
     void updateFirestation_shouldReturnHttpStatus404() throws Exception {
 
@@ -251,7 +251,6 @@ public class FirestationIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Firestation successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
     void deleteFirestationByAddress_shouldReturnReturnHttpStatus200() throws Exception {
@@ -271,24 +270,6 @@ public class FirestationIntegrationTest {
         // Then check that Firestation deleted
         assertFalse(repository.getAll().stream()
                 .anyMatch(f -> f.getAddress().equals(address)));
-
-    }
-
-
-    @Test
-    void deleteFirestationByAddress_shouldReturnReturnHttpStatus404() throws Exception {
-
-        // Given an address to delete Firestation
-        final String address = "unknownAddress";
-        final String uriPath = "/firestation/address";
-
-        // When Firestation deleted
-        ResultActions response = mockMvc.perform(delete(uriPath)
-                .param("address", address)
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
 
     }
 
@@ -314,7 +295,6 @@ public class FirestationIntegrationTest {
     // NOTE Responses possibilities
     //          response 200 ---> Firestations successfully deleted
     //          response 400 ---> Invalid request: missing or incorrect parameters
-    //          response 404 ---> Unable to find resources related to the request
 
     @Test
     void deleteFirestationByStation_shouldReturnReturnHttpStatus200() throws Exception {
@@ -325,7 +305,7 @@ public class FirestationIntegrationTest {
 
         // When the Firestation deleted
         ResultActions response = mockMvc.perform(delete(deleteStation)
-                .param("station_number", String.valueOf(station_number))
+                .param("stationNumber", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isOk - 200
@@ -338,23 +318,6 @@ public class FirestationIntegrationTest {
     }
 
 
-    @Test
-    void deleteFirestationByStation_shouldReturnReturnHttpStatus404() throws Exception {
-
-        // Given a station to delete Firestation
-        final Integer station_number = 9;
-        final String deleteStation = "/firestation/station";
-
-        // When the Firestation deleted
-        ResultActions response = mockMvc.perform(delete(deleteStation)
-                .param("station_number", String.valueOf(station_number))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // Then response isNotFound - 404
-        response.andExpect(status().isNotFound());
-
-    }
-
 
     @ParameterizedTest
     @MethodSource("provideInvalidStationRequest")
@@ -365,7 +328,7 @@ public class FirestationIntegrationTest {
 
         // When Firestation posted
         ResultActions response = mockMvc.perform(delete(uriPath)
-                .param("station_number", String.valueOf(station_number))
+                .param("stationNumber", String.valueOf(station_number))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then response isBadRequest - 400

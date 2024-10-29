@@ -53,7 +53,6 @@ public class FirestationServiceImpl implements FirestationService {
 
     @Override
     public void updateFirestation(Firestation firestation) {
-// FIXME: On lève l'exception ou pas ?
         if(!firestationRepository.existsByAddress(firestation.getAddress())) {
             throw new NotFoundException("Firestation doesn't exist with address = " + firestation.getAddress());
         }
@@ -72,19 +71,11 @@ public class FirestationServiceImpl implements FirestationService {
 
     @Override
     public void deleteFirestationByAddress(String address) {
-        if(!firestationRepository.existsByAddress(address)){
-            throw new NotFoundException("Firestation doesn't exist with address = " + address);
-        }
-
         firestationRepository.deleteByAddress(address);
     }
 
     @Override
     public void deleteFirestationByStation(Integer stationNumber) {
-        if(!firestationRepository.existsByStation(stationNumber)){
-            throw new NotFoundException("Firestation doesn't exist with station = " + stationNumber.toString());
-        }
-
         firestationRepository.deleteByStation(stationNumber);
     }
 

@@ -69,13 +69,11 @@ public class FirestationController {
     /**
      * PUT /firestation
      * Update an address's firestation number
-     * If no address is found in our file, the application will simply return an empty JSON object.
      *
      * @param updateFirestationRequest FirestationRequest validated with :
      *                                 String address @NotBlank,
      *                                 Integer stationNumber @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * // FIXME : Que faire, on lève une exception ou on renvoi statusOK ?
      * @throws NotFoundException if firestation doesn't exist
      *
      */
@@ -135,14 +133,12 @@ public class FirestationController {
      *
      * @param address address validated with String address @NotBlank
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * @throws NotFoundException if firestation address does not exist
      */
 
     @Operation(summary = "Delete Firestation by address")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Firestation successfully deleted", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @DeleteMapping("/firestation/address")
@@ -162,16 +158,14 @@ public class FirestationController {
      * DELETE /firestation/station?station_number
      * Delete firestation(s) associated with specified station_number.
      *
-     * @param stationNumber station number validated with Integer station_number @NotNull @Positive
+     * @param stationNumber station number validated with Integer stationNumber @NotNull @Positive
      * @return ResponseEntity<?>(HttpStatus.OK)
-     * @throws NotFoundException if no firestation founded for specified station_number
      */
 
     @Operation(summary = "Delete Firestations by station")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Firestations successfully deleted", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Unable to find resources related to the request", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid request: missing or incorrect parameters", content = @Content)
     })
 
     @DeleteMapping("/firestation/station")
