@@ -110,6 +110,7 @@
 								<exclude>com/oc_P5/SafetyNetAlerts/model/**</exclude>
 								<exclude>com/oc_P5/SafetyNetAlerts/interceptor/**</exclude>
 								<exclude>com/oc_P5/SafetyNetAlerts/exceptions/**</exclude>
+								<exclude>com/oc_P5/SafetyNetAlerts/SafetyNetAlertsApplication*</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -122,9 +123,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-					<excludedGroups>com.oc_P5.SafetyNetAlerts.model.*</excludedGroups>
-					<excludedGroups>com.oc_P5.SafetyNetAlerts.interceptor.*</excludedGroups>
-					<excludedGroups>com.oc_P5.SafetyNetAlerts.exceptions.*</excludedGroups>
 				</configuration>
 			</plugin>
 
