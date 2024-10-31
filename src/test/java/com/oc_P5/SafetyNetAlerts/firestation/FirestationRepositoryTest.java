@@ -78,9 +78,21 @@ public class FirestationRepositoryTest {
     }
 
     @Test
-    void findByAddressByStation_shouldReturnFirestationEmpty() {
+    void findByAddressByStation_shouldReturnFirestationEmptyWithUnknownStation() {
         // Given an unknown Firestation
-        Firestation firestation = new Firestation("addressNotExists", 20);
+        Firestation firestation = new Firestation("addressTest1", 20);
+
+        // When call method on repository
+        Optional<Firestation> result = firestationRepository.findByAddressByStation(firestation);
+
+        // Then verify that object returned is empty
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void findByAddressByStation_shouldReturnFirestationEmptyWithUnknownAddress() {
+        // Given an unknown Firestation
+        Firestation firestation = new Firestation("addressNotExists", 2);
 
         // When call method on repository
         Optional<Firestation> result = firestationRepository.findByAddressByStation(firestation);
